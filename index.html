@@ -2,13 +2,34 @@
 <html lang="el">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="A React + Vite web app starter." />
-    <title>Nick · Web App</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta name="description" content="Voxel Horizon — open world voxel driving game." />
+    <meta name="theme-color" content="#0b1020" />
+    <title>Voxel Horizon</title>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <!-- Three.js renderer canvas mounts here -->
+    <div id="game"></div>
+
+    <!-- Loading overlay -->
+    <div id="loading">
+      <div class="loading-box">
+        <h1>VOXEL HORIZON</h1>
+        <p id="loading-status">Φόρτωση κόσμου…</p>
+        <div class="loading-bar"><div id="loading-bar-fill"></div></div>
+        <p class="hint">W = Γκάζι · S = Φρένο · A/D = Τιμόνι · Space = Χειρόφρενο · C = Κάμερα · H = Κόρνα · L = Φώτα</p>
+      </div>
+    </div>
+
+    <!-- HUD overlay (HTML/CSS, filled by HUD.js) -->
+    <div id="hud"></div>
+
+    <!-- Mobile controls (filled by MobileControls.js) -->
+    <div id="mobile-controls"></div>
+
+    <script type="module" src="/src/main.js"></script>
   </body>
 </html>

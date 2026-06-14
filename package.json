@@ -1,8 +1,9 @@
 {
-  "name": "nick-web-app",
+  "name": "voxel-horizon",
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "description": "Voxel Horizon — open world voxel driving game (Three.js + Cannon-es)",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -10,18 +11,14 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.26.2"
+    "cannon-es": "^0.20.0",
+    "simplex-noise": "^4.0.3",
+    "three": "^0.160.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
-    "@vitejs/plugin-react": "^4.3.1",
     "eslint": "^9.9.0",
     "globals": "^15.9.0",
-    "eslint-plugin-react": "^7.35.0",
-    "eslint-plugin-react-hooks": "^5.1.0",
-    "eslint-plugin-react-refresh": "^0.4.9",
     "vite": "^5.4.2"
   }
 }

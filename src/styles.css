@@ -1,0 +1,264 @@
+:root {
+  --hud-bg: rgba(10, 14, 24, 0.62);
+  --hud-border: rgba(120, 170, 255, 0.25);
+  --hud-text: #e8f0ff;
+  --hud-accent: #5fd0ff;
+  --hud-warn: #ffcc44;
+  --hud-danger: #ff5555;
+  --hud-good: #5fff9f;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0b1020;
+  color: var(--hud-text);
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: none;
+}
+
+#game,
+#game canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ---------- Loading overlay ---------- */
+#loading {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% 30%, #15203b, #070a14 80%);
+  transition: opacity 0.6s ease;
+}
+#loading.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+.loading-box {
+  text-align: center;
+  padding: 24px;
+}
+.loading-box h1 {
+  font-size: clamp(28px, 6vw, 56px);
+  letter-spacing: 6px;
+  margin: 0 0 8px;
+  background: linear-gradient(90deg, #5fd0ff, #b98bff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.loading-box p {
+  opacity: 0.85;
+  margin: 6px 0;
+}
+.loading-box .hint {
+  font-size: 12px;
+  opacity: 0.6;
+  max-width: 460px;
+}
+.loading-bar {
+  width: min(320px, 70vw);
+  height: 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 16px auto;
+  overflow: hidden;
+}
+#loading-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #5fd0ff, #b98bff);
+  transition: width 0.25s ease;
+}
+
+/* ---------- HUD ---------- */
+#hud {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.hud-top {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.hud-chip {
+  background: var(--hud-bg);
+  border: 1px solid var(--hud-border);
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  backdrop-filter: blur(6px);
+  white-space: nowrap;
+}
+.hud-chip b {
+  color: var(--hud-accent);
+}
+
+/* Gauges cluster (bottom-right above minimap on desktop) */
+.hud-cluster {
+  position: absolute;
+  right: 12px;
+  bottom: 140px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+}
+.gauge-wrap {
+  background: var(--hud-bg);
+  border: 1px solid var(--hud-border);
+  border-radius: 14px;
+  padding: 8px;
+  backdrop-filter: blur(6px);
+}
+
+.hud-bottom-left {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.hud-money {
+  background: var(--hud-bg);
+  border: 1px solid var(--hud-border);
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-size: 14px;
+}
+.hud-stars {
+  letter-spacing: 2px;
+  font-size: 16px;
+}
+
+.hud-bottom-center {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  background: var(--hud-bg);
+  border: 1px solid var(--hud-border);
+  border-radius: 10px;
+  padding: 5px 12px;
+  font-size: 11px;
+  opacity: 0.85;
+}
+
+/* Minimap bottom-right */
+#minimap {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  width: 120px;
+  height: 120px;
+  border-radius: 12px;
+  border: 1px solid var(--hud-border);
+  background: var(--hud-bg);
+  overflow: hidden;
+}
+#minimap canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Small status bars (tire/engine/fuel) */
+.bar {
+  position: relative;
+  width: 64px;
+  height: 7px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.14);
+  overflow: hidden;
+  margin-top: 3px;
+}
+.bar > span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  border-radius: 4px;
+}
+.tire-grid {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 4px 14px;
+  font-size: 10px;
+  text-align: center;
+}
+.tire-cell b {
+  display: block;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Mobile controls ---------- */
+#mobile-controls {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  display: none;
+}
+#mobile-controls.active {
+  display: block;
+}
+.mc-btn {
+  position: absolute;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(20, 30, 55, 0.55);
+  border: 1px solid rgba(150, 190, 255, 0.4);
+  color: #dcebff;
+  border-radius: 14px;
+  font-size: 22px;
+  font-weight: 700;
+  user-select: none;
+  backdrop-filter: blur(4px);
+}
+.mc-btn.pressed {
+  background: rgba(95, 208, 255, 0.45);
+}
+.mc-round {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  font-size: 14px;
+}
+
+@media (max-width: 767px) {
+  .hud-cluster {
+    bottom: 150px;
+    transform: scale(0.85);
+    transform-origin: bottom right;
+  }
+}
