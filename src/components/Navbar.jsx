@@ -5,7 +5,7 @@ export default function Navbar() {
     <header className="navbar">
       <div className="container navbar__inner">
         <NavLink to="/" className="navbar__brand">
-          <img src="/vite.svg" alt="" />
+          <img src={`${import.meta.env.BASE_URL}vite.svg`} alt="" />
           <span>Nick</span>
         </NavLink>
         <nav className="navbar__links">
