@@ -12,6 +12,7 @@ export default function Navbar() {
           <NavLink to="/" end>
             Home
           </NavLink>
+          <NavLink to="/dashboard">Καντράν</NavLink>
           <NavLink to="/about">About</NavLink>
         </nav>
       </div>

@@ -3,16 +3,16 @@ import { Link } from 'react-router-dom'
 
 const features = [
   {
-    title: 'Vite',
-    body: 'Instant dev server με hot module replacement και γρήγορα production builds.',
+    title: 'Ψηφιακό καντράν',
+    body: 'Στροφόμετρο, ταχύμετρο, θερμοκρασία, καύσιμο, boost, λάδι & τάση — στιλ Civic EK.',
   },
   {
-    title: 'React Router',
-    body: 'Client-side routing με layouts, nested routes και 404 handling.',
+    title: 'Πλήρως λειτουργικό',
+    body: 'Μηχανή προσομοίωσης: οδήγησε με γκάζι/φρένο/ταχύτητες και δες τα όργανα να αντιδρούν.',
   },
   {
-    title: 'Καθαρή δομή',
-    body: 'Components και pages χωρισμένα, έτοιμα να επεκταθούν.',
+    title: 'Warning lights',
+    body: 'Φλας, μεγάλη σκάλα, λάδι, μπαταρία, θερμοκρασία, check engine, ABS και άλλα.',
   },
 ]
 
@@ -28,17 +28,12 @@ export default function Home() {
           ό,τι θέλεις να φτιάξεις.
         </p>
         <div className="btn-row">
-          <Link to="/about" className="btn btn--primary">
+          <Link to="/dashboard" className="btn btn--primary">
+            Άνοιξε το καντράν
+          </Link>
+          <Link to="/about" className="btn btn--ghost">
             Μάθε περισσότερα
           </Link>
-          <a
-            className="btn btn--ghost"
-            href="https://vitejs.dev"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Vite docs
-          </a>
         </div>
 
         <div className="counter">

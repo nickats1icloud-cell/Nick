@@ -213,6 +213,275 @@ h3 {
   font-size: 1.3rem;
 }
 
+/* ============================================================
+   Ψηφιακό καντράν (Dashboard)
+   ============================================================ */
+.dash {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.dash__cluster {
+  background: linear-gradient(160deg, #14171d, #05070a);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 1.25rem 1.25rem 1.5rem;
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.6), 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* Warning lights row */
+.lights {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  padding-bottom: 1rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.light {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  height: 30px;
+  padding: 0 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: 1px solid #2a2f3a;
+  border-radius: 7px;
+  color: #3a4150;
+  background: #0c0e12;
+  opacity: 0.5;
+  transition: opacity 0.1s ease;
+}
+.light--on {
+  opacity: 1;
+  background: #11151b;
+  box-shadow: 0 0 12px currentColor;
+  text-shadow: 0 0 8px currentColor;
+}
+
+/* Gauges layout */
+.dash__gauges {
+  display: grid;
+  grid-template-columns: 1fr 0.9fr 1fr;
+  align-items: center;
+  gap: 0.5rem;
+}
+.dash__pod {
+  display: flex;
+  justify-content: center;
+}
+.gauge {
+  width: 100%;
+  max-width: 340px;
+  height: auto;
+}
+
+/* Center digital display */
+.dash__center {
+  text-align: center;
+  padding: 0 0.5rem;
+}
+.dash__speed {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+.dash__speed-num {
+  font-family: 'Courier New', monospace;
+  font-size: clamp(3rem, 12vw, 5.5rem);
+  font-weight: 700;
+  color: #e8edf5;
+  text-shadow: 0 0 18px rgba(124, 92, 255, 0.35);
+}
+.dash__speed-unit {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  letter-spacing: 2px;
+}
+.dash__gear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 58px;
+  height: 58px;
+  margin: 0.75rem auto;
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: rgba(124, 92, 255, 0.08);
+}
+.dash__gear.is-neutral {
+  border-color: var(--text-muted);
+  color: var(--text-muted);
+  background: none;
+}
+.dash__odo {
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem;
+  font-family: 'Courier New', monospace;
+  color: #cdd6e4;
+  font-size: 0.95rem;
+}
+.dash__odo small {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+}
+
+/* Secondary bar gauges */
+.dash__bars {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+}
+.bargauge {
+  background: #0c0e12;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.6rem 0.75rem;
+}
+.bargauge--warn {
+  border-color: #ff3b30;
+  box-shadow: 0 0 10px rgba(255, 59, 48, 0.3);
+}
+.bargauge__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.45rem;
+}
+.bargauge__label {
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+.bargauge__icon {
+  margin-right: 0.3rem;
+}
+.bargauge__value {
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  color: #e8edf5;
+  font-size: 1.05rem;
+}
+.bargauge__value em {
+  font-style: normal;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-left: 2px;
+}
+.bargauge__track {
+  height: 8px;
+  border-radius: 4px;
+  background: #1a1d24;
+  overflow: hidden;
+}
+.bargauge__fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+  transition: width 0.1s linear;
+}
+.bargauge--warn .bargauge__fill {
+  background: linear-gradient(90deg, #ff3b30, #ff7a5c);
+}
+
+/* Controls */
+.dash__controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+.dash__pedals {
+  display: flex;
+  gap: 1rem;
+}
+.pedal {
+  width: 140px;
+  height: 64px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  font-weight: 800;
+  letter-spacing: 1px;
+  font-size: 1rem;
+  color: #fff;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  transition: transform 0.05s ease, filter 0.1s ease;
+}
+.pedal:active {
+  transform: scale(0.96);
+  filter: brightness(1.25);
+}
+.pedal--gas {
+  background: linear-gradient(180deg, #2ec27e, #1b8a58);
+}
+.pedal--brake {
+  background: linear-gradient(180deg, #ff3b30, #c41e16);
+}
+.dash__switches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+.switch {
+  padding: 0.5rem 0.9rem;
+  border-radius: 9px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.1s ease, border-color 0.1s ease;
+}
+.switch:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.dash__hint {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  text-align: center;
+  margin: 0;
+}
+.dash__hint kbd {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 1px 6px;
+  font-family: inherit;
+  font-size: 0.8rem;
+  margin: 0 1px;
+}
+
+@media (max-width: 720px) {
+  .dash__gauges {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .dash__center {
+    order: -1;
+  }
+}
+
 .notfound {
   text-align: center;
   padding: 4rem 0;
