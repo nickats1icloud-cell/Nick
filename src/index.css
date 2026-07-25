@@ -128,8 +128,17 @@ h3 {
   margin: 0 auto 1.5rem;
 }
 
-/* Hero card (21st.dev-style glass hero) */
+/* Hero card (21st.dev-style 3D glass hero) */
+.hero-card-scene {
+  width: 100%;
+  perspective: 1100px;
+}
 .hero-card {
+  --rx: 0; /* κλίση γύρω από τον οριζόντιο άξονα, σε μοίρες */
+  --ry: 0; /* κλίση γύρω από τον κάθετο άξονα, σε μοίρες */
+  --mx: 50%; /* θέση δείκτη, για τη λάμψη */
+  --my: 50%;
+
   position: relative;
   display: grid;
   grid-template-columns: 1.3fr auto;
@@ -144,14 +153,42 @@ h3 {
     rgba(32, 36, 46, 0.9),
     rgba(15, 17, 21, 0.85)
   );
-  backdrop-filter: blur(10px);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+
+  /* Το overflow/backdrop-filter θα ισοπέδωνε το 3D, γι' αυτό η κοπή του
+     φόντου γίνεται στο .hero-card__backdrop. */
+  transform-style: preserve-3d;
+  transform: rotateX(calc(var(--rx) * 1deg)) rotateY(calc(var(--ry) * 1deg));
+  transition: transform 500ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* Όσο ο δείκτης κινείται πάνω στην κάρτα, η κλίση ακολουθεί χωρίς καθυστέρηση. */
+.hero-card--tilting {
+  transition: none;
+}
+.hero-card__backdrop {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
   overflow: hidden;
-  isolation: isolate;
+  transform: translateZ(0);
+}
+.hero-card__glare {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at var(--mx) var(--my),
+    rgba(255, 255, 255, 0.12),
+    transparent 45%
+  );
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.hero-card:hover .hero-card__glare {
+  opacity: 1;
 }
 .hero-card__glow {
   position: absolute;
   inset: -40%;
-  z-index: -1;
   background: radial-gradient(
       circle at 15% 20%,
       color-mix(in srgb, var(--accent) 35%, transparent),
@@ -172,6 +209,14 @@ h3 {
   to {
     transform: translate(3%, 2%) scale(1.08);
   }
+}
+/* Επίπεδα βάθους: όσο μεγαλύτερο το translateZ, τόσο πιο μπροστά. */
+.hero-card__copy {
+  transform: translateZ(38px);
+  transform-style: preserve-3d;
+}
+.hero-card__preview {
+  transform: translateZ(70px);
 }
 .hero-card__eyebrow {
   display: inline-block;
@@ -196,6 +241,7 @@ h3 {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+  transform: translateZ(22px);
 }
 .hero-card__chip {
   font-size: 0.82rem;
@@ -209,14 +255,25 @@ h3 {
 .hero-card__preview {
   display: flex;
   justify-content: center;
-  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.45));
+  filter: drop-shadow(0 14px 30px rgba(0, 0, 0, 0.55));
 }
 
 @media (max-width: 720px) {
+  /* Σε μικρές οθόνες η κάρτα μένει επίπεδη — δεν υπάρχει δείκτης να την
+     γείρει και το βάθος θα έκοβε περιεχόμενο. */
+  .hero-card-scene {
+    perspective: none;
+  }
   .hero-card {
     grid-template-columns: 1fr;
     text-align: center;
     padding: 2rem 1.5rem;
+    transform: none;
+  }
+  .hero-card__copy,
+  .hero-card__chips,
+  .hero-card__preview {
+    transform: none;
   }
   .hero-card__copy p {
     margin-left: auto;
@@ -228,6 +285,16 @@ h3 {
   .hero-card__preview svg {
     width: 180px;
     height: 180px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-card {
+    transform: none;
+    transition: none;
+  }
+  .hero-card__glow {
+    animation: none;
   }
 }
 
