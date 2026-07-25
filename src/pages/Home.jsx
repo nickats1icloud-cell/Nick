@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import HeroCard from '../components/HeroCard'
 
 const features = [
   {
@@ -22,11 +23,8 @@ export default function Home() {
   return (
     <>
       <section className="hero">
-        <h1>Καλώς ήρθες στο starter σου</h1>
-        <p>
-          Ένα μοντέρνο React + Vite web app, έτοιμο για ανάπτυξη. Στήσε εδώ
-          ό,τι θέλεις να φτιάξεις.
-        </p>
+        <HeroCard />
+
         <div className="btn-row">
           <Link to="/dashboard" className="btn btn--primary">
             Άνοιξε το καντράν

@@ -128,6 +128,109 @@ h3 {
   margin: 0 auto 1.5rem;
 }
 
+/* Hero card (21st.dev-style glass hero) */
+.hero-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.3fr auto;
+  align-items: center;
+  gap: 2rem;
+  text-align: left;
+  padding: 2.5rem;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: linear-gradient(
+    160deg,
+    rgba(32, 36, 46, 0.9),
+    rgba(15, 17, 21, 0.85)
+  );
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  isolation: isolate;
+}
+.hero-card__glow {
+  position: absolute;
+  inset: -40%;
+  z-index: -1;
+  background: radial-gradient(
+      circle at 15% 20%,
+      color-mix(in srgb, var(--accent) 35%, transparent),
+      transparent 55%
+    ),
+    radial-gradient(
+      circle at 85% 80%,
+      rgba(255, 59, 48, 0.25),
+      transparent 55%
+    );
+  filter: blur(40px);
+  animation: hero-glow-drift 12s ease-in-out infinite alternate;
+}
+@keyframes hero-glow-drift {
+  from {
+    transform: translate(-3%, -2%) scale(1);
+  }
+  to {
+    transform: translate(3%, 2%) scale(1.08);
+  }
+}
+.hero-card__eyebrow {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--accent-hover);
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+.hero-card__copy h1 {
+  font-size: clamp(1.7rem, 4vw, 2.6rem);
+  margin-bottom: 0.6rem;
+}
+.hero-card__copy p {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  max-width: 34rem;
+  margin: 0 0 1.25rem;
+}
+.hero-card__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.hero-card__chip {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.3rem 0.75rem;
+}
+.hero-card__preview {
+  display: flex;
+  justify-content: center;
+  filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.45));
+}
+
+@media (max-width: 720px) {
+  .hero-card {
+    grid-template-columns: 1fr;
+    text-align: center;
+    padding: 2rem 1.5rem;
+  }
+  .hero-card__copy p {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero-card__chips {
+    justify-content: center;
+  }
+  .hero-card__preview svg {
+    width: 180px;
+    height: 180px;
+  }
+}
+
 /* Buttons */
 .btn {
   display: inline-block;
