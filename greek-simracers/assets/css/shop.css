@@ -147,6 +147,12 @@
   background: hsl(var(--destructive) / 0.12);
 }
 
+/* .badge sets display:inline-flex, which otherwise beats the UA
+   [hidden]{display:none} rule at equal specificity. */
+.shop-modal__soldout[hidden] {
+  display: none;
+}
+
 .shop-modal__content h2 {
   font-size: 1.25rem;
 }
