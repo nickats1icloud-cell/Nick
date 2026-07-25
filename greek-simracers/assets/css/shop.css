@@ -1,0 +1,209 @@
+/* ============ Shop hero ============ */
+.shop-hero {
+  padding-top: calc(var(--header-height) + 3rem);
+  padding-bottom: 1rem;
+  text-align: center;
+}
+
+.shop-section {
+  padding-top: 2rem;
+}
+
+/* ============ Product grid ============ */
+.shop-grid {
+  min-height: 12rem;
+}
+
+.shop-card {
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.shop-card__media {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: hsl(var(--secondary) / 0.4);
+  overflow: hidden;
+}
+
+.shop-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.shop-card:hover .shop-card__media img {
+  transform: scale(1.06);
+}
+
+.shop-card__badge {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+}
+
+.shop-card__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: hsl(var(--background) / 0.75);
+  color: hsl(var(--destructive));
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.shop-card--sold-out .shop-card__media img {
+  filter: grayscale(0.5);
+}
+
+.shop-card__body {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+}
+
+.shop-card__category {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.shop-card__name {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.shop-card__price {
+  margin-top: auto;
+  padding-top: 0.5rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.shop-card__price-current {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: hsl(var(--primary-light));
+}
+
+.shop-card__price-original {
+  font-size: 0.8rem;
+  color: hsl(var(--muted-foreground));
+  text-decoration: line-through;
+}
+
+/* ============ Product modal ============ */
+.shop-modal__body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 640px) {
+  .shop-modal__body {
+    grid-template-columns: 1fr;
+  }
+}
+
+.shop-modal__image {
+  aspect-ratio: 1 / 1;
+  background: hsl(var(--secondary) / 0.4);
+  overflow: hidden;
+}
+
+.shop-modal__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.shop-modal__content {
+  padding: 1.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.shop-modal__content .badge {
+  width: fit-content;
+}
+
+.shop-modal__soldout {
+  color: hsl(var(--destructive));
+  border-color: hsl(var(--destructive) / 0.4);
+  background: hsl(var(--destructive) / 0.12);
+}
+
+.shop-modal__content h2 {
+  font-size: 1.25rem;
+}
+
+.shop-modal__description {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.9rem;
+  line-height: 1.6;
+  flex: 1;
+}
+
+.shop-modal__sizes-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: hsl(var(--muted-foreground));
+  margin-bottom: 0.5rem;
+}
+
+.shop-modal__size-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.shop-modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid hsl(var(--border));
+}
+
+.shop-modal__price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+}
+
+.shop-modal__price-current {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.4rem;
+  color: hsl(var(--primary-light));
+}
+
+.shop-modal__price-original {
+  font-size: 0.9rem;
+  color: hsl(var(--muted-foreground));
+  text-decoration: line-through;
+}
+
+@media (max-width: 375px) {
+  .shop-modal__content {
+    padding: 1.25rem;
+  }
+}

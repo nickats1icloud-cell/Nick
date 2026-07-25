@@ -194,11 +194,16 @@ function renderFilteredEpisodes() {
 async function loadEpisodes() {
   renderLoadingState();
 
-  const { data, error } = await supabaseClient
-    .from("podcast_episodes")
-    .select("*")
-    .eq("published", true)
-    .order("episode_number", { ascending: false });
+  let data, error;
+  try {
+    ({ data, error } = await supabaseClient
+      .from("podcast_episodes")
+      .select("*")
+      .eq("published", true)
+      .order("episode_number", { ascending: false }));
+  } catch (fetchException) {
+    error = fetchException;
+  }
 
   if (error) {
     renderErrorState();
