@@ -1,0 +1,107 @@
+/* ============ Contact hero ============ */
+.contact-hero {
+  padding-top: calc(var(--header-height) + 3rem);
+  padding-bottom: 1rem;
+}
+
+/* ============ Contact layout ============ */
+.contact-layout {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .contact-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.contact-card,
+.contact-sidebar {
+  padding: 2rem;
+}
+
+@media (max-width: 480px) {
+  .contact-card,
+  .contact-sidebar {
+    padding: 1.5rem;
+  }
+}
+
+.contact-card h2,
+.contact-sidebar h3 {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 1.25rem;
+}
+
+.field textarea {
+  resize: vertical;
+  min-height: 9rem;
+}
+
+/* Honeypot: kept in the DOM and focusable-free, but pushed off-screen so
+   only automated form-fillers ever see or populate it. */
+.contact-form__honeypot {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* ============ Sidebar ============ */
+.contact-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.contact-sidebar__intro {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.contact-sidebar__links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.contact-sidebar__link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-md);
+  background: hsl(var(--secondary) / 0.4);
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.contact-sidebar__link:hover {
+  border-color: hsl(var(--primary) / 0.5);
+  background: hsl(var(--secondary) / 0.7);
+  transform: translateY(-2px);
+}
+
+.contact-sidebar__link-icon {
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.contact-sidebar__link-text strong {
+  display: block;
+  font-size: 0.9rem;
+}
+
+.contact-sidebar__link-text span {
+  display: block;
+  font-size: 0.8rem;
+  color: hsl(var(--muted-foreground));
+}
