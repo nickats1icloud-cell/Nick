@@ -5,4 +5,8 @@
 const SUPABASE_URL = "https://dwkdquzqmcxtqnmefizk.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR3a2RxdXpxbWN4dHFubWVmaXprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODUwMTQzODIsImV4cCI6MjEwMDU5MDM4Mn0.kUe12Cwk2iLMlSij_Uasd8w6_0Z11UPQUN5pihHrqIk";
 
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Attached to window (not a bare const) so pages can safely feature-detect
+// it with `typeof window.supabaseClient` even if the CDN script above
+// failed to load — a bare `const` here would leave the identifier in the
+// temporal dead zone and make that check throw instead of reporting false.
+window.supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);

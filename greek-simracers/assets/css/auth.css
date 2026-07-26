@@ -1,0 +1,239 @@
+/* Shared styling for auth.html, reset-password.html and profile.html.
+   Layout/section scaffolding, buttons, .field and .form-status already
+   come from components.css — this file only adds what those three pages
+   need on top of it. */
+
+/* ============ Section / card shell ============ */
+.auth-section {
+  padding-top: calc(var(--header-height) + 3rem);
+  padding-bottom: 4rem;
+  min-height: calc(100vh - var(--header-height));
+  display: flex;
+  align-items: center;
+}
+
+.auth-section .container {
+  display: flex;
+  justify-content: center;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 28rem;
+  padding: 2.25rem;
+}
+
+.auth-card--wide {
+  max-width: 40rem;
+}
+
+.auth-card h1 {
+  font-size: 1.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  margin-bottom: 0.5rem;
+}
+
+.auth-card__subtitle {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.9rem;
+  margin-bottom: 1.75rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 1.5rem;
+  }
+}
+
+/* ============ Forms ============ */
+.is-hidden {
+  display: none;
+}
+
+.field select {
+  background: hsl(var(--secondary) / 0.5);
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  color: hsl(var(--foreground));
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, hsl(var(--muted-foreground)) 50%),
+    linear-gradient(135deg, hsl(var(--muted-foreground)) 50%, transparent 50%);
+  background-position: calc(100% - 1.2rem) center, calc(100% - 0.85rem) center;
+  background-size: 0.35rem 0.35rem, 0.35rem 0.35rem;
+  background-repeat: no-repeat;
+}
+
+.field select:focus {
+  outline: none;
+  border-color: hsl(var(--primary));
+}
+
+.field-hint {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  margin-top: -0.15rem;
+}
+
+.field input:disabled,
+.field select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.auth-form__submit {
+  width: 100%;
+  justify-content: center;
+  margin-top: 0.25rem;
+}
+
+/* ============ Login / register toggle ============ */
+.auth-switch {
+  margin-top: 1.25rem;
+  font-size: 0.85rem;
+  color: hsl(var(--muted-foreground));
+  text-align: center;
+}
+
+.auth-switch button {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: hsl(var(--primary-light));
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.auth-forgot {
+  display: block;
+  text-align: right;
+  font-size: 0.8rem;
+  color: hsl(var(--muted-foreground));
+  margin-top: -0.5rem;
+  margin-bottom: 1.1rem;
+}
+
+.auth-forgot:hover {
+  color: hsl(var(--primary-light));
+}
+
+/* ============ Unavailable notice (Supabase script failed to load) ============ */
+.auth-unavailable {
+  display: none;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 1rem 1.1rem;
+  border: 1px solid hsl(var(--destructive) / 0.4);
+  background: hsl(var(--destructive) / 0.1);
+  border-radius: var(--radius-md);
+  color: hsl(var(--foreground));
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin-bottom: 1.5rem;
+}
+
+.auth-unavailable.is-visible {
+  display: flex;
+}
+
+.auth-unavailable__icon {
+  flex-shrink: 0;
+  font-size: 1.1rem;
+}
+
+/* ============ Reset-password steps ============ */
+.auth-success {
+  text-align: center;
+  padding: 1rem 0 0.5rem;
+}
+
+.auth-success__icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.auth-success p {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 1.25rem;
+}
+
+/* ============ Profile page ============ */
+.profile-identity {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.profile-identity__avatar {
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 50%;
+  background: var(--gradient-greek);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: hsl(var(--primary-foreground));
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+.profile-identity__email {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.85rem;
+  word-break: break-all;
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1.25rem;
+}
+
+@media (max-width: 560px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.profile-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.profile-signout {
+  background: none;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 1.1rem;
+  font-size: 0.8rem;
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.profile-signout:hover {
+  color: hsl(var(--destructive));
+  border-color: hsl(var(--destructive) / 0.4);
+}
+
+.auth-loading {
+  text-align: center;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.9rem;
+  padding: 1rem 0;
+}
