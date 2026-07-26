@@ -66,6 +66,20 @@
     return d.toLocaleDateString("el-GR", { day: "numeric", month: "long", year: "numeric" });
   }
 
+  // Για την προεπισκόπηση στη λίστα θέλουμε σκέτο κείμενο, χωρίς tags.
+  function stripBBCode(text) {
+    return String(text || "")
+      .replace(/\[quote[^\]]*\][\s\S]*?\[\/quote\]/gi, "")
+      .replace(/\[code\]([\s\S]*?)\[\/code\]/gi, "$1")
+      .replace(/\[img\][^\]]*\[\/img\]/gi, "🖼️ εικόνα")
+      .replace(/\[youtube\][^\]]*\[\/youtube\]/gi, "▶ βίντεο")
+      .replace(/\[url=([^\]]*)\]([\s\S]*?)\[\/url\]/gi, "$2")
+      .replace(/\[\*\]/g, " • ")
+      .replace(/\[\/?[a-z]+(?:=[^\]]*)?\]/gi, "")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
   function otherIdOf(message) {
     return message.sender_id === myId ? message.recipient_id : message.sender_id;
   }
@@ -143,7 +157,7 @@
     return list
       .map((conv) => {
         const isMine = conv.last.sender_id === myId;
-        const snippet = (isMine ? "Εσύ: " : "") + conv.last.content;
+        const snippet = (isMine ? "Εσύ: " : "") + (stripBBCode(conv.last.content) || "(χωρίς κείμενο)");
         return `
           <a class="msg-conv${conv.otherId === activeId ? " is-active" : ""}" href="#/chat/${encodeURIComponent(conv.otherId)}">
             ${avatarHtml(conv.otherId, nameOf(conv.otherId), "sm")}
@@ -252,7 +266,7 @@
         return (
           separator +
           `<div class="msg-bubble${mine ? " msg-bubble--mine" : ""}${message.pending ? " is-pending" : ""}" data-message-id="${escapeHtml(message.id)}">
-            <p class="msg-bubble__text">${escapeHtml(message.content).replace(/\n/g, "<br>")}</p>
+            <div class="msg-bubble__text">${window.GSRBBCode.toHtml(message.content)}</div>
             <span class="msg-bubble__time">${escapeHtml(clockTime(message.created_at))}</span>
           </div>`
         );
@@ -270,8 +284,7 @@
         </header>
         <div class="msg-chat__body" id="msg-chat-body">${chatMessagesHtml(otherId)}</div>
         <form class="msg-composer" id="msg-composer">
-          <label class="visually-hidden" for="msg-input">Μήνυμα</label>
-          <textarea id="msg-input" rows="1" placeholder="Γράψε ένα μήνυμα…" maxlength="2000"></textarea>
+          <div id="msg-editor"></div>
           <button type="submit" class="btn btn-primary btn-sm">Αποστολή</button>
           <p class="form-status" id="msg-status" role="status"></p>
         </form>
@@ -306,28 +319,27 @@
 
   function wireComposer(otherId) {
     const form = app.querySelector("#msg-composer");
-    const input = app.querySelector("#msg-input");
     const status = app.querySelector("#msg-status");
     if (!form) return;
 
-    // Auto-grow textarea.
-    const grow = () => {
-      input.style.height = "auto";
-      input.style.height = Math.min(input.scrollHeight, 160) + "px";
-    };
-    input.addEventListener("input", grow);
-
-    input.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" && !event.shiftKey) {
-        event.preventDefault();
-        form.requestSubmit();
-      }
+    // Πλήρης editor και εδώ· Ctrl+Enter στέλνει, Enter αλλάζει γραμμή.
+    const editor = window.GSREditor.create(form.querySelector("#msg-editor"), {
+      label: "Μήνυμα",
+      placeholder: "Γράψε ένα μήνυμα…",
+      compact: true,
+      hint: "Ctrl+Enter αποστολή",
+      onSubmit: () => form.requestSubmit(),
     });
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
-      const content = input.value.trim();
+      const content = editor.getValue();
       if (!content) return;
+      if (editor.isOverLimit()) {
+        status.textContent = "Το μήνυμα είναι πολύ μεγάλο.";
+        status.setAttribute("data-state", "error");
+        return;
+      }
 
       const tempId = "pending-" + Date.now();
       const optimistic = {
@@ -340,8 +352,7 @@
         pending: true,
       };
       messages.unshift(optimistic);
-      input.value = "";
-      grow();
+      editor.clear();
       status.textContent = "";
       status.removeAttribute("data-state");
       refreshChat(otherId);
@@ -358,7 +369,7 @@
         refreshChat(otherId);
       } catch (err) {
         messages = messages.filter((m) => m.id !== tempId);
-        input.value = content;
+        editor.setValue(content);
         refreshChat(otherId);
         const liveStatus = app.querySelector("#msg-status");
         if (liveStatus) {

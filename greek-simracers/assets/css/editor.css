@@ -123,3 +123,112 @@
   .wysiwyg__hint { display: none; }
   .wysiwyg__area { min-height: 7rem; }
 }
+
+/* ---- Ομάδες κουμπιών ---- */
+.wysiwyg__group {
+  display: inline-flex;
+  gap: 0.15rem;
+  padding-right: 0.35rem;
+  margin-right: 0.2rem;
+  border-right: 1px solid hsl(var(--border) / 0.6);
+}
+
+.wysiwyg__group:last-of-type {
+  border-right: none;
+}
+
+/* ---- Παλέτα χρωμάτων ---- */
+.wysiwyg__palette {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding-left: 0.4rem;
+}
+
+.wysiwyg__palette[hidden] {
+  display: none;
+}
+
+.wysiwyg__swatch {
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  border: 1px solid hsl(var(--border));
+  cursor: pointer;
+  padding: 0;
+}
+
+.wysiwyg__swatch:hover {
+  transform: scale(1.15);
+}
+
+/* ---- Πλούσιο περιεχόμενο μέσα στον editor ---- */
+.wysiwyg__area .bb-img,
+.wysiwyg__area img {
+  max-width: 100%;
+  border-radius: var(--radius-sm);
+  margin-block: 0.4rem;
+}
+
+.wysiwyg__area .bb-yt-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.6rem;
+  margin-block: 0.2rem;
+  border-radius: 999px;
+  background: hsl(0 72% 45% / 0.18);
+  border: 1px solid hsl(0 72% 55% / 0.4);
+  color: hsl(0 80% 72%);
+  font-size: 0.78rem;
+  user-select: all;
+}
+
+.wysiwyg__area ul,
+.wysiwyg__area ol {
+  margin: 0.4rem 0 0.4rem 1.35rem;
+  list-style: disc;
+}
+
+.wysiwyg__area ol {
+  list-style: decimal;
+}
+
+.wysiwyg__area li {
+  margin-bottom: 0.2rem;
+}
+
+.wysiwyg__area h4 {
+  font-size: 1.02rem;
+  margin: 0.5rem 0 0.3rem;
+  color: hsl(var(--foreground));
+}
+
+.wysiwyg__area pre {
+  margin: 0.5rem 0;
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--radius-sm);
+  background: hsl(var(--background) / 0.7);
+  border: 1px solid hsl(var(--border));
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.82rem;
+  white-space: pre-wrap;
+  overflow-x: auto;
+}
+
+/* ---- Συμπαγής παραλλαγή (προσωπικά μηνύματα) ---- */
+.wysiwyg--compact .wysiwyg__area {
+  min-height: 3.5rem;
+  max-height: 11rem;
+  padding: 0.6rem 0.8rem;
+}
+
+.wysiwyg--compact .wysiwyg__toolbar {
+  padding: 0.3rem 0.4rem;
+}
+
+.wysiwyg--compact .wysiwyg__btn {
+  min-width: 1.75rem;
+  height: 1.75rem;
+  font-size: 0.78rem;
+}

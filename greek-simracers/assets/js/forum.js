@@ -98,50 +98,12 @@
     return `<span class="forum-avatar forum-avatar--${size}" style="background:hsl(${avatarHue(userId)} 60% 45%)" aria-hidden="true">${escapeHtml(initial)}</span>`;
   }
 
-  /* ============ BBCode → HTML ============ */
-  // ΠΡΩΤΑ escapeHtml, ΜΕΤΑ οι μετατροπές — όλα τα tags δουλεύουν πάνω σε
-  // ήδη escaped κείμενο, οπότε ό,τι HTML έγραψε ο χρήστης μένει αδρανές.
-
-  // Μόνο http(s) links γίνονται <a> — οτιδήποτε άλλο (javascript:, data: κλπ)
-  // μένει σκέτο escaped κείμενο.
-  function isSafeHref(href) {
-    return /^https?:\/\/[^\s]+$/i.test(href);
-  }
+  /* ============ BBCode ============ */
+  // Η απόδοση γίνεται από το κοινό assets/js/bbcode.js, ώστε forum και
+  // προσωπικά μηνύματα να μοιράζονται ακριβώς τους ίδιους κανόνες.
 
   function bbcodeToHtml(raw) {
-    let text = escapeHtml(raw);
-
-    // [quote] / [quote=Όνομα] — από μέσα προς τα έξω, ώστε να δουλεύουν και
-    // φωλιασμένες παραθέσεις (cap 5 επίπεδα για ασφάλεια).
-    const quoteRe = /\[quote(?:=([^\]\n]{1,80}))?\]((?:(?!\[quote)[\s\S])*?)\[\/quote\]/gi;
-    for (let i = 0; i < 5; i++) {
-      const next = text.replace(quoteRe, (m, name, inner) => {
-        const attr = name
-          ? `<span class="bbcode-quote__attr">${name.trim()} έγραψε:</span>`
-          : "";
-        return `<blockquote class="bbcode-quote">${attr}${inner.trim()}</blockquote>`;
-      });
-      if (next === text) break;
-      text = next;
-    }
-
-    // [url=…]κείμενο[/url] και σκέτο [url]…[/url]
-    text = text.replace(/\[url=([^\]\s]+)\]([\s\S]*?)\[\/url\]/gi, (m, href, label) =>
-      isSafeHref(href)
-        ? `<a href="${href}" target="_blank" rel="noopener noreferrer nofollow">${label}</a>`
-        : m);
-    text = text.replace(/\[url\]([^\]\s]+)\[\/url\]/gi, (m, href) =>
-      isSafeHref(href)
-        ? `<a href="${href}" target="_blank" rel="noopener noreferrer nofollow">${href}</a>`
-        : m);
-
-    // Απλή μορφοποίηση
-    text = text.replace(/\[b\]([\s\S]*?)\[\/b\]/gi, "<strong>$1</strong>");
-    text = text.replace(/\[i\]([\s\S]*?)\[\/i\]/gi, "<em>$1</em>");
-    text = text.replace(/\[u\]([\s\S]*?)\[\/u\]/gi, "<u>$1</u>");
-
-    // Αλλαγές γραμμής στο τέλος, αφού έχουν κλείσει όλα τα block tags.
-    return text.replace(/\r\n|\r|\n/g, "<br>");
+    return window.GSRBBCode.toHtml(raw);
   }
 
   /* ============ Κοινές καταστάσεις ============ */
