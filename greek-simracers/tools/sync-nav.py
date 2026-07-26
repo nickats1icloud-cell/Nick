@@ -11,6 +11,7 @@ dropdown ορίζεται μία φορά εδώ και γράφεται παν�
 συνδέσμους του footer ή του κειμένου.
 """
 
+import html
 import pathlib
 import re
 import sys
@@ -20,13 +21,14 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 # Η offline.html είναι σκόπιμα λιτή: χωρίς μενού και χωρίς footer.
 SKIP = {"offline.html"}
 
-# Ενότητες του Championship Hub. Μπαίνουν εδώ όσο χτίζονται οι σελίδες τους —
-# προς το παρόν δείχνουν στις ενότητες της championships.html ώστε να μην
-# υπάρχει ούτε ένας νεκρός σύνδεσμος.
+# Ενότητες του Championship Hub. Η championship.html χωρίς ?id δείχνει το
+# ενεργό πρωτάθλημα, οπότε αυτοί οι σύνδεσμοι δουλεύουν πάντα.
 HUB_LINKS = [
     ("Όλα τα πρωταθλήματα", "championships.html"),
-    ("Βαθμολογίες", "championships.html#championships"),
-    ("Στατιστικά", "championships.html#championships-stats"),
+    ("Βαθμολογίες", "championship.html#standings"),
+    ("Καλεντάρι", "championship.html#calendar"),
+    ("Οδηγοί & ομάδες", "championship.html#drivers"),
+    ("Στατιστικά", "championship.html#stats"),
 ]
 
 CARET = (
@@ -42,6 +44,14 @@ NAV_BLOCK_RE = re.compile(r'<nav class="main-nav"[^>]*>.*?</nav>', re.DOTALL)
 # Ο σύνδεσμος στο header, με ή χωρίς aria-current (championships.html).
 NAV_LINK_RE = re.compile(
     r'([ \t]*)<a href="championships\.html"( aria-current="page")?>Πρωταθλήματα</a>'
+)
+
+# Το ήδη γραμμένο dropdown, ώστε το script να μπορεί να το ξαναγράψει όταν
+# αλλάζουν οι σύνδεσμοι — αλλιώς θα δούλευε μόνο την πρώτη φορά. Το κλείσιμο
+# αναγνωρίζεται από την ίδια στοίχιση με το άνοιγμα.
+EXISTING_DROP_RE = re.compile(
+    r'([ \t]*)<div class="nav-drop" data-nav-drop>.*?\n\1</div>',
+    re.DOTALL,
 )
 
 SCRIPT_TAG = '<script src="assets/js/nav-champs.js"></script>'
@@ -60,7 +70,7 @@ def build_dropdown(indent, current):
         f'{pad}    <p class="nav-drop__title">Championship Hub</p>',
     ]
     for label, href in HUB_LINKS:
-        lines.append(f'{pad}    <a href="{href}">{label}</a>')
+        lines.append(f'{pad}    <a href="{href}">{html.escape(label)}</a>')
     lines += [
         f'{pad}    <div data-nav-champs-group hidden>',
         f'{pad}      <div class="nav-drop__sep"></div>',
@@ -91,16 +101,22 @@ def main():
 
         block = nav.group(0)
         match = NAV_LINK_RE.search(block)
+        existing = EXISTING_DROP_RE.search(block)
+
         if match:
             indent = match.group(1)
             current = bool(match.group(2))
-            new_block = (
-                block[: match.start()] + build_dropdown(indent, current) + block[match.end() :]
-            )
-            text = text[: nav.start()] + new_block + text[nav.end() :]
-        elif "data-nav-drop" not in block:
+            start, stop = match.start(), match.end()
+        elif existing:
+            indent = existing.group(1)
+            current = 'aria-current="page"' in existing.group(0)
+            start, stop = existing.start(), existing.end()
+        else:
             missing.append(page.name)
             continue
+
+        new_block = block[:start] + build_dropdown(indent, current) + block[stop:]
+        text = text[: nav.start()] + new_block + text[nav.end() :]
 
         if SCRIPT_TAG not in text:
             anchor = '<script src="assets/js/main.js"></script>'

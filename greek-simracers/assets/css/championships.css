@@ -177,3 +177,11 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
+
+/* Σύνδεσμος προς τη σελίδα του πρωταθλήματος (βαθμολογίες, καλεντάρι). */
+.champ-card__cta {
+  align-self: flex-start;
+  margin-top: 0.85rem;
+  font-size: 0.82rem;
+  padding-block: 0.45rem;
+}

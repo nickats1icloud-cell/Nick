@@ -118,6 +118,9 @@ function createChampionshipCard(champ) {
       <div class="champ-progress" role="progressbar" aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100">
         <div class="champ-progress__bar" style="width:${progress}%"></div>
       </div>
+      <a class="btn btn-outline champ-card__cta" href="championship.html?id=${encodeURIComponent(champ.id)}">
+        Βαθμολογίες &amp; καλεντάρι
+      </a>
     </div>
   `;
 

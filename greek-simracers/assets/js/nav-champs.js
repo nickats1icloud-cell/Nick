@@ -130,7 +130,7 @@
       .map((champ) => {
         const status = STATUS_LABEL[champ.status] || champ.status || "";
         return (
-          `<a class="nav-drop__champ" href="championships.html?champ=${encodeURIComponent(champ.id)}">` +
+          `<a class="nav-drop__champ" href="championship.html?id=${encodeURIComponent(champ.id)}">` +
           `<span class="nav-drop__champ-name">${escapeHtml(champ.title)}</span>` +
           `<span class="nav-drop__champ-meta">` +
           `<span class="nav-drop__dot nav-drop__dot--${escapeHtml(champ.status || "unknown")}" aria-hidden="true"></span>` +
