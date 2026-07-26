@@ -149,6 +149,11 @@
 
   /* ============ Σελιδοποίηση (κοινό pager) ============ */
 
+  // Πλήρες URL συζήτησης για κοινοποίηση (το hash routing χρειάζεται origin).
+  function threadShareUrl(threadId) {
+    return window.location.origin + window.location.pathname + "#/thread/" + encodeURIComponent(threadId);
+  }
+
   function pageHref(base, n) {
     return n <= 1 ? base : base + "/page/" + n;
   }
@@ -796,6 +801,10 @@
             <span>🕒 ${escapeHtml(timeAgo(thread.created_at))}</span>
           </p>
           ${isAdmin ? modActionsHtml(thread) : ""}
+          <div class="thread-detail__share" data-share
+               data-share-title="${escapeHtml(thread.title)}"
+               data-share-url="${escapeHtml(threadShareUrl(threadId))}"
+               data-share-label="Μοιράσου τη συζήτηση"></div>
         </div>
       </header>
 
@@ -811,6 +820,9 @@
 
       ${replyAreaHtml}
     `;
+
+    // Τα κουμπιά κοινοποίησης μπαίνουν μετά το render του view.
+    if (window.GSRShare) window.GSRShare.refresh(viewEl);
 
     const threadStatusEl = viewEl.querySelector("#thread-status");
     const postsById = {};

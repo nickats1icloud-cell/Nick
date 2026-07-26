@@ -4,11 +4,8 @@
   motion.js (data-reveal, data-stagger, fx-*). Καμία επανυλοποίηση εδώ.
 */
 
-/* Τα reveals μετακινούν οριζόντια στοιχεία (translateX), οπότε κόβουμε
-   οποιαδήποτε οριζόντια υπερχείλιση χωρίς να δημιουργήσουμε scroll. */
-main {
-  overflow-x: clip;
-}
+/* Η οριζόντια υπερχείλιση από τα translateX των reveals κόβεται πλέον
+   καθολικά στο base.css (`main { overflow-x: clip }`). */
 
 /* Όταν μια κάρτα έχει και [data-reveal] και .fx-lift, το `transform: none`
    της ολοκληρωμένης αποκάλυψης υπερισχύει του hover. Ανεβάζουμε τη

@@ -772,3 +772,7 @@ a.forum-pager__btn:hover {
   white-space: pre-wrap;
   overflow-x: auto;
 }
+
+.thread-detail__share {
+  margin-top: 0.9rem;
+}

@@ -61,6 +61,13 @@
 .js [data-reveal="scale"]:not(.is-visible) { transform: scale(0.92); }
 .js [data-reveal="blur"]:not(.is-visible) { filter: blur(10px); transform: translateY(16px); }
 
+/* Σε στενές οθόνες οι στήλες γίνονται μία-μία, οπότε η οριζόντια είσοδος
+   δεν προσθέτει τίποτα — και σπρώχνει το περιεχόμενο εκτός viewport. */
+@media (max-width: 720px) {
+  .js [data-reveal="left"]:not(.is-visible),
+  .js [data-reveal="right"]:not(.is-visible) { transform: translateY(24px); }
+}
+
 /* ============ Αποκάλυψη τίτλου λέξη-λέξη ============ */
 .js [data-text-reveal] .word {
   display: inline-block;
