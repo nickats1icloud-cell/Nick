@@ -13,9 +13,10 @@
     slot.innerHTML = '<a class="nav-auth__link" href="auth.html">Σύνδεση</a>';
   }
 
-  function renderSignedIn(slot, user, profile) {
+  function renderSignedIn(slot, user, profile, isAdmin) {
     const name = (profile && profile.display_name) || (user.email ? user.email.split('@')[0] : 'Μέλος');
     slot.innerHTML =
+      (isAdmin ? '<a class="nav-auth__admin" href="admin.html">⚙️ Admin</a>' : '') +
       '<a class="nav-auth__link nav-auth__name" href="profile.html">' + escapeHtml(name) + '</a>' +
       '<button type="button" class="nav-auth__logout" data-auth-logout>Αποσύνδεση</button>';
 
@@ -42,12 +43,19 @@
         renderSignedOut(slot);
         return;
       }
-      const { data: profile } = await window.supabaseClient
-        .from('profiles')
-        .select('display_name')
-        .eq('user_id', session.user.id)
-        .maybeSingle();
-      renderSignedIn(slot, session.user, profile);
+      const [{ data: profile }, { data: roles }] = await Promise.all([
+        window.supabaseClient
+          .from('profiles')
+          .select('display_name')
+          .eq('user_id', session.user.id)
+          .maybeSingle(),
+        window.supabaseClient
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id),
+      ]);
+      const isAdmin = Array.isArray(roles) && roles.some((r) => r.role === 'admin');
+      renderSignedIn(slot, session.user, profile, isAdmin);
     } catch (err) {
       renderSignedOut(slot);
     }

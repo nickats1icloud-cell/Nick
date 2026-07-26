@@ -144,6 +144,27 @@
   text-decoration: underline;
 }
 
+.nav-auth__admin {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid hsl(var(--primary) / 0.4);
+  background: hsl(var(--primary) / 0.12);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: hsl(var(--primary-light));
+  white-space: nowrap;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.nav-auth__admin:hover {
+  background: hsl(var(--primary) / 0.22);
+  border-color: hsl(var(--primary) / 0.7);
+  transform: translateY(-1px);
+}
+
 .nav-auth__logout {
   background: none;
   border: none;
@@ -167,6 +188,24 @@
   padding: 0.5rem;
   color: hsl(var(--foreground));
   cursor: pointer;
+}
+
+/* Σε μεσαία πλάτη το μενού πυκνώνει για να χωρέσει και το Admin pill */
+@media (min-width: 1121px) and (max-width: 1560px) {
+  .main-nav a {
+    padding: 0.6rem 0.55rem;
+    font-size: 0.8rem;
+  }
+
+  .main-nav a::after {
+    left: 0.55rem;
+    right: 0.55rem;
+  }
+
+  .nav-auth {
+    margin-left: 0.25rem;
+    padding-left: 0.55rem;
+  }
 }
 
 /* Με 9 links + auth το μενού χρειάζεται περισσότερο χώρο πριν διπλώσει */
