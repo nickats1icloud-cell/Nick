@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Greek SimRacers — Η ελληνική κοινότητα sim racing</title>
-  <meta name="description" content="Η #1 πλατφόρμα για Έλληνες SimRacers. Podcasts, πρωταθλήματα, games hub και κοινότητα.">
+  <meta name="description" content="Η #1 πλατφόρμα για Έλληνες SimRacers. Forum, podcasts, πρωταθλήματα, προβλέψεις και μια κοινότητα που ζει το sim racing.">
   <link rel="icon" href="assets/images/gsr-logo.png">
   <script>document.documentElement.classList.add('js');</script>
   <link rel="stylesheet" href="assets/css/tokens.css">
@@ -48,54 +48,61 @@
 
 <main>
   <!-- ============ HERO ============ -->
-  <section class="hero">
-    <div class="hero__glow hero__glow--1"></div>
-    <div class="hero__glow hero__glow--2"></div>
-    <div class="hero__grid"></div>
+  <section class="hero fx-grain">
+    <div class="fx-mesh" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div class="hero__grid" aria-hidden="true"></div>
     <div class="fx-speedlines" aria-hidden="true"><span></span><span></span><span></span></div>
 
     <div class="container hero__content">
-      <div class="hero__logo reveal">
+      <div class="hero__logo" data-reveal="scale">
         <img src="assets/images/gsr-logo.png" alt="Greek SimRacers">
       </div>
 
-      <div class="section-eyebrow reveal">
+      <div class="section-eyebrow" data-reveal="up">
         <span class="line"></span>
         <span>Greek SimRacers Hub</span>
         <span class="line reverse"></span>
       </div>
 
-      <h1 class="hero__title reveal">
+      <h1 class="hero__title" data-text-reveal>
         Greek <span class="fx-shimmer">SimRacers</span>
       </h1>
 
-      <p class="hero__lead reveal">
+      <p class="hero__lead" data-reveal="up">
         Η #1 πλατφόρμα για Έλληνες SimRacers.
-        <span class="hero__lead-accent">Podcasts, πρωταθλήματα, Games Hub και μια κοινότητα που ζει το sim racing.</span>
+        <span class="hero__lead-accent">Forum, podcasts, πρωταθλήματα και μια κοινότητα που ζει το sim racing.</span>
       </p>
 
-      <div class="hero__ctas reveal">
-        <a href="https://discord.gg/v5RsBTnPpY" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+      <div class="hero__ctas" data-reveal="up">
+        <a href="https://discord.gg/v5RsBTnPpY" target="_blank" rel="noopener noreferrer" class="btn btn-primary fx-magnetic">
           🏁 ΓΙΝΕ ΜΕΛΟΣ ΣΤΟ DISCORD
         </a>
-        <a href="podcasts.html" class="btn btn-outline">Podcasts</a>
-        <a href="games-hub.html" class="btn btn-outline">Games Hub</a>
+        <a href="forum.html" class="btn btn-outline">Μπες στο Forum</a>
       </div>
 
-      <div class="hero__stats reveal" data-stagger>
-        <div class="hero__stat">
-          <span class="hero__stat-value" data-countup>1.000+</span>
+      <!-- Οι αριθμοί έρχονται ζωντανά από τη βάση (home.js) -->
+      <div class="hero__stats" data-stagger>
+        <div class="hero__stat" data-reveal="up">
+          <span class="hero__stat-value" data-stat="members">—</span>
           <span class="hero__stat-label">Μέλη</span>
         </div>
-        <div class="hero__stat">
-          <span class="hero__stat-value" data-countup>3</span>
-          <span class="hero__stat-label">Επεισόδια Podcast</span>
+        <div class="hero__stat" data-reveal="up">
+          <span class="hero__stat-value" data-stat="threads">—</span>
+          <span class="hero__stat-label">Συζητήσεις</span>
         </div>
-        <div class="hero__stat">
-          <span class="hero__stat-value">Active</span>
-          <span class="hero__stat-label">Discord</span>
+        <div class="hero__stat" data-reveal="up">
+          <span class="hero__stat-value" data-stat="episodes">—</span>
+          <span class="hero__stat-label">Επεισόδια</span>
+        </div>
+        <div class="hero__stat" data-reveal="up">
+          <span class="hero__stat-value" data-stat="championships">—</span>
+          <span class="hero__stat-label">Πρωταθλήματα</span>
         </div>
       </div>
+
+      <a class="hero__cue" href="#live" aria-label="Δες τι γίνεται τώρα">
+        <span></span>
+      </a>
     </div>
   </section>
 
@@ -121,97 +128,166 @@
     </div>
   </div>
 
-  <!-- ============ FEATURES ============ -->
+  <!-- ============ ΖΩΝΤΑΝΑ ΑΠΟ ΤΗΝ ΚΟΙΝΟΤΗΤΑ ============ -->
+  <section class="section live" id="live">
+    <div class="container">
+      <div class="live__head" data-reveal="up">
+        <div>
+          <div class="section-eyebrow" style="justify-content:flex-start;">
+            <span class="line"></span>
+            <span><span class="live-dot"></span> Τώρα στην κοινότητα</span>
+          </div>
+          <h2 class="live__title">Τελευταίες <span class="text-gradient">συζητήσεις</span></h2>
+        </div>
+        <a href="forum.html" class="btn btn-outline btn-sm">Όλο το forum →</a>
+      </div>
+
+      <div class="live__grid">
+        <div class="live__threads" id="home-threads" data-reveal="left">
+          <div class="state-message"><div class="spinner"></div><p>Φόρτωση συζητήσεων…</p></div>
+        </div>
+
+        <aside class="live__side" data-reveal="right">
+          <div class="card fx-border discord-card">
+            <div class="discord-card__icon" aria-hidden="true">
+              <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+            </div>
+            <h3>Discord</h3>
+            <p>Η καρδιά της κοινότητας. Setups, αγώνες, τεχνικά και πολλή παρέα — σε πραγματικό χρόνο.</p>
+            <a href="https://discord.gg/v5RsBTnPpY" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">Σύνδεση</a>
+          </div>
+
+          <div class="card prediction-teaser" id="home-prediction">
+            <span class="badge badge-success">Ανοιχτή πρόβλεψη</span>
+            <p class="prediction-teaser__loading">Φόρτωση…</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <div class="fx-checkers" aria-hidden="true"></div>
+
+  <!-- ============ ΤΙ ΠΡΟΣΦΕΡΟΥΜΕ ============ -->
   <section class="section features">
     <div class="container">
-      <div class="section-eyebrow reveal">
+      <div class="section-eyebrow" data-reveal="up">
         <span class="line"></span>
         <span>Τι προσφέρουμε</span>
         <span class="line reverse"></span>
       </div>
-      <h2 class="section-title reveal">Όλα σε <span class="text-gradient">ένα μέρος</span></h2>
-      <p class="section-subtitle reveal">Η πλήρης πλατφόρμα για τον Έλληνα SimRacer</p>
+      <h2 class="section-title" data-text-reveal>Όλα σε <span class="text-gradient">ένα μέρος</span></h2>
+      <p class="section-subtitle" data-reveal="up">Η πλήρης πλατφόρμα για τον Έλληνα SimRacer</p>
 
       <div class="grid grid-3 features__grid" data-stagger>
-        <a href="https://discord.gg/v5RsBTnPpY" target="_blank" rel="noopener noreferrer" class="card feature-card reveal">
-          <div class="feature-card__icon">💬</div>
-          <h3>Discord</h3>
-          <p>Συζήτησε για SimRacing, setups, αγώνες και τεχνικά θέματα με την ελληνική κοινότητα σε πραγματικό χρόνο.</p>
+        <a href="forum.html" class="card feature-card fx-lift" data-reveal="up">
+          <div class="feature-card__icon" aria-hidden="true">💬</div>
+          <h3>Forum</h3>
+          <p>Συζητήσεις, setups και τεχνικά θέματα με παραθέσεις, αντιδράσεις και υπογραφές — όπως τα κλασικά forum.</p>
+          <span class="feature-card__go">Μπες →</span>
         </a>
-        <a href="podcasts.html" class="card feature-card reveal">
-          <div class="feature-card__icon">🎙️</div>
+        <a href="podcasts.html" class="card feature-card fx-lift" data-reveal="up">
+          <div class="feature-card__icon" aria-hidden="true">🎙️</div>
           <h3>Podcasts</h3>
-          <p>Άκου τα επεισόδιά μας στο Spotify — νέα, συνεντεύξεις και αναλύσεις SimRacing.</p>
+          <p>Επεισόδια με συζητήσεις, συνεντεύξεις και αναλύσεις γύρω από το sim racing και το motorsport.</p>
+          <span class="feature-card__go">Άκου →</span>
         </a>
-        <a href="games-hub.html" class="card feature-card reveal">
-          <div class="feature-card__icon">🎮</div>
-          <h3>Games Hub</h3>
-          <p>Όλα τα simulators και παιχνίδια που υποστηρίζει η κοινότητα, σε ένα μέρος.</p>
-        </a>
-        <a href="championships.html" class="card feature-card reveal">
-          <div class="feature-card__icon">🏆</div>
+        <a href="championships.html" class="card feature-card fx-lift" data-reveal="up">
+          <div class="feature-card__icon" aria-hidden="true">🏆</div>
           <h3>Πρωταθλήματα</h3>
-          <p>Ενεργά και ερχόμενα πρωταθλήματα GT3, Formula και Endurance με την κοινότητα.</p>
+          <p>GT3, Formula και Endurance σειρές με την κοινότητα — παρακολούθησε την πορεία κάθε πρωταθλήματος.</p>
+          <span class="feature-card__go">Δες →</span>
         </a>
-        <a href="shop.html" class="card feature-card reveal">
-          <div class="feature-card__icon">🛍️</div>
+        <a href="predictions.html" class="card feature-card fx-lift" data-reveal="up">
+          <div class="feature-card__icon" aria-hidden="true">🔮</div>
+          <h3>Προβλέψεις</h3>
+          <p>Μάντεψε αποτελέσματα αγώνων και δες πώς ψηφίζει η υπόλοιπη κοινότητα σε ζωντανά ποσοστά.</p>
+          <span class="feature-card__go">Ψήφισε →</span>
+        </a>
+        <a href="games-hub.html" class="card feature-card fx-lift" data-reveal="up">
+          <div class="feature-card__icon" aria-hidden="true">🎮</div>
+          <h3>Games Hub</h3>
+          <p>Όλοι οι simulators που παίζει η κοινότητα, με τις κατηγορίες τους — από GT3 μέχρι ράλι.</p>
+          <span class="feature-card__go">Εξερεύνησε →</span>
+        </a>
+        <a href="shop.html" class="card feature-card fx-lift" data-reveal="up">
+          <div class="feature-card__icon" aria-hidden="true">🛍️</div>
           <h3>Shop</h3>
-          <p>Επίσημο merchandise της κοινότητας — ρούχα, αξεσουάρ και μπρελόκ.</p>
-        </a>
-        <a href="https://www.facebook.com/groups/greeksimracers" target="_blank" rel="noopener noreferrer" class="card feature-card reveal">
-          <div class="feature-card__icon">👥</div>
-          <h3>Κοινότητα</h3>
-          <p>1.000+ μέλη στο Facebook Group — βρες παρέα για αγώνες και συζητήσεις.</p>
+          <p>Επίσημο merchandise της κοινότητας — μπλουζάκια, φούτερ, καπέλα και μπρελόκ.</p>
+          <span class="feature-card__go">Δες τα →</span>
         </a>
       </div>
     </div>
   </section>
 
-  <!-- ============ PODCASTS TEASER ============ -->
-  <section class="section podcasts-teaser">
+  <!-- ============ ΠΡΟΒΕΒΛΗΜΕΝΟ ΠΡΩΤΑΘΛΗΜΑ ============ -->
+  <section class="section spotlight" id="home-championship-section" hidden>
     <div class="container">
-      <div class="podcasts-teaser__inner reveal">
-        <div>
+      <div class="spotlight__inner card fx-border" id="home-championship" data-reveal="scale" data-tilt></div>
+    </div>
+  </section>
+
+  <!-- ============ PODCAST ============ -->
+  <section class="section podcast-home">
+    <div class="container">
+      <div class="podcast-home__inner">
+        <div data-reveal="left">
           <div class="section-eyebrow" style="justify-content:flex-start;">
             <span class="line"></span>
             <span>Podcast</span>
           </div>
-          <h2 class="section-title" style="text-align:left;">Άκουσέ μας <span class="text-gradient">όπου κι αν είσαι</span></h2>
-          <p style="color:hsl(var(--muted-foreground)); max-width:32rem;">
-            Συζητάμε για sim racing, τεχνολογία και motorsport. Νέο επεισόδιο κάθε λίγες εβδομάδες,
-            διαθέσιμο σε Spotify και Apple Podcasts.
-          </p>
-          <a href="podcasts.html" class="btn btn-primary" style="margin-top:1.5rem;">Όλα τα επεισόδια</a>
+          <h2 class="podcast-home__title">Άκουσέ μας <span class="text-gradient">όπου κι αν είσαι</span></h2>
+          <div id="home-episode" class="podcast-home__episode">
+            <p class="podcast-home__loading">Φόρτωση επεισοδίου…</p>
+          </div>
+          <a href="podcasts.html" class="btn btn-primary fx-magnetic">Όλα τα επεισόδια</a>
         </div>
-        <div class="podcasts-teaser__eq" aria-hidden="true">
+        <div class="podcast-home__eq" aria-hidden="true" data-parallax="0.08">
           <span></span><span></span><span></span><span></span><span></span>
           <span></span><span></span><span></span><span></span><span></span>
+          <span></span><span></span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ============ COMMUNITY / JOIN CTA ============ -->
-  <section class="section community" id="community">
+  <!-- ============ SHOP TEASER ============ -->
+  <section class="section shop-home" id="home-shop-section" hidden>
     <div class="container">
-      <div class="section-eyebrow reveal">
+      <div class="section-eyebrow" data-reveal="up">
         <span class="line"></span>
-        <span>Κοινότητα</span>
+        <span>Official Merch</span>
         <span class="line reverse"></span>
       </div>
-      <h2 class="section-title reveal"><span class="text-gradient">Γίνε μέλος</span> σήμερα</h2>
-      <p class="section-subtitle reveal">Συζήτησε, ρώτησε, μοιράσου την εμπειρία σου με την ελληνική κοινότητα sim racing</p>
+      <h2 class="section-title" data-reveal="up">Φόρεσε τα <span class="text-gradient">χρώματά μας</span></h2>
+      <div class="grid grid-3 shop-home__grid" id="home-products" data-stagger></div>
+      <div class="shop-home__cta" data-reveal="up">
+        <a href="shop.html" class="btn btn-outline">Όλο το shop →</a>
+      </div>
+    </div>
+  </section>
 
-      <div class="community__card fx-border reveal" data-tilt>
-        <div class="community__perks">
-          <div class="community__perk">🏆 Αποκλειστικοί αγώνες</div>
-          <div class="community__perk">✅ Επαληθευμένα αποτελέσματα</div>
-          <div class="community__perk">🎙️ Podcast &amp; νέα</div>
-          <div class="community__perk">👥 Ενεργή κοινότητα</div>
+  <!-- ============ ΤΕΛΙΚΟ CTA ============ -->
+  <section class="section community" id="community">
+    <div class="container">
+      <div class="community__card fx-border" data-reveal="scale">
+        <div class="fx-mesh" aria-hidden="true"><span></span><span></span><span></span></div>
+        <div class="community__body">
+          <h2 class="community__title" data-text-reveal>Γίνε μέλος <span class="text-gradient">σήμερα</span></h2>
+          <p class="community__lead">
+            Δημιούργησε λογαριασμό, γράψε στο forum, ψήφισε στις προβλέψεις και μπες στους αγώνες μας.
+          </p>
+          <div class="community__perks" data-stagger>
+            <div class="community__perk" data-reveal="up">🏆 Αποκλειστικοί αγώνες</div>
+            <div class="community__perk" data-reveal="up">💬 Ενεργό forum</div>
+            <div class="community__perk" data-reveal="up">🎙️ Podcast &amp; νέα</div>
+            <div class="community__perk" data-reveal="up">👥 1.000+ μέλη</div>
+          </div>
+          <div class="community__ctas">
+            <a href="auth.html" class="btn btn-primary fx-magnetic">ΕΓΓΡΑΦΗ ΔΩΡΕΑΝ</a>
+            <a href="https://discord.gg/v5RsBTnPpY" target="_blank" rel="noopener noreferrer" class="btn btn-outline">Discord</a>
+          </div>
         </div>
-        <a href="https://discord.gg/v5RsBTnPpY" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-          ΣΥΝΔΕΣΗ ΣΤΟ DISCORD
-        </a>
       </div>
     </div>
   </section>
@@ -246,10 +322,11 @@
 
       <div>
         <h4>Πλοήγηση</h4>
-        <a href="index.html">Αρχική</a>
+        <a href="forum.html">Forum</a>
         <a href="games-hub.html">Games Hub</a>
         <a href="podcasts.html">Podcasts</a>
         <a href="championships.html">Πρωταθλήματα</a>
+        <a href="predictions.html">Προβλέψεις</a>
         <a href="shop.html">Shop</a>
       </div>
 
@@ -275,5 +352,6 @@
 <script src="assets/js/main.js"></script>
 <script src="assets/js/auth.js"></script>
 <script src="assets/js/motion.js"></script>
+<script src="assets/js/home.js"></script>
 </body>
 </html>

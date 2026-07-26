@@ -1,13 +1,12 @@
 /*
-  Motion & FX layer for Greek SimRacers — shared by every page.
-  All effects degrade gracefully: pure-CSS effects respect
-  prefers-reduced-motion, and JS-driven ones (motion.js) simply don't
-  activate without JS. Nothing here is required for the page to work.
+  Motion & FX layer — φορτώνεται σε κάθε σελίδα.
+  Όλα είναι διακοσμητικά: χωρίς JS το περιεχόμενο φαίνεται κανονικά, και
+  με prefers-reduced-motion όλες οι κινήσεις σβήνουν (δες το τέλος).
 */
 
-/* ============ Page entrance ============ */
+/* ============ Είσοδος σελίδας ============ */
 .js body {
-  animation: page-in 0.45s ease both;
+  animation: page-in 0.5s ease both;
 }
 
 @keyframes page-in {
@@ -15,7 +14,7 @@
   to { opacity: 1; }
 }
 
-/* ============ Scroll progress bar ============ */
+/* ============ Μπάρα προόδου scroll ============ */
 .scroll-progress {
   position: fixed;
   top: 0;
@@ -29,14 +28,52 @@
   pointer-events: none;
 }
 
-/* ============ Staggered reveals ============ */
-/* motion.js assigns --stagger-i per element inside a [data-stagger] group */
-.js .reveal {
-  transition-delay: calc(var(--stagger-i, 0) * 70ms);
+/* ============ Αποκαλύψεις με scroll ============ */
+/*
+  Το .reveal μένει για συμβατότητα· τα [data-reveal] δίνουν κατεύθυνση.
+  Κρύβονται μόνο όταν τρέχει JS (.js), αλλιώς όλα είναι ορατά.
+*/
+.js .reveal,
+.js [data-reveal] {
+  opacity: 0;
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.7s ease;
+  transition-delay: calc(var(--stagger-i, 0) * 80ms);
+  will-change: opacity, transform;
 }
 
-/* ============ Spotlight cards ============ */
-/* motion.js tracks the pointer and sets --spot-x / --spot-y per card. */
+.js .reveal,
+.js [data-reveal="up"] { transform: translateY(28px); }
+.js [data-reveal="down"] { transform: translateY(-28px); }
+.js [data-reveal="left"] { transform: translateX(-34px); }
+.js [data-reveal="right"] { transform: translateX(34px); }
+.js [data-reveal="scale"] { transform: scale(0.92); }
+.js [data-reveal="blur"] { filter: blur(10px); transform: translateY(16px); }
+
+.js .reveal.is-visible,
+.js [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* ============ Αποκάλυψη τίτλου λέξη-λέξη ============ */
+.js [data-text-reveal] .word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.6em) rotate(2deg);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--word-i, 0) * 55ms);
+}
+
+.js [data-text-reveal].is-visible .word {
+  opacity: 1;
+  transform: none;
+}
+
+/* ============ Spotlight στις κάρτες ============ */
 .card,
 .feature-card {
   position: relative;
@@ -50,9 +87,9 @@
   inset: 0;
   border-radius: inherit;
   background: radial-gradient(
-    420px circle at var(--spot-x, 50%) var(--spot-y, 50%),
-    hsl(var(--primary) / 0.12),
-    transparent 65%
+    460px circle at var(--spot-x, 50%) var(--spot-y, 50%),
+    hsl(var(--primary) / 0.13),
+    transparent 62%
   );
   opacity: 0;
   transition: opacity 0.4s ease;
@@ -64,7 +101,17 @@
   opacity: 1;
 }
 
-/* Animated conic border that traces around a hovered card */
+/* Ανασήκωμα κάρτας στο hover */
+.fx-lift {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s ease;
+}
+
+.fx-lift:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px -18px hsl(0 0% 0% / 0.7), var(--shadow-racing);
+}
+
+/* Περίγραμμα που «τρέχει» γύρω από την κάρτα */
 .fx-border {
   position: relative;
 }
@@ -104,17 +151,23 @@
   to { --border-angle: 360deg; }
 }
 
-/* ============ 3D tilt (JS sets the vars) ============ */
+/* ============ 3D tilt ============ */
 .js [data-tilt] {
   transform: perspective(900px)
     rotateX(var(--tilt-x, 0deg))
     rotateY(var(--tilt-y, 0deg))
     translateZ(0);
-  transition: transform 0.15s ease-out;
+  transition: transform 0.18s ease-out;
   will-change: transform;
 }
 
-/* ============ Shimmering gradient headline ============ */
+/* ============ Μαγνητικά κουμπιά ============ */
+.js .fx-magnetic {
+  transform: translate(var(--mag-x, 0px), var(--mag-y, 0px));
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ============ Λαμπερός τίτλος ============ */
 .fx-shimmer {
   background: linear-gradient(
     110deg,
@@ -136,7 +189,7 @@
   50% { background-position: -10% 0; }
 }
 
-/* ============ Button shine sweep ============ */
+/* ============ Σάρωση φωτός στα κουμπιά ============ */
 .btn-primary {
   position: relative;
   overflow: hidden;
@@ -153,7 +206,6 @@
     transparent 60%
   );
   transform: translateX(-120%);
-  transition: none;
   pointer-events: none;
 }
 
@@ -162,7 +214,92 @@
   transition: transform 0.7s ease;
 }
 
-/* ============ Marquee (sim titles strip) ============ */
+/* Κυματισμός στο κλικ (τον σπέρνει το motion.js) */
+.fx-ripple-dot {
+  position: absolute;
+  border-radius: 50%;
+  background: hsl(0 0% 100% / 0.35);
+  transform: translate(-50%, -50%) scale(0);
+  animation: ripple 0.6s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes ripple {
+  to { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+}
+
+/* ============ Ζωντανό φόντο (mesh + κόκκος) ============ */
+.fx-mesh {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.fx-mesh span {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.5;
+}
+
+.fx-mesh span:nth-child(1) {
+  width: 34rem; height: 34rem;
+  top: -8rem; left: -6rem;
+  background: hsl(214 89% 40% / 0.5);
+  animation: mesh-a 18s ease-in-out infinite;
+}
+
+.fx-mesh span:nth-child(2) {
+  width: 26rem; height: 26rem;
+  bottom: -6rem; right: -4rem;
+  background: hsl(214 89% 55% / 0.35);
+  animation: mesh-b 22s ease-in-out infinite;
+}
+
+.fx-mesh span:nth-child(3) {
+  width: 20rem; height: 20rem;
+  top: 40%; left: 55%;
+  background: hsl(200 80% 50% / 0.25);
+  animation: mesh-c 26s ease-in-out infinite;
+}
+
+@keyframes mesh-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(6rem, 4rem) scale(1.15); }
+}
+
+@keyframes mesh-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-5rem, -3rem) scale(1.1); }
+}
+
+@keyframes mesh-c {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-4rem, 3rem) scale(0.9); }
+}
+
+/* Λεπτός κόκκος για κινηματογραφική υφή */
+.fx-grain::after {
+  content: "";
+  position: absolute;
+  inset: -50%;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+  opacity: 0.035;
+  pointer-events: none;
+  animation: grain 8s steps(6) infinite;
+}
+
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  20% { transform: translate(-3%, 2%); }
+  40% { transform: translate(2%, -3%); }
+  60% { transform: translate(-2%, -2%); }
+  80% { transform: translate(3%, 1%); }
+}
+
+/* ============ Marquee ============ */
 .marquee {
   overflow: hidden;
   border-block: 1px solid hsl(var(--border) / 0.6);
@@ -204,7 +341,7 @@
   to { transform: translateX(-50%); }
 }
 
-/* ============ Hero parallax & drift ============ */
+/* ============ Hero: parallax, αιώρηση, γραμμές ταχύτητας ============ */
 .js .hero__glow {
   transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
   transform: translate(
@@ -222,7 +359,6 @@
   50% { transform: translateY(-10px); }
 }
 
-/* Racing speed-lines sweeping across the hero */
 .fx-speedlines {
   position: absolute;
   inset: 0;
@@ -250,7 +386,29 @@
   100% { left: 110%; opacity: 0; }
 }
 
-/* ============ Nav underline slide ============ */
+/* Parallax με το scroll: το motion.js δίνει --scroll-shift */
+.js [data-parallax] {
+  transform: translate3d(0, var(--scroll-shift, 0px), 0);
+  will-change: transform;
+}
+
+/* ============ Παλλόμενη τελεία «ζωντανό» ============ */
+.live-dot {
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: hsl(var(--success));
+  box-shadow: 0 0 0 0 hsl(var(--success) / 0.7);
+  animation: live-pulse 2s infinite;
+}
+
+@keyframes live-pulse {
+  70% { box-shadow: 0 0 0 0.5rem hsl(var(--success) / 0); }
+  100% { box-shadow: 0 0 0 0 hsl(var(--success) / 0); }
+}
+
+/* ============ Υπογράμμιση πλοήγησης ============ */
 .main-nav a {
   position: relative;
 }
@@ -274,16 +432,54 @@
   transform: scaleX(1);
 }
 
-/* ============ Reduced motion: switch it all off ============ */
+/* ============ Καρό διαχωριστικό ============ */
+.fx-checkers {
+  height: 10px;
+  width: 100%;
+  background-image:
+    linear-gradient(45deg, hsl(var(--border)) 25%, transparent 25%),
+    linear-gradient(-45deg, hsl(var(--border)) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, hsl(var(--border)) 75%),
+    linear-gradient(-45deg, transparent 75%, hsl(var(--border)) 75%);
+  background-size: 10px 10px;
+  background-position: 0 0, 0 5px, 5px -5px, -5px 0;
+  opacity: 0.5;
+  animation: checkers-slide 6s linear infinite;
+}
+
+@keyframes checkers-slide {
+  to { background-position: 20px 0, 20px 5px, 25px -5px, 15px 0; }
+}
+
+/* ============ Λιγότερη κίνηση: όλα ήρεμα ============ */
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
   .js body { animation: none; }
-  .js .reveal { transition-delay: 0ms; }
+
+  .js .reveal,
+  .js [data-reveal],
+  .js [data-text-reveal] .word {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+    transition-delay: 0ms;
+  }
+
   .fx-shimmer { animation: none; background-position: 50% 0; }
   .hero__logo img { animation: none; }
   .marquee__track { animation: none; }
   .fx-speedlines { display: none; }
   .fx-border:hover::after { animation: none; opacity: 0; }
   .btn-primary::after { display: none; }
-  .js [data-tilt] { transform: none; }
+  .js [data-tilt],
+  .js .fx-magnetic,
+  .js [data-parallax] { transform: none; }
   .scroll-progress { display: none; }
+  .fx-mesh span { animation: none; }
+  .fx-grain::after { animation: none; }
+  .live-dot { animation: none; }
+  .fx-checkers { animation: none; }
+  .fx-lift:hover { transform: none; }
+  .fx-ripple-dot { display: none; }
 }
