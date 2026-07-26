@@ -144,48 +144,6 @@
     return text.replace(/\r\n|\r|\n/g, "<br>");
   }
 
-  /* ============ Toolbar μορφοποίησης (BBCode) ============ */
-
-  function toolbarHtml() {
-    return `
-      <div class="bb-toolbar" role="toolbar" aria-label="Μορφοποίηση κειμένου (BBCode)">
-        <button type="button" class="bb-btn" data-bb="b" title="Έντονα [b]"><strong>B</strong></button>
-        <button type="button" class="bb-btn" data-bb="i" title="Πλάγια [i]"><em>I</em></button>
-        <button type="button" class="bb-btn" data-bb="u" title="Υπογράμμιση [u]"><u>U</u></button>
-        <button type="button" class="bb-btn" data-bb="url" title="Σύνδεσμος [url]">🔗 URL</button>
-        <button type="button" class="bb-btn" data-bb="quote" title="Παράθεση [quote]">❝ Quote</button>
-      </div>
-    `;
-  }
-
-  // Τυλίγει την τρέχουσα επιλογή του textarea στο αντίστοιχο BBCode tag.
-  function wireToolbar(container, textarea) {
-    if (!container || !textarea) return;
-    container.querySelectorAll("[data-bb]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const kind = btn.dataset.bb;
-        const start = textarea.selectionStart ?? textarea.value.length;
-        const end = textarea.selectionEnd ?? textarea.value.length;
-        const sel = textarea.value.slice(start, end);
-
-        let insert;
-        if (kind === "url") {
-          const url = window.prompt("Διεύθυνση συνδέσμου (πρέπει να ξεκινά με http:// ή https://):", "https://");
-          if (url === null) { textarea.focus(); return; }
-          insert = sel ? `[url=${url.trim()}]${sel}[/url]` : `[url]${url.trim()}[/url]`;
-        } else {
-          insert = `[${kind}]${sel}[/${kind}]`;
-        }
-
-        textarea.value = textarea.value.slice(0, start) + insert + textarea.value.slice(end);
-        // Χωρίς επιλογή: ο δρομέας μπαίνει ανάμεσα στα tags για άμεση πληκτρολόγηση.
-        const caret = (kind !== "url" && !sel) ? start + kind.length + 2 : start + insert.length;
-        textarea.focus();
-        textarea.setSelectionRange(caret, caret);
-      });
-    });
-  }
-
   /* ============ Κοινές καταστάσεις ============ */
 
   function renderLoadingState(message) {
@@ -428,10 +386,8 @@
           <label for="new-thread-title">Τίτλος</label>
           <input id="new-thread-title" name="title" type="text" required maxlength="150" placeholder="Π.χ. Setup για GT3 στη Monza">
         </div>
-        ${toolbarHtml()}
         <div class="field">
-          <label for="new-thread-content">Πρώτο μήνυμα</label>
-          <textarea id="new-thread-content" name="content" rows="5" required maxlength="5000" placeholder="Γράψε το μήνυμά σου εδώ… Υποστηρίζεται BBCode: [b], [i], [u], [url], [quote]"></textarea>
+          <div id="new-thread-editor"></div>
         </div>
         <div class="forum-form__actions">
           <button type="submit" class="btn btn-primary btn-sm">Δημοσίευση</button>
@@ -557,7 +513,10 @@
 
     if (!formEl) return;
 
-    wireToolbar(formEl, formEl.querySelector("#new-thread-content"));
+    const newThreadEditor = window.GSREditor.create(formEl.querySelector("#new-thread-editor"), {
+      label: "Πρώτο μήνυμα",
+      placeholder: "Γράψε το μήνυμά σου εδώ…",
+    });
 
     formEl.querySelector("[data-cancel]").addEventListener("click", () => {
       formEl.hidden = true;
@@ -567,15 +526,19 @@
     formEl.addEventListener("submit", async (event) => {
       event.preventDefault();
       const titleInput = formEl.querySelector("#new-thread-title");
-      const contentInput = formEl.querySelector("#new-thread-content");
       const statusEl = formEl.querySelector(".form-status");
       const submitBtn = formEl.querySelector('button[type="submit"]');
 
       const title = titleInput.value.trim();
-      const content = contentInput.value.trim();
+      const content = newThreadEditor.getValue();
       if (!title || !content) {
         statusEl.dataset.state = "error";
         statusEl.textContent = "Συμπλήρωσε τίτλο και μήνυμα.";
+        return;
+      }
+      if (content.length > window.GSREditor.MAX_LENGTH) {
+        statusEl.dataset.state = "error";
+        statusEl.textContent = "Το μήνυμα είναι πολύ μεγάλο.";
         return;
       }
 
@@ -830,10 +793,8 @@
       replyAreaHtml = `
         <form class="card forum-form" id="reply-form">
           <h3 class="forum-form__title">Απάντηση</h3>
-          ${toolbarHtml()}
           <div class="field">
-            <label for="reply-content">Το μήνυμά σου</label>
-            <textarea id="reply-content" name="content" rows="4" required maxlength="5000" placeholder="Γράψε την απάντησή σου… Υποστηρίζεται BBCode: [b], [i], [u], [url], [quote]"></textarea>
+            <div id="reply-editor"></div>
           </div>
           <div class="forum-form__actions">
             <button type="submit" class="btn btn-primary btn-sm">Αποστολή</button>
@@ -1000,8 +961,7 @@
         const fieldId = "edit-content-" + postId;
         body.innerHTML = `
           <div class="field">
-            <label for="${escapeHtml(fieldId)}">Επεξεργασία μηνύματος</label>
-            <textarea id="${escapeHtml(fieldId)}" rows="5" maxlength="5000">${escapeHtml(post.content)}</textarea>
+            <div id="${escapeHtml(fieldId)}"></div>
           </div>
           <div class="forum-form__actions">
             <button type="button" class="btn btn-primary btn-sm" data-edit-save>Αποθήκευση</button>
@@ -1010,9 +970,12 @@
           <p class="form-status" role="status" aria-live="polite"></p>
         `;
 
-        const textarea = body.querySelector("textarea");
+        const editEditor = window.GSREditor.create(body.querySelector("#" + (window.CSS && CSS.escape ? CSS.escape(fieldId) : fieldId)), {
+          label: "Επεξεργασία μηνύματος",
+          value: post.content,
+        });
         const statusEl = body.querySelector(".form-status");
-        textarea.focus();
+        editEditor.focus();
 
         function closeEditor() {
           delete body.dataset.editing;
@@ -1022,7 +985,7 @@
         body.querySelector("[data-edit-cancel]").addEventListener("click", closeEditor);
 
         body.querySelector("[data-edit-save]").addEventListener("click", async () => {
-          const newContent = textarea.value.trim();
+          const newContent = editEditor.getValue();
           if (!newContent) {
             statusEl.dataset.state = "error";
             statusEl.textContent = "Το μήνυμα δεν μπορεί να είναι κενό.";
@@ -1062,23 +1025,17 @@
 
     const replyForm = viewEl.querySelector("#reply-form");
     if (replyForm) {
-      const replyTextarea = replyForm.querySelector("#reply-content");
-      wireToolbar(replyForm, replyTextarea);
+      const replyEditor = window.GSREditor.create(replyForm.querySelector("#reply-editor"), {
+        label: "Το μήνυμά σου",
+        placeholder: "Γράψε την απάντησή σου…",
+      });
 
-      // «Παράθεση»: προσθέτει το raw περιεχόμενο του post στο textarea.
+      // «Παράθεση»: μπαίνει ως πραγματικό μπλοκ παράθεσης μέσα στον editor.
       viewEl.querySelectorAll("[data-quote-post]").forEach((btn) => {
         btn.addEventListener("click", () => {
           const post = postsById[btn.dataset.quotePost];
           if (!post) return;
-          // Χωρίς [ ] στο όνομα για να μη «σπάει» το tag της παράθεσης.
-          const safeName = authorName(post).replace(/[\[\]]/g, "");
-          const quoted = `[quote=${safeName}]${post.content}[/quote]\n`;
-          replyTextarea.value = replyTextarea.value
-            ? replyTextarea.value.replace(/\n?$/, "\n") + quoted
-            : quoted;
-          replyForm.scrollIntoView({ behavior: "smooth", block: "center" });
-          replyTextarea.focus();
-          replyTextarea.setSelectionRange(replyTextarea.value.length, replyTextarea.value.length);
+          replyEditor.appendQuote(authorName(post), post.content);
         });
       });
 
@@ -1087,10 +1044,15 @@
         const statusEl = replyForm.querySelector(".form-status");
         const submitBtn = replyForm.querySelector('button[type="submit"]');
 
-        const content = replyTextarea.value.trim();
+        const content = replyEditor.getValue();
         if (!content) {
           statusEl.dataset.state = "error";
           statusEl.textContent = "Γράψε ένα μήνυμα πριν την αποστολή.";
+          return;
+        }
+        if (content.length > window.GSREditor.MAX_LENGTH) {
+          statusEl.dataset.state = "error";
+          statusEl.textContent = "Το μήνυμα είναι πολύ μεγάλο.";
           return;
         }
 
