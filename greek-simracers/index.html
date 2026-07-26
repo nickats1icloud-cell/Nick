@@ -49,7 +49,22 @@
       <a href="about.html">Σχετικά</a>
       <a href="games-hub.html">Games Hub</a>
       <a href="podcasts.html">Podcasts</a>
-      <a href="championships.html">Πρωταθλήματα</a>
+      <div class="nav-drop" data-nav-drop>
+        <button type="button" class="nav-drop__btn" aria-expanded="false" aria-haspopup="true" aria-controls="nav-drop-champs">
+          Πρωταθλήματα<svg class="nav-drop__caret" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div class="nav-drop__menu" id="nav-drop-champs" hidden>
+          <p class="nav-drop__title">Championship Hub</p>
+          <a href="championships.html">Όλα τα πρωταθλήματα</a>
+          <a href="championships.html#championships">Βαθμολογίες</a>
+          <a href="championships.html#championships-stats">Στατιστικά</a>
+          <div data-nav-champs-group hidden>
+            <div class="nav-drop__sep"></div>
+            <p class="nav-drop__title">Τα πρωταθλήματά μας</p>
+            <div data-nav-champs></div>
+          </div>
+        </div>
+      </div>
       <a href="forum.html">Forum</a>
       <a href="predictions.html">Προβλέψεις</a>
       <a href="shop.html">Shop</a>
@@ -438,6 +453,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="assets/js/supabase-client.js"></script>
 <script src="assets/js/main.js"></script>
+<script src="assets/js/nav-champs.js"></script>
 <script src="assets/js/auth.js"></script>
 <script src="assets/js/motion.js"></script>
 <script src="assets/js/share.js"></script>

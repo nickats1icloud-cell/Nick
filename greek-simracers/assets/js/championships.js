@@ -89,6 +89,8 @@ function getFilteredChampionships() {
 function createChampionshipCard(champ) {
   const card = document.createElement("article");
   card.className = "card champ-card";
+  // Το id επιτρέπει deep link από το dropdown του μενού (?champ=<id>).
+  card.id = `champ-${champ.id}`;
 
   const statusLabel = STATUS_LABELS[champ.status] || champ.status;
   const statusClass = STATUS_BADGE_CLASS[champ.status] || "badge";
@@ -180,6 +182,22 @@ async function loadChampionships() {
   championships = data || [];
   renderFilteredChampionships();
   renderStats();
+  focusRequestedChampionship();
+}
+
+// Αν ήρθαμε από το dropdown του μενού (?champ=<id>), πάμε στην κάρτα και
+// την τονίζουμε για λίγο ώστε να είναι προφανές ποια είναι.
+function focusRequestedChampionship() {
+  const requested = new URLSearchParams(window.location.search).get("champ");
+  if (!requested) return;
+
+  const card = document.getElementById(`champ-${requested}`);
+  if (!card) return;
+
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  card.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center" });
+  card.classList.add("champ-card--focused");
+  setTimeout(() => card.classList.remove("champ-card--focused"), 2600);
 }
 
 renderFilters();

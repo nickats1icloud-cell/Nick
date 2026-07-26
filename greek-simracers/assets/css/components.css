@@ -109,7 +109,139 @@
   background: hsl(var(--primary) / 0.12);
 }
 
+/* ============ Dropdown μενού (Πρωταθλήματα) ============ */
+.nav-drop {
+  position: relative;
+}
+
+.nav-drop__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.6rem 0.9rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.nav-drop__btn:hover,
+.nav-drop.is-open .nav-drop__btn {
+  color: hsl(var(--foreground));
+  background: hsl(var(--secondary) / 0.6);
+}
+
+.nav-drop__btn[aria-current="page"] {
+  color: hsl(var(--primary-light));
+  background: hsl(var(--primary) / 0.12);
+}
+
+.nav-drop__caret {
+  transition: transform 0.2s ease;
+}
+
+.nav-drop.is-open .nav-drop__caret {
+  transform: rotate(180deg);
+}
+
+.nav-drop__menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  z-index: 60;
+  width: 17.5rem;
+  padding: 0.5rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  background: hsl(var(--background) / 0.98);
+  box-shadow: 0 18px 40px rgb(0 0 0 / 0.45);
+  animation: nav-drop-in 0.18s ease;
+}
+
+@keyframes nav-drop-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.nav-drop__menu[hidden] {
+  display: none;
+}
+
+.nav-drop__title {
+  margin: 0.35rem 0.6rem 0.4rem;
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground) / 0.75);
+}
+
+.main-nav .nav-drop__menu a {
+  display: block;
+  padding: 0.55rem 0.6rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+}
+
+.nav-drop__sep {
+  height: 1px;
+  margin: 0.45rem 0.3rem;
+  background: hsl(var(--border));
+}
+
+.main-nav .nav-drop__champ {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.nav-drop__champ-name {
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+.nav-drop__champ-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.72rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.nav-drop__dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: hsl(var(--muted-foreground));
+}
+
+.nav-drop__dot--active {
+  background: #22c55e;
+  box-shadow: 0 0 0 3px rgb(34 197 94 / 0.18);
+}
+
+.nav-drop__dot--upcoming {
+  background: #eab308;
+}
+
+.nav-drop__dot--completed {
+  background: hsl(var(--muted-foreground) / 0.6);
+}
+
+.nav-drop__loading {
+  margin: 0.2rem 0.6rem 0.5rem;
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+}
+
 .nav-auth {
+  display: flex;
   display: flex;
   align-items: center;
   gap: 0.6rem;
@@ -269,6 +401,22 @@
 
   .main-nav a {
     padding: 0.85rem 1rem;
+  }
+
+  /* Στο κινητό το dropdown γίνεται accordion μέσα στο μενού. */
+  .nav-drop__btn {
+    width: 100%;
+    justify-content: space-between;
+    padding: 0.85rem 1rem;
+  }
+
+  .nav-drop__menu {
+    position: static;
+    width: auto;
+    margin: 0.25rem 0 0.5rem;
+    box-shadow: none;
+    background: hsl(var(--secondary) / 0.35);
+    animation: none;
   }
 
   .nav-auth {
