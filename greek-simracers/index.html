@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="assets/css/tokens.css">
   <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/motion.css">
   <link rel="stylesheet" href="assets/css/home.css">
 </head>
 <body>
@@ -49,6 +50,7 @@
     <div class="hero__glow hero__glow--1"></div>
     <div class="hero__glow hero__glow--2"></div>
     <div class="hero__grid"></div>
+    <div class="fx-speedlines" aria-hidden="true"><span></span><span></span><span></span></div>
 
     <div class="container hero__content">
       <div class="hero__logo reveal">
@@ -62,7 +64,7 @@
       </div>
 
       <h1 class="hero__title reveal">
-        Greek <span class="text-gradient">SimRacers</span>
+        Greek <span class="fx-shimmer">SimRacers</span>
       </h1>
 
       <p class="hero__lead reveal">
@@ -78,13 +80,13 @@
         <a href="games-hub.html" class="btn btn-outline">Games Hub</a>
       </div>
 
-      <div class="hero__stats reveal">
+      <div class="hero__stats reveal" data-stagger>
         <div class="hero__stat">
-          <span class="hero__stat-value">1.000+</span>
+          <span class="hero__stat-value" data-countup>1.000+</span>
           <span class="hero__stat-label">Μέλη</span>
         </div>
         <div class="hero__stat">
-          <span class="hero__stat-value">3</span>
+          <span class="hero__stat-value" data-countup>3</span>
           <span class="hero__stat-label">Επεισόδια Podcast</span>
         </div>
         <div class="hero__stat">
@@ -94,6 +96,28 @@
       </div>
     </div>
   </section>
+
+  <!-- ============ MARQUEE ============ -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee__track">
+      <span class="marquee__item">Assetto Corsa</span>
+      <span class="marquee__item">ACC</span>
+      <span class="marquee__item">iRacing</span>
+      <span class="marquee__item">rFactor 2</span>
+      <span class="marquee__item">Automobilista 2</span>
+      <span class="marquee__item">Gran Turismo 7</span>
+      <span class="marquee__item">F1 24</span>
+      <span class="marquee__item">EA Sports WRC</span>
+      <span class="marquee__item">Assetto Corsa</span>
+      <span class="marquee__item">ACC</span>
+      <span class="marquee__item">iRacing</span>
+      <span class="marquee__item">rFactor 2</span>
+      <span class="marquee__item">Automobilista 2</span>
+      <span class="marquee__item">Gran Turismo 7</span>
+      <span class="marquee__item">F1 24</span>
+      <span class="marquee__item">EA Sports WRC</span>
+    </div>
+  </div>
 
   <!-- ============ FEATURES ============ -->
   <section class="section features">
@@ -106,7 +130,7 @@
       <h2 class="section-title reveal">Όλα σε <span class="text-gradient">ένα μέρος</span></h2>
       <p class="section-subtitle reveal">Η πλήρης πλατφόρμα για τον Έλληνα SimRacer</p>
 
-      <div class="grid grid-3 features__grid">
+      <div class="grid grid-3 features__grid" data-stagger>
         <a href="https://discord.gg/v5RsBTnPpY" target="_blank" rel="noopener noreferrer" class="card feature-card reveal">
           <div class="feature-card__icon">💬</div>
           <h3>Discord</h3>
@@ -176,7 +200,7 @@
       <h2 class="section-title reveal"><span class="text-gradient">Γίνε μέλος</span> σήμερα</h2>
       <p class="section-subtitle reveal">Συζήτησε, ρώτησε, μοιράσου την εμπειρία σου με την ελληνική κοινότητα sim racing</p>
 
-      <div class="community__card reveal">
+      <div class="community__card fx-border reveal" data-tilt>
         <div class="community__perks">
           <div class="community__perk">🏆 Αποκλειστικοί αγώνες</div>
           <div class="community__perk">✅ Επαληθευμένα αποτελέσματα</div>
@@ -248,5 +272,6 @@
 <script src="assets/js/supabase-client.js"></script>
 <script src="assets/js/main.js"></script>
 <script src="assets/js/auth.js"></script>
+<script src="assets/js/motion.js"></script>
 </body>
 </html>

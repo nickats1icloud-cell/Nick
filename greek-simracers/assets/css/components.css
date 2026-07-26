@@ -350,7 +350,36 @@
 .social-icon:hover {
   color: hsl(var(--primary-light));
   border-color: hsl(var(--primary) / 0.5);
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.08);
+}
+
+/* Κάθε δίκτυο παίρνει το επίσημο χρώμα του στο hover */
+.social-icon[aria-label="Discord"]:hover {
+  color: #5865f2;
+  border-color: #5865f2;
+  background: rgb(88 101 242 / 0.12);
+  box-shadow: 0 0 18px rgb(88 101 242 / 0.35);
+}
+
+.social-icon[aria-label="YouTube"]:hover {
+  color: #ff0000;
+  border-color: #ff0000;
+  background: rgb(255 0 0 / 0.1);
+  box-shadow: 0 0 18px rgb(255 0 0 / 0.3);
+}
+
+.social-icon[aria-label="Facebook"]:hover {
+  color: #1877f2;
+  border-color: #1877f2;
+  background: rgb(24 119 242 / 0.12);
+  box-shadow: 0 0 18px rgb(24 119 242 / 0.35);
+}
+
+.social-icon[aria-label="Spotify"]:hover {
+  color: #1db954;
+  border-color: #1db954;
+  background: rgb(29 185 84 / 0.12);
+  box-shadow: 0 0 18px rgb(29 185 84 / 0.35);
 }
 
 /* ============ Footer brand variant (used on every page's footer) ============ */
