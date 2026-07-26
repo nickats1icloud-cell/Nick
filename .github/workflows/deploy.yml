@@ -2,7 +2,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [claude/website-setup-0k2c7k, claude/custom-car-dashboard-5v69i8]
+    branches: [claude/website-setup-0k2c7k, claude/custom-car-dashboard-5v69i8, claude/greek-sim-racers-rebuild-x3jwei]
   workflow_dispatch:
 
 # Allow the workflow to publish to GitHub Pages.
@@ -34,6 +34,10 @@ jobs:
       # SPA fallback: serve index.html for unknown deep links so
       # client-side routing (e.g. /Nick/about on reload) works.
       - run: cp dist/index.html dist/404.html
+
+      # Publish the static Greek SimRacers site alongside the dashboard,
+      # under its own path — it has no build step of its own.
+      - run: cp -r greek-simracers dist/greek-simracers
 
       - uses: actions/configure-pages@v5
         with:
