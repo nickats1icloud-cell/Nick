@@ -222,20 +222,3 @@
   color: hsl(var(--muted-foreground));
 }
 
-/* ============ Footer brand variant ============ */
-.footer-brand {
-  margin-bottom: 1rem;
-}
-
-.footer-tagline {
-  color: hsl(var(--muted-foreground));
-  font-size: 0.9rem;
-  max-width: 22rem;
-  line-height: 1.6;
-}
-
-.footer-socials {
-  display: flex;
-  gap: 0.6rem;
-  margin-top: 1.5rem;
-}

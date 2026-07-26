@@ -294,6 +294,24 @@
   transform: translateY(-2px);
 }
 
+/* ============ Footer brand variant (used on every page's footer) ============ */
+.footer-brand {
+  margin-bottom: 1rem;
+}
+
+.footer-tagline {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.9rem;
+  max-width: 22rem;
+  line-height: 1.6;
+}
+
+.footer-socials {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+
 /* ============ Footer ============ */
 .site-footer {
   border-top: 1px solid hsl(var(--border));
