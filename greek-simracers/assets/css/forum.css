@@ -27,7 +27,7 @@
 }
 
 .forum-view {
-  max-width: 56rem;
+  max-width: 62rem;
   margin-inline: auto;
 }
 
@@ -71,6 +71,10 @@
   margin-bottom: 1.5rem;
 }
 
+.forum-view-head__text {
+  min-width: 0;
+}
+
 .forum-view-head__title {
   font-size: clamp(1.25rem, 3vw, 1.75rem);
   font-weight: 800;
@@ -90,6 +94,41 @@
   gap: 0.4rem 1rem;
   font-size: 0.85rem;
   color: hsl(var(--muted-foreground));
+}
+
+/* Κουμπιά moderation (μόνο για admins) */
+.forum-mod-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+/* ============ Avatars (αρχικό γράμμα + ντετερμινιστικό χρώμα) ============ */
+.forum-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.35);
+  user-select: none;
+}
+
+.forum-avatar--sm {
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 1rem;
+}
+
+.forum-avatar--lg {
+  width: 4rem;
+  height: 4rem;
+  font-size: 1.6rem;
 }
 
 /* ============ Λίστα κατηγοριών ============ */
@@ -144,7 +183,33 @@
   white-space: nowrap;
 }
 
-/* ============ Λίστα συζητήσεων ============ */
+/* ============ Αναζήτηση κατηγορίας ============ */
+.forum-search {
+  margin-bottom: 1.25rem;
+}
+
+.forum-search__input {
+  width: 100%;
+  background: hsl(var(--secondary) / 0.5);
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1.1rem;
+  color: hsl(var(--foreground));
+  font-size: 0.92rem;
+}
+
+.forum-search__input:focus {
+  outline: none;
+  border-color: hsl(var(--primary));
+}
+
+.forum-search__summary {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.85rem;
+  margin-bottom: 0.9rem;
+}
+
+/* ============ Λίστα συζητήσεων (XenForo-style γραμμές) ============ */
 .thread-list {
   display: flex;
   flex-direction: column;
@@ -152,18 +217,24 @@
 }
 
 .thread-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr) auto 11.5rem;
+  grid-template-areas: "avatar main stats last";
   align-items: center;
-  gap: 1rem;
-  padding: 1.1rem 1.4rem;
+  gap: 0.6rem 1rem;
+  padding: 1rem 1.25rem;
+}
+
+.thread-row > .forum-avatar {
+  grid-area: avatar;
 }
 
 .thread-row__main {
-  flex: 1;
+  grid-area: main;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: 0.35rem;
 }
 
 .thread-row__title-line {
@@ -176,31 +247,118 @@
 .thread-row__title {
   font-weight: 600;
   font-size: 1rem;
+  color: hsl(var(--foreground));
   overflow-wrap: anywhere;
+  transition: color 0.2s ease;
+}
+
+.thread-row__title:hover {
+  color: hsl(var(--primary-light));
+  text-decoration: underline;
 }
 
 .thread-row__meta {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 0.3rem 1rem;
+  gap: 0.3rem 0.5rem;
   font-size: 0.8rem;
   color: hsl(var(--muted-foreground));
 }
 
-.thread-row__chevron {
-  flex-shrink: 0;
-  font-size: 1.4rem;
+.thread-row__meta-sep {
+  opacity: 0.6;
+}
+
+.thread-row__stats {
+  grid-area: stats;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  font-size: 0.78rem;
   color: hsl(var(--muted-foreground));
-  transition: color 0.2s ease, transform 0.2s ease;
+  white-space: nowrap;
 }
 
-.thread-row:hover .thread-row__chevron {
+/* «Τελευταίο μήνυμα» — link προς την τελευταία σελίδα της συζήτησης */
+.thread-row__last {
+  grid-area: last;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+  padding-left: 1rem;
+  border-left: 1px solid hsl(var(--border) / 0.6);
+  font-size: 0.78rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.thread-row__last:hover .thread-row__last-name {
+  text-decoration: underline;
+}
+
+.thread-row__last-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.7;
+}
+
+.thread-row__last-name {
+  font-weight: 600;
   color: hsl(var(--primary-light));
-  transform: translateX(3px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-/* ============ Μηνύματα συζήτησης ============ */
+.thread-row__last-time {
+  white-space: nowrap;
+}
+
+/* ============ Σελιδοποίηση ============ */
+.forum-pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 1.4rem 0;
+}
+
+.forum-pager__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.1rem;
+  padding: 0.4rem 0.65rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-sm);
+  background: hsl(var(--secondary) / 0.4);
+  font-size: 0.8rem;
+  color: hsl(var(--muted-foreground));
+  white-space: nowrap;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+a.forum-pager__btn:hover {
+  color: hsl(var(--primary-light));
+  border-color: hsl(var(--primary) / 0.5);
+}
+
+.forum-pager__btn.is-current {
+  background: hsl(var(--primary) / 0.2);
+  border-color: hsl(var(--primary) / 0.5);
+  color: hsl(var(--primary-light));
+  font-weight: 700;
+}
+
+.forum-pager__btn.is-disabled {
+  opacity: 0.4;
+}
+
+/* ============ Posts συζήτησης (XenForo-style δίστηλα blocks) ============ */
 .post-list {
   display: flex;
   flex-direction: column;
@@ -208,37 +366,176 @@
   margin-bottom: 0.5rem;
 }
 
-.post-card {
-  padding: 1.25rem 1.5rem;
+.post-block {
+  display: grid;
+  grid-template-columns: 11rem minmax(0, 1fr);
+  padding: 0;
+  overflow: hidden;
 }
 
-.post-card--op {
+.post-block--op {
   border-color: hsl(var(--primary) / 0.35);
 }
 
-.post-card__head {
+/* Αριστερό πάνελ συντάκτη */
+.post-block__author {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 0.5rem 0.9rem;
-  margin-bottom: 0.75rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid hsl(var(--border) / 0.6);
+  text-align: center;
+  gap: 0.4rem;
+  padding: 1.25rem 0.9rem;
+  background: hsl(var(--secondary) / 0.35);
+  border-right: 1px solid hsl(var(--border) / 0.6);
+  min-width: 0;
 }
 
-.post-card__author {
-  font-weight: 600;
+.post-block__name {
+  font-weight: 700;
   color: hsl(var(--primary-light));
   overflow-wrap: anywhere;
 }
 
-.post-card__time {
-  font-size: 0.8rem;
+.post-block__name:hover {
+  text-decoration: underline;
+}
+
+/* Υπογραφή μέλους, όπως στα κλασικά forum */
+.post-block__signature {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid hsl(var(--border) / 0.6);
+  font-size: 0.78rem;
+  color: hsl(var(--muted-foreground) / 0.85);
+  font-style: italic;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.post-block__role {
+  font-size: 0.62rem;
+}
+
+.post-block__stat {
+  font-size: 0.74rem;
   color: hsl(var(--muted-foreground));
 }
 
-.post-card__delete {
-  margin-left: auto;
+/* Δεξιά στήλη: ημερομηνία + #αριθμός, περιεχόμενο, ενέργειες */
+.post-block__main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0.9rem 1.25rem 1rem;
+}
+
+.post-block__head {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.9rem;
+  font-size: 0.78rem;
+  color: hsl(var(--muted-foreground));
+  padding-bottom: 0.6rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid hsl(var(--border) / 0.5);
+}
+
+.post-block__num {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: hsl(var(--primary-light));
+}
+
+.post-block__content {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.post-block__content a {
+  color: hsl(var(--primary-light));
+  text-decoration: underline;
+  overflow-wrap: anywhere;
+}
+
+.post-block__edited {
+  margin-top: 0.6rem;
+  font-size: 0.75rem;
+  font-style: italic;
+  color: hsl(var(--muted-foreground));
+}
+
+/* BBCode παραθέσεις */
+.bbcode-quote {
+  margin: 0.5rem 0;
+  padding: 0.6rem 0.9rem;
+  border-left: 3px solid hsl(var(--primary) / 0.6);
+  border-radius: var(--radius-sm);
+  background: hsl(var(--secondary) / 0.4);
+  font-size: 0.9em;
+  color: hsl(var(--muted-foreground));
+}
+
+.bbcode-quote .bbcode-quote {
+  background: hsl(var(--secondary) / 0.6);
+}
+
+.bbcode-quote__attr {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-size: 0.82em;
+  font-weight: 600;
+  color: hsl(var(--primary-light));
+}
+
+/* Ενέργειες post: αντίδραση, παράθεση, επεξεργασία, διαγραφή */
+.post-block__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid hsl(var(--border) / 0.5);
+}
+
+.post-block__actions-spacer {
+  flex: 1;
+}
+
+.post-react {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: 999px;
+  background: hsl(var(--secondary) / 0.4);
+  font-size: 0.8rem;
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.post-react:hover:not(:disabled) {
+  border-color: hsl(var(--primary) / 0.5);
+  color: hsl(var(--foreground));
+}
+
+.post-react.is-active {
+  background: hsl(var(--primary) / 0.18);
+  border-color: hsl(var(--primary) / 0.6);
+  color: hsl(var(--primary-light));
+  font-weight: 600;
+}
+
+.post-react:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.post-action {
   background: none;
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
@@ -249,20 +546,48 @@
   transition: color 0.2s ease, border-color 0.2s ease;
 }
 
-.post-card__delete:hover {
+.post-action:hover:not(:disabled) {
+  color: hsl(var(--primary-light));
+  border-color: hsl(var(--primary) / 0.5);
+}
+
+.post-action--danger:hover:not(:disabled) {
   color: hsl(var(--destructive));
   border-color: hsl(var(--destructive) / 0.5);
 }
 
-.post-card__delete:disabled {
+.post-action:disabled {
   opacity: 0.5;
   cursor: default;
 }
 
-.post-card__content {
-  font-size: 0.95rem;
-  line-height: 1.7;
-  overflow-wrap: anywhere;
+/* ============ Toolbar μορφοποίησης (BBCode) ============ */
+.bb-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.6rem;
+}
+
+.bb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-sm);
+  background: hsl(var(--secondary) / 0.5);
+  font-size: 0.8rem;
+  color: hsl(var(--foreground));
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.bb-btn:hover {
+  border-color: hsl(var(--primary) / 0.5);
+  background: hsl(var(--secondary) / 0.8);
 }
 
 /* ============ Φόρμες forum + ειδοποιήσεις ============ */
@@ -306,7 +631,77 @@
   color: hsl(var(--foreground));
 }
 
+.forum-notice a {
+  color: hsl(var(--primary-light));
+  font-weight: 600;
+}
+
+.forum-notice a:hover {
+  text-decoration: underline;
+}
+
 /* ============ Responsive ============ */
+@media (max-width: 700px) {
+  /* Γραμμές συζητήσεων: στατιστικά + τελευταίο μήνυμα κάτω από τον τίτλο */
+  .thread-row {
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+    grid-template-areas:
+      "avatar main"
+      "stats  stats"
+      "last   last";
+    gap: 0.5rem 0.75rem;
+  }
+
+  .thread-row__stats {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.9rem;
+  }
+
+  .thread-row__last {
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.3rem 0.5rem;
+    padding-left: 0;
+    border-left: none;
+    padding-top: 0.5rem;
+    border-top: 1px solid hsl(var(--border) / 0.5);
+  }
+
+  /* Post: το πάνελ συντάκτη γίνεται οριζόντια λωρίδα πάνω από το περιεχόμενο */
+  .post-block {
+    grid-template-columns: 1fr;
+  }
+
+  .post-block__author {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.7rem;
+    padding: 0.7rem 1rem;
+    border-right: none;
+    border-bottom: 1px solid hsl(var(--border) / 0.6);
+  }
+
+  .post-block__author .forum-avatar--lg {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1rem;
+  }
+
+  .post-block__main {
+    padding: 0.8rem 1rem 0.9rem;
+  }
+
+  .forum-pager__btn {
+    min-width: 1.9rem;
+    padding: 0.35rem 0.5rem;
+    font-size: 0.75rem;
+  }
+}
+
 @media (max-width: 600px) {
   .forum-cat-card {
     flex-wrap: wrap;
@@ -319,15 +714,7 @@
     align-items: stretch;
   }
 
-  .forum-view-head .btn {
+  .forum-view-head > .btn {
     justify-content: center;
-  }
-
-  .thread-row {
-    padding: 1rem 1.1rem;
-  }
-
-  .post-card {
-    padding: 1.1rem 1.15rem;
   }
 }

@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Το Προφίλ μου — Greek SimRacers</title>
-  <meta name="description" content="Διαχειρίσου το προφίλ μέλους σου στο Greek SimRacers.">
+  <title>Προφίλ Μέλους — Greek SimRacers</title>
+  <meta name="description" content="Δες το προφίλ των μελών της κοινότητας Greek SimRacers — στατιστικά, αγαπημένα simulators και πρόσφατα μηνύματα στο forum.">
   <link rel="icon" href="assets/images/gsr-logo.png">
   <script>document.documentElement.classList.add('js');</script>
   <link rel="stylesheet" href="assets/css/tokens.css">
   <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/components.css">
   <link rel="stylesheet" href="assets/css/motion.css">
-  <link rel="stylesheet" href="assets/css/auth.css">
+  <link rel="stylesheet" href="assets/css/profile.css">
 </head>
 <body>
 
@@ -47,70 +47,17 @@
 </header>
 
 <main>
-  <section class="section auth-section">
+  <!-- ============ ΠΡΟΦΙΛ ΜΕΛΟΥΣ ============
+       Hash-routed views (τα ζωγραφίζει το assets/js/profile.js):
+         #/            → redirect στο δικό σου προφίλ (ή πρόσκληση σύνδεσης)
+         #/user/<id>   → δημόσιο προφίλ μέλους (ορατό και σε επισκέπτες)
+         #/settings    → ρυθμίσεις λογαριασμού (μόνο για τον κάτοχο)      -->
+  <section class="section profile-section" id="profile">
     <div class="container">
-      <div class="card auth-card auth-card--wide reveal">
-        <p class="auth-unavailable" id="auth-unavailable">
-          <span class="auth-unavailable__icon" aria-hidden="true">⚠️</span>
-          <span>Η σύνδεση με τον διακομιστή δεν είναι διαθέσιμη αυτή τη στιγμή. Δοκίμασε να ανανεώσεις τη σελίδα ή ξαναπροσπάθησε αργότερα.</span>
-        </p>
-
-        <p class="auth-loading" id="profile-loading">Φόρτωση προφίλ…</p>
-
-        <div id="profile-content" class="is-hidden">
-          <div class="profile-identity">
-            <div class="profile-identity__avatar" id="profile-avatar" aria-hidden="true"></div>
-            <div>
-              <h1 style="font-size:1.1rem; margin-bottom:0.2rem;">Το Προφίλ μου</h1>
-              <p class="profile-identity__email" id="profile-email"></p>
-            </div>
-          </div>
-
-          <form id="profile-form" novalidate>
-            <div class="field">
-              <label for="profile-display-name">Ονοματεπώνυμο</label>
-              <input type="text" id="profile-display-name" name="display_name" autocomplete="name">
-            </div>
-
-            <div class="profile-grid">
-              <div class="field">
-                <label for="profile-favorite-sim">Αγαπημένο Simulator</label>
-                <select id="profile-favorite-sim" name="favorite_sim">
-                  <option value="">— Επίλεξε —</option>
-                  <option value="Assetto Corsa">Assetto Corsa</option>
-                  <option value="Assetto Corsa Competizione">Assetto Corsa Competizione</option>
-                  <option value="iRacing">iRacing</option>
-                  <option value="rFactor 2">rFactor 2</option>
-                  <option value="Automobilista 2">Automobilista 2</option>
-                  <option value="Gran Turismo">Gran Turismo</option>
-                  <option value="F1 Series">F1 Series</option>
-                  <option value="Le Mans Ultimate">Le Mans Ultimate</option>
-                  <option value="Άλλο">Άλλο</option>
-                </select>
-              </div>
-
-              <div class="field">
-                <label for="profile-setup-type">Setup</label>
-                <select id="profile-setup-type" name="setup_type">
-                  <option value="">— Επίλεξε —</option>
-                  <option value="Τιμόνι">Τιμόνι</option>
-                  <option value="Controller">Controller</option>
-                  <option value="Πληκτρολόγιο">Πληκτρολόγιο</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="field">
-              <label for="profile-favorite-track">Αγαπημένη Πίστα</label>
-              <input type="text" id="profile-favorite-track" name="favorite_track" placeholder="π.χ. Spa-Francorchamps">
-            </div>
-
-            <div class="profile-actions">
-              <button type="submit" class="btn btn-primary">Αποθήκευση</button>
-              <button type="button" class="profile-signout" id="profile-signout">Αποσύνδεση</button>
-            </div>
-            <p class="form-status" id="profile-status" role="status" aria-live="polite"></p>
-          </form>
+      <div class="profile-view" id="profile-view" aria-live="polite">
+        <div class="state-message">
+          <div class="spinner"></div>
+          <p>Φόρτωση προφίλ…</p>
         </div>
       </div>
     </div>

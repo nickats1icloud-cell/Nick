@@ -165,6 +165,41 @@
   transform: translateY(-1px);
 }
 
+.nav-auth__messages {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0.25rem;
+  transition: transform 0.2s ease;
+}
+
+.nav-auth__messages:hover {
+  transform: translateY(-1px);
+}
+
+.nav-auth__badge {
+  position: absolute;
+  top: -0.35rem;
+  right: -0.5rem;
+  min-width: 1.05rem;
+  height: 1.05rem;
+  padding-inline: 0.25rem;
+  border-radius: 999px;
+  background: hsl(var(--destructive));
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-auth__badge[hidden] {
+  display: none;
+}
+
 .nav-auth__logout {
   background: none;
   border: none;

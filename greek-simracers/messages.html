@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Forum — Greek SimRacers</title>
-  <meta name="description" content="Το forum της ελληνικής κοινότητας SimRacing. Συζητήσεις για setups, αγώνες, hardware και όλα τα simulators.">
+  <title>Προσωπικά Μηνύματα — Greek SimRacers</title>
+  <meta name="description" content="Στείλε προσωπικά μηνύματα στα μέλη της ελληνικής κοινότητας SimRacing — ιδιωτικές συνομιλίες 1-προς-1 στο Greek SimRacers.">
   <link rel="icon" href="assets/images/gsr-logo.png">
   <script>document.documentElement.classList.add('js');</script>
   <link rel="stylesheet" href="assets/css/tokens.css">
   <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/components.css">
   <link rel="stylesheet" href="assets/css/motion.css">
-  <link rel="stylesheet" href="assets/css/forum.css">
+  <link rel="stylesheet" href="assets/css/messages.css">
 </head>
 <body>
 
@@ -36,7 +36,7 @@
       <a href="games-hub.html">Games Hub</a>
       <a href="podcasts.html">Podcasts</a>
       <a href="championships.html">Πρωταθλήματα</a>
-      <a href="forum.html" aria-current="page">Forum</a>
+      <a href="forum.html">Forum</a>
       <a href="predictions.html">Προβλέψεις</a>
       <a href="shop.html">Shop</a>
       <a href="contact.html">Επικοινωνία</a>
@@ -47,33 +47,27 @@
 </header>
 
 <main>
-  <!-- ============ HERO ============ -->
-  <section class="forum-hero">
-    <div class="container forum-hero__content">
+  <!-- ============ ΠΡΟΣΩΠΙΚΑ ΜΗΝΥΜΑΤΑ ============ -->
+  <section class="section msg-section">
+    <div class="container">
       <div class="section-eyebrow reveal">
         <span class="line"></span>
         <span>Greek SimRacers</span>
         <span class="line reverse"></span>
       </div>
 
-      <h1 class="forum-hero__title reveal">
-        💬 <span class="text-gradient">FORUM</span>
+      <h1 class="section-title reveal">
+        ✉️ <span class="text-gradient">ΠΡΟΣΩΠΙΚΑ ΜΗΝΥΜΑΤΑ</span>
       </h1>
 
-      <p class="forum-hero__lead reveal">
-        Ο χώρος συζήτησης της κοινότητας — setups, αγώνες, hardware και όλα τα simulators,
-        με κλασική εμπειρία forum: κατηγορίες, σελίδες, παραθέσεις και αντιδράσεις.
+      <p class="section-subtitle reveal">
+        Ιδιωτικές συνομιλίες με τα μέλη της κοινότητας
       </p>
-    </div>
-  </section>
 
-  <!-- ============ FORUM ============ -->
-  <section class="section forum-section" id="forum">
-    <div class="container">
-      <div class="forum-view" id="forum-view" aria-live="polite">
+      <div id="messages-app" class="msg-app-wrap">
         <div class="state-message">
           <div class="spinner"></div>
-          <p>Φόρτωση forum…</p>
+          <p>Φόρτωση μηνυμάτων…</p>
         </div>
       </div>
     </div>
@@ -138,6 +132,6 @@
 <script src="assets/js/main.js"></script>
 <script src="assets/js/auth.js"></script>
 <script src="assets/js/motion.js"></script>
-<script src="assets/js/forum.js"></script>
+<script src="assets/js/messages.js"></script>
 </body>
 </html>

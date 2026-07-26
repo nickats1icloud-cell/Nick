@@ -1,0 +1,353 @@
+.msg-section {
+  padding-top: calc(var(--header-height) + 3rem);
+}
+
+.msg-app-wrap {
+  margin-top: 2rem;
+}
+
+/* ============ Layout ============ */
+.msg-app {
+  display: grid;
+  grid-template-columns: 20rem 1fr;
+  gap: 1.25rem;
+  min-height: 32rem;
+}
+
+.msg-sidebar,
+.msg-main {
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-lg);
+  background: var(--gradient-card);
+  overflow: hidden;
+}
+
+.msg-sidebar {
+  display: flex;
+  flex-direction: column;
+  max-height: 38rem;
+}
+
+.msg-sidebar__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem 1.1rem;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.msg-sidebar__title {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* ============ Avatar ============ */
+.msg-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.msg-avatar--sm {
+  width: 2.4rem;
+  height: 2.4rem;
+  font-size: 0.95rem;
+}
+
+/* ============ Αναζήτηση μέλους ============ */
+.msg-search {
+  padding: 0.85rem 1.1rem;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.msg-search[hidden] {
+  display: none;
+}
+
+.msg-search input {
+  width: 100%;
+  background: hsl(var(--secondary) / 0.5);
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-sm);
+  padding: 0.6rem 0.85rem;
+  color: hsl(var(--foreground));
+  font-size: 0.85rem;
+}
+
+.msg-search input:focus {
+  outline: none;
+  border-color: hsl(var(--primary));
+}
+
+.msg-search__item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.4rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+}
+
+.msg-search__item:hover {
+  background: hsl(var(--secondary) / 0.5);
+}
+
+.msg-search__empty {
+  padding: 0.6rem 0.4rem;
+  font-size: 0.8rem;
+  color: hsl(var(--muted-foreground));
+}
+
+/* ============ Λίστα συζητήσεων ============ */
+.msg-conv-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.5rem;
+}
+
+.msg-conv {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 0.75rem;
+  border-radius: var(--radius-md);
+  transition: background 0.2s ease;
+}
+
+.msg-conv:hover {
+  background: hsl(var(--secondary) / 0.45);
+}
+
+.msg-conv.is-active {
+  background: hsl(var(--primary) / 0.12);
+}
+
+.msg-conv__body {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.msg-conv__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.msg-conv__name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.msg-conv__time {
+  font-size: 0.7rem;
+  color: hsl(var(--muted-foreground));
+  flex-shrink: 0;
+}
+
+.msg-conv__snippet {
+  font-size: 0.8rem;
+  color: hsl(var(--muted-foreground));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.msg-conv__unread {
+  flex-shrink: 0;
+  min-width: 1.35rem;
+  height: 1.35rem;
+  padding-inline: 0.35rem;
+  border-radius: 999px;
+  background: var(--gradient-greek);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============ Συνομιλία ============ */
+.msg-main {
+  display: flex;
+  flex-direction: column;
+  max-height: 38rem;
+}
+
+.msg-chat {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+
+.msg-chat__head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.9rem 1.1rem;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.msg-chat__back {
+  display: none;
+  font-size: 1.1rem;
+  color: hsl(var(--muted-foreground));
+  padding-inline: 0.3rem;
+}
+
+.msg-chat__name {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.msg-chat__name:hover {
+  color: hsl(var(--primary-light));
+}
+
+.msg-chat__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: 12rem;
+}
+
+.msg-day {
+  align-self: center;
+  margin: 0.75rem 0 0.35rem;
+  padding: 0.2rem 0.8rem;
+  border-radius: 999px;
+  background: hsl(var(--secondary) / 0.6);
+  font-size: 0.7rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.msg-bubble {
+  max-width: min(80%, 30rem);
+  padding: 0.65rem 0.9rem;
+  border-radius: var(--radius-md);
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--secondary) / 0.45);
+  align-self: flex-start;
+}
+
+.msg-bubble--mine {
+  align-self: flex-end;
+  background: hsl(var(--primary) / 0.18);
+  border-color: hsl(var(--primary) / 0.35);
+}
+
+.msg-bubble.is-pending {
+  opacity: 0.55;
+}
+
+.msg-bubble__text {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.msg-bubble__time {
+  display: block;
+  margin-top: 0.3rem;
+  font-size: 0.68rem;
+  color: hsl(var(--muted-foreground));
+  text-align: right;
+}
+
+/* ============ Composer ============ */
+.msg-composer {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.6rem;
+  align-items: end;
+  padding: 0.85rem 1.1rem;
+  border-top: 1px solid hsl(var(--border));
+}
+
+.msg-composer textarea {
+  width: 100%;
+  resize: none;
+  background: hsl(var(--secondary) / 0.5);
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-sm);
+  padding: 0.65rem 0.85rem;
+  color: hsl(var(--foreground));
+  font-size: 0.9rem;
+  line-height: 1.5;
+  max-height: 10rem;
+}
+
+.msg-composer textarea:focus {
+  outline: none;
+  border-color: hsl(var(--primary));
+}
+
+.msg-composer .form-status {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+/* ============ Κενές καταστάσεις ============ */
+.msg-placeholder,
+.msg-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 3rem 1.5rem;
+  color: hsl(var(--muted-foreground));
+  text-align: center;
+}
+
+/* ============ Mobile: μία όψη τη φορά ============ */
+@media (max-width: 800px) {
+  .msg-app {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .msg-sidebar {
+    max-height: none;
+  }
+
+  .msg-main {
+    max-height: none;
+    min-height: 26rem;
+  }
+
+  /* Στη συνομιλία κρύβουμε τη λίστα· η επιστροφή γίνεται με το ← */
+  .msg-app.is-chat .msg-sidebar {
+    display: none;
+  }
+
+  .msg-app:not(.is-chat) .msg-main {
+    display: none;
+  }
+
+  .msg-chat__back {
+    display: inline-flex;
+  }
+
+  .msg-chat__body {
+    max-height: 60vh;
+  }
+}

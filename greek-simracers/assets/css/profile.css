@@ -1,0 +1,225 @@
+.profile-section {
+  padding-top: calc(var(--header-height) + 3rem);
+}
+
+/* ============ Avatar ============ */
+.profile-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.profile-avatar--lg {
+  width: 5.5rem;
+  height: 5.5rem;
+  font-size: 2.25rem;
+}
+
+/* ============ Κεφαλίδα προφίλ ============ */
+.profile-header {
+  display: flex;
+  gap: 1.75rem;
+  padding: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.profile-header__main {
+  min-width: 0;
+  flex: 1;
+}
+
+.profile-header__name {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  font-size: 1.6rem;
+  margin-bottom: 0.6rem;
+  overflow-wrap: anywhere;
+}
+
+.profile-header__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  font-size: 0.85rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.profile-header__actions {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.profile-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.1rem;
+}
+
+.profile-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--secondary) / 0.4);
+  font-size: 0.82rem;
+}
+
+.profile-chip__label {
+  color: hsl(var(--muted-foreground));
+}
+
+.profile-bio {
+  margin-top: 1.1rem;
+  color: hsl(var(--foreground) / 0.85);
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+
+/* ============ Πρόσφατα μηνύματα ============ */
+.profile-posts__title {
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 1.25rem;
+}
+
+.profile-post {
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 0.85rem;
+}
+
+.profile-post__thread {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: hsl(var(--primary-light));
+  margin-bottom: 0.4rem;
+  overflow-wrap: anywhere;
+}
+
+.profile-post__thread:hover {
+  text-decoration: underline;
+}
+
+.profile-post__snippet {
+  font-size: 0.9rem;
+  color: hsl(var(--muted-foreground));
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.profile-post__time {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground) / 0.8);
+}
+
+.profile-empty {
+  color: hsl(var(--muted-foreground));
+  padding: 1.5rem 0;
+}
+
+/* ============ Ρυθμίσεις ============ */
+.profile-settings {
+  max-width: 42rem;
+  margin-inline: auto;
+}
+
+.profile-settings__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.profile-settings__title {
+  font-size: 1.6rem;
+}
+
+.profile-panel {
+  padding: 1.75rem;
+}
+
+.profile-panel select {
+  background: hsl(var(--secondary) / 0.5);
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  color: hsl(var(--foreground));
+  width: 100%;
+}
+
+.profile-panel select:focus {
+  outline: none;
+  border-color: hsl(var(--primary));
+}
+
+.profile-panel input[readonly] {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.profile-panel textarea {
+  resize: vertical;
+}
+
+.profile-counter {
+  align-self: flex-end;
+  font-size: 0.72rem;
+  color: hsl(var(--muted-foreground) / 0.8);
+}
+
+.profile-hint {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.profile-signout {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid hsl(var(--border));
+}
+
+/* Το [hidden] χάνει από τα display rules των components — ρητή προτεραιότητα. */
+.profile-panel[hidden] {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .profile-header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.5rem;
+  }
+
+  .profile-header__name,
+  .profile-header__meta,
+  .profile-chips,
+  .profile-header__actions {
+    justify-content: center;
+  }
+
+  .profile-avatar--lg {
+    width: 4.5rem;
+    height: 4.5rem;
+    font-size: 1.85rem;
+  }
+}
