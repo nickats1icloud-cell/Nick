@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="el">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="assets/logo.png" />
+    <title>Forum - Greek Simracers</title>
+    <meta name="description" content="Το forum της ελληνικής κοινότητας sim racing — συζητήσεις για setups, αγώνες και εξοπλισμό." />
+
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+
+    <!-- Supabase JS (vendored, χωρίς CDN) — ορίζει το window.supabase -->
+    <script src="js/vendor/supabase.umd.js" defer></script>
+
+    <style>
+      /* Στυλ αποκλειστικά για τη σελίδα κατηγοριών του forum. */
+      .forum__stats {
+        display: flex;
+        justify-content: center;
+        gap: 3rem;
+        flex-wrap: wrap;
+        margin-bottom: 3rem;
+      }
+
+      .forum__list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        max-width: 52rem;
+        margin-inline: auto;
+      }
+
+      .forum__category {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+        transition: transform 0.15s ease, border-color 0.15s ease;
+      }
+
+      .forum__category:hover {
+        transform: translateY(-2px);
+        border-color: hsl(var(--accent));
+      }
+
+      .forum__icon {
+        flex-shrink: 0;
+        width: 3rem;
+        height: 3rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.4rem;
+        border-radius: var(--radius);
+        background: hsl(var(--secondary));
+      }
+
+      .forum__category-info {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .forum__category-info h3 {
+        margin-bottom: 0.2rem;
+        font-size: 1.05rem;
+      }
+
+      .forum__category-info p {
+        margin: 0;
+        color: hsl(var(--muted-foreground));
+        font-size: 0.9rem;
+      }
+
+      .forum__count {
+        flex-shrink: 0;
+        text-align: center;
+        color: hsl(var(--muted-foreground));
+        font-size: 0.8rem;
+      }
+
+      .forum__count strong {
+        display: block;
+        font-family: var(--font-display);
+        font-size: 1.2rem;
+        color: hsl(var(--foreground));
+      }
+
+      .forum__empty {
+        text-align: center;
+        color: hsl(var(--muted-foreground));
+        padding: 3rem 1rem;
+      }
+    </style>
+  </head>
+  <body data-page="forum">
+    <div id="site-header"></div>
+
+    <main>
+      <section class="gsr__section">
+        <div class="gsr__container">
+          <h1 class="gsr-hero__title" style="text-align: center">
+            <span class="gsr__text-gradient">Forum</span>
+          </h1>
+          <p class="gsr-hero__subtitle" style="margin-inline: auto; text-align: center">
+            Η καρδιά της κοινότητας: συζητήσεις για setups, αγώνες, εξοπλισμό και ό,τι αφορά το sim racing.
+          </p>
+
+          <!-- Στατιστικά (γεμίζουν με count queries) -->
+          <div class="forum__stats">
+            <div class="gsr-hero__stat"><strong id="stat-threads">—</strong><span>Threads</span></div>
+            <div class="gsr-hero__stat"><strong id="stat-posts">—</strong><span>Απαντήσεις</span></div>
+            <div class="gsr-hero__stat"><strong id="stat-members">—</strong><span>Μέλη</span></div>
+          </div>
+
+          <!-- Λίστα κατηγοριών -->
+          <div id="forum-list" class="forum__list">
+            <div class="gsr__skeleton" style="height: 6rem"></div>
+            <div class="gsr__skeleton" style="height: 6rem"></div>
+            <div class="gsr__skeleton" style="height: 6rem"></div>
+            <div class="gsr__skeleton" style="height: 6rem"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script type="module">
+      import { mountShell } from "./js/partials.js";
+      import { supabase } from "./js/supabase-client.js";
+      import { toast } from "./js/toast.js";
+      import { escapeHtml } from "./js/markdown.js";
+
+      mountShell(document.body.dataset.page);
+
+      const list = document.getElementById("forum-list");
+
+      /* Χρωματιστό τετράγωνο για το emoji της κατηγορίας — μόνο έγκυρα hex. */
+      function iconStyle(color) {
+        if (!/^#[0-9a-fA-F]{6}$/.test(color || "")) return "";
+        return ` style="background: ${color}26"`;
+      }
+
+      async function loadStats() {
+        const [threadsRes, postsRes, membersRes] = await Promise.all([
+          supabase.from("forum_threads").select("*", { count: "exact", head: true }),
+          supabase.from("forum_posts").select("*", { count: "exact", head: true }),
+          supabase.from("profiles").select("*", { count: "exact", head: true }),
+        ]);
+        document.getElementById("stat-threads").textContent = threadsRes.count ?? 0;
+        document.getElementById("stat-posts").textContent = postsRes.count ?? 0;
+        document.getElementById("stat-members").textContent = membersRes.count ?? 0;
+      }
+
+      async function loadCategories() {
+        const { data: categories, error } = await supabase
+          .from("forum_categories")
+          .select("id, name, description, icon, color, sort_order")
+          .order("sort_order", { ascending: true });
+        if (error) throw error;
+
+        if (!categories?.length) {
+          list.innerHTML = `<p class="forum__empty">Δεν υπάρχουν κατηγορίες ακόμα.</p>`;
+          return;
+        }
+
+        // Πλήθος threads ανά κατηγορία — παράλληλα count queries.
+        const counts = await Promise.all(
+          categories.map((cat) =>
+            supabase
+              .from("forum_threads")
+              .select("*", { count: "exact", head: true })
+              .eq("category_id", cat.id),
+          ),
+        );
+
+        list.innerHTML = categories
+          .map(
+            (cat, i) => `
+              <a class="gsr__card forum__category" href="forum-category.html?id=${encodeURIComponent(cat.id)}">
+                <div class="forum__icon"${iconStyle(cat.color)}>${escapeHtml(cat.icon || "💬")}</div>
+                <div class="forum__category-info">
+                  <h3>${escapeHtml(cat.name)}</h3>
+                  <p>${escapeHtml(cat.description || "")}</p>
+                </div>
+                <div class="forum__count"><strong>${counts[i].count ?? 0}</strong>threads</div>
+              </a>`,
+          )
+          .join("");
+      }
+
+      Promise.all([loadStats(), loadCategories()]).catch((err) => {
+        console.error(err);
+        toast.error("Δεν ήταν δυνατή η φόρτωση του forum.");
+        list.innerHTML = `<p class="forum__empty">Δεν υπάρχουν κατηγορίες ακόμα.</p>`;
+      });
+    </script>
+  </body>
+</html>

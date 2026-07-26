@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="el">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="assets/logo.png" />
+    <title>Μέλη - Greek Simracers</title>
+    <meta
+      name="description"
+      content="Γνώρισε τα μέλη της κοινότητας Greek Simracers — οδηγούς από όλη την Ελλάδα με πάθος για το sim racing."
+    />
+
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+
+    <!-- Supabase JS (vendored, χωρίς CDN) — ορίζει το window.supabase -->
+    <script src="js/vendor/supabase.umd.js" defer></script>
+
+    <!-- Τα tokens.css/base.css δεν κάνουν @import τις γραμματοσειρές, οπότε φορτώνονται εδώ. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Page-specific styles: ό,τι δεν καλύπτεται από τα shared components. -->
+    <style>
+      /* Μπάρα με αναζήτηση + φίλτρα + ταξινόμηση. */
+      .members__controls {
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr 1fr;
+        gap: 0.75rem;
+        margin-bottom: 2.5rem;
+      }
+
+      @media (max-width: 860px) {
+        .members__controls {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .members__controls {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Κάρτα μέλους. */
+      .members__card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      .members__card:hover {
+        transform: translateY(-3px);
+        border-color: hsl(var(--accent) / 0.6);
+        box-shadow: var(--shadow-glow);
+      }
+
+      /* Avatar: εικόνα ή κύκλος με το αρχικό γράμμα σε gradient φόντο. */
+      .members__avatar-wrap {
+        position: relative;
+        margin-bottom: 0.9rem;
+      }
+
+      .members__avatar {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid hsl(var(--border));
+      }
+
+      .members__avatar--initial {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--gradient-greek);
+        color: hsl(var(--primary-foreground));
+        font-family: var(--font-display);
+        font-size: 1.6rem;
+        font-weight: 700;
+      }
+
+      /* Πράσινη κουκκίδα "online" πάνω στο avatar. */
+      .members__online {
+        position: absolute;
+        bottom: 3px;
+        right: 3px;
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        background: hsl(142 71% 45%);
+        border: 2px solid hsl(var(--card));
+      }
+
+      .members__name {
+        font-size: 1.05rem;
+        margin-bottom: 0.15rem;
+      }
+
+      .members__username {
+        color: hsl(var(--muted-foreground));
+        font-size: 0.85rem;
+        margin-bottom: 0.6rem;
+      }
+
+      .members__location {
+        color: hsl(var(--muted-foreground));
+        font-size: 0.85rem;
+        margin-bottom: 0.6rem;
+      }
+
+      .members__badges {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.4rem;
+        margin-bottom: 0.75rem;
+      }
+
+      /* Bio κομμένο στις 2 γραμμές. */
+      .members__bio {
+        color: hsl(var(--muted-foreground));
+        font-size: 0.88rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        margin-bottom: 0;
+      }
+
+      .members__count {
+        text-align: center;
+        color: hsl(var(--muted-foreground));
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+      }
+    </style>
+  </head>
+  <body data-page="members">
+    <div id="site-header"></div>
+
+    <main>
+      <section class="gsr__section">
+        <div class="gsr__container">
+          <h1 class="gsr-hero__title" style="text-align: center">
+            Τα <span class="gsr__text-gradient">Μέλη</span> μας
+          </h1>
+          <p class="gsr-hero__subtitle" style="text-align: center">
+            Οι οδηγοί της κοινότητας — βρες συμπαίκτες, αντιπάλους και φίλους της πίστας.
+          </p>
+
+          <!-- Controls: όλα λειτουργούν client-side πάνω στα ήδη φορτωμένα προφίλ. -->
+          <div class="members__controls">
+            <input
+              type="search"
+              class="gsr__input"
+              id="members-search"
+              placeholder="Αναζήτηση με όνομα, username ή τοποθεσία…"
+              aria-label="Αναζήτηση μελών"
+            />
+            <select class="gsr__select" id="members-sim" aria-label="Φίλτρο αγαπημένου sim">
+              <option value="">Αγαπημένο Sim: Όλα</option>
+              <!-- Οι επιλογές χτίζονται δυναμικά από τα δεδομένα. -->
+            </select>
+            <select class="gsr__select" id="members-setup" aria-label="Φίλτρο setup">
+              <option value="">Setup: Όλα</option>
+              <option value="wheel">Τιμόνι</option>
+              <option value="controller">Controller</option>
+              <option value="keyboard">Πληκτρολόγιο</option>
+            </select>
+            <select class="gsr__select" id="members-sort" aria-label="Ταξινόμηση">
+              <option value="newest">Νεότερα</option>
+              <option value="oldest">Παλαιότερα</option>
+              <option value="alpha">Αλφαβητικά</option>
+            </select>
+          </div>
+
+          <p class="members__count" id="members-count" hidden></p>
+
+          <!-- Skeletons όσο φορτώνουν τα δεδομένα· αντικαθίστανται από JS. -->
+          <div class="gsr__grid gsr__grid--3" id="members-grid">
+            <div class="gsr__skeleton" style="height: 280px"></div>
+            <div class="gsr__skeleton" style="height: 280px"></div>
+            <div class="gsr__skeleton" style="height: 280px"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script type="module">
+      import { mountShell } from "./js/partials.js";
+      import { supabase } from "./js/supabase-client.js";
+
+      mountShell(document.body.dataset.page);
+
+      const grid = document.getElementById("members-grid");
+      const countEl = document.getElementById("members-count");
+      const searchInput = document.getElementById("members-search");
+      const simSelect = document.getElementById("members-sim");
+      const setupSelect = document.getElementById("members-setup");
+      const sortSelect = document.getElementById("members-sort");
+
+      const ONLINE_WINDOW_MS = 5 * 60 * 1000; // "online" = last_seen μέσα στα τελευταία 5 λεπτά
+
+      // Ελληνικές ετικέτες για τα setup badges — δέχεται είτε αγγλικές τιμές
+      // (wheel/controller/keyboard) είτε ήδη ελληνικές, χωρίς να σκάει σε άγνωστες.
+      const SETUP_LABELS = {
+        wheel: "Τιμόνι",
+        controller: "Controller",
+        keyboard: "Πληκτρολόγιο",
+      };
+
+      // Κανονικοποίηση του setup_type σε ένα από τα τρία buckets του φίλτρου.
+      function normalizeSetup(value) {
+        const v = String(value || "").toLowerCase();
+        if (v.includes("wheel") || v.includes("τιμ")) return "wheel";
+        if (v.includes("controller") || v.includes("χειρ")) return "controller";
+        if (v.includes("keyboard") || v.includes("πληκ")) return "keyboard";
+        return "";
+      }
+
+      function setupLabel(value) {
+        return SETUP_LABELS[normalizeSetup(value)] || String(value || "");
+      }
+
+      function isOnline(profile) {
+        if (!profile.show_online || !profile.last_seen) return false;
+        return Date.now() - new Date(profile.last_seen).getTime() < ONLINE_WINDOW_MS;
+      }
+
+      let profiles = []; // όλα τα εγκεκριμένα προφίλ· φιλτράρισμα/ταξινόμηση client-side
+
+      function showEmptyState(message) {
+        grid.innerHTML = "";
+        const card = document.createElement("div");
+        card.className = "gsr__card";
+        card.style.cssText = "grid-column: 1 / -1; text-align: center";
+        const p = document.createElement("p");
+        p.style.marginBottom = "0";
+        p.textContent = message;
+        card.appendChild(p);
+        grid.appendChild(card);
+      }
+
+      function memberCard(profile) {
+        const card = document.createElement("article");
+        card.className = "gsr__card members__card";
+
+        // Avatar: εικόνα αν υπάρχει, αλλιώς κύκλος με το αρχικό γράμμα.
+        const wrap = document.createElement("div");
+        wrap.className = "members__avatar-wrap";
+        const name = profile.display_name || profile.username || "?";
+        if (profile.avatar_url) {
+          const img = document.createElement("img");
+          img.className = "members__avatar";
+          img.src = profile.avatar_url;
+          img.alt = name;
+          img.loading = "lazy";
+          wrap.appendChild(img);
+        } else {
+          const initial = document.createElement("div");
+          initial.className = "members__avatar members__avatar--initial";
+          initial.setAttribute("aria-hidden", "true");
+          initial.textContent = name.trim().charAt(0).toUpperCase() || "?";
+          wrap.appendChild(initial);
+        }
+        if (isOnline(profile)) {
+          const dot = document.createElement("span");
+          dot.className = "members__online";
+          dot.title = "Online τώρα";
+          wrap.appendChild(dot);
+        }
+        card.appendChild(wrap);
+
+        const nameEl = document.createElement("h3");
+        nameEl.className = "members__name";
+        nameEl.textContent = profile.display_name || profile.username || "Ανώνυμος racer";
+        card.appendChild(nameEl);
+
+        if (profile.username) {
+          const userEl = document.createElement("p");
+          userEl.className = "members__username";
+          userEl.textContent = `@${profile.username}`;
+          card.appendChild(userEl);
+        }
+
+        if (profile.location) {
+          const locEl = document.createElement("p");
+          locEl.className = "members__location";
+          locEl.textContent = `📍 ${profile.location}`;
+          card.appendChild(locEl);
+        }
+
+        // Badges: αγαπημένο sim + setup.
+        if (profile.favorite_sim || profile.setup_type) {
+          const badges = document.createElement("div");
+          badges.className = "members__badges";
+          if (profile.favorite_sim) {
+            const sim = document.createElement("span");
+            sim.className = "gsr__badge gsr__badge--accent";
+            sim.textContent = `🎮 ${profile.favorite_sim}`;
+            badges.appendChild(sim);
+          }
+          if (profile.setup_type) {
+            const setup = document.createElement("span");
+            setup.className = "gsr__badge gsr__badge--outline";
+            setup.textContent = setupLabel(profile.setup_type);
+            badges.appendChild(setup);
+          }
+          card.appendChild(badges);
+        }
+
+        if (profile.bio) {
+          const bio = document.createElement("p");
+          bio.className = "members__bio";
+          bio.textContent = profile.bio; // textContent = ασφαλές έναντι HTML injection
+          card.appendChild(bio);
+        }
+
+        return card;
+      }
+
+      function applyFilters() {
+        const query = searchInput.value.trim().toLowerCase();
+        const sim = simSelect.value;
+        const setup = setupSelect.value;
+
+        let visible = profiles.filter((p) => {
+          if (query) {
+            const haystack = [p.display_name, p.username, p.location]
+              .filter(Boolean)
+              .join(" ")
+              .toLowerCase();
+            if (!haystack.includes(query)) return false;
+          }
+          if (sim && p.favorite_sim !== sim) return false;
+          if (setup && normalizeSetup(p.setup_type) !== setup) return false;
+          return true;
+        });
+
+        // Ταξινόμηση: εγγραφή (νεότερα/παλαιότερα) ή αλφαβητικά στο εμφανιζόμενο όνομα.
+        const sort = sortSelect.value;
+        visible = visible.slice().sort((a, b) => {
+          if (sort === "alpha") {
+            const nameA = a.display_name || a.username || "";
+            const nameB = b.display_name || b.username || "";
+            return nameA.localeCompare(nameB, "el");
+          }
+          const timeA = new Date(a.created_at || 0).getTime();
+          const timeB = new Date(b.created_at || 0).getTime();
+          return sort === "oldest" ? timeA - timeB : timeB - timeA;
+        });
+
+        if (profiles.length === 0) {
+          countEl.hidden = true;
+          showEmptyState("Δεν υπάρχουν μέλη ακόμα — γίνε το πρώτο!");
+          return;
+        }
+
+        countEl.hidden = false;
+        countEl.textContent = `${visible.length} από ${profiles.length} μέλη`;
+
+        if (visible.length === 0) {
+          showEmptyState("Κανένα μέλος δεν ταιριάζει στα φίλτρα σου.");
+          return;
+        }
+
+        grid.innerHTML = "";
+        visible.forEach((p) => grid.appendChild(memberCard(p)));
+      }
+
+      // Οι επιλογές του φίλτρου sim χτίζονται από τα πραγματικά δεδομένα.
+      function buildSimOptions() {
+        const sims = [...new Set(profiles.map((p) => p.favorite_sim).filter(Boolean))].sort((a, b) =>
+          a.localeCompare(b, "el"),
+        );
+        for (const sim of sims) {
+          const opt = document.createElement("option");
+          opt.value = sim;
+          opt.textContent = sim;
+          simSelect.appendChild(opt);
+        }
+      }
+
+      searchInput.addEventListener("input", applyFilters);
+      simSelect.addEventListener("change", applyFilters);
+      setupSelect.addEventListener("change", applyFilters);
+      sortSelect.addEventListener("change", applyFilters);
+
+      async function loadMembers() {
+        try {
+          const { data, error } = await supabase
+            .from("profiles")
+            .select(
+              "user_id,display_name,username,avatar_url,bio,location,favorite_sim,setup_type,favorite_track,last_seen,show_online,created_at",
+            )
+            .eq("is_approved", true);
+
+          if (error) throw error;
+          profiles = data || [];
+          buildSimOptions();
+          applyFilters();
+        } catch {
+          // Supabase μη ρυθμισμένο ή σφάλμα δικτύου — graceful fallback.
+          profiles = [];
+          countEl.hidden = true;
+          showEmptyState("Δεν ήταν δυνατή η φόρτωση των μελών. Δοκίμασε ξανά αργότερα.");
+        }
+      }
+
+      loadMembers();
+    </script>
+  </body>
+</html>

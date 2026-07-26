@@ -1,0 +1,79 @@
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap");
+
+/*
+ * Design tokens for Greek Simracers.
+ * Dark is the default theme (matches the racing/night aesthetic); the
+ * `.light` class on <html> overrides for the light-mode toggle.
+ * Brand is a Greek-flag blue/white — named `--greek-*`, not "racing red".
+ */
+:root {
+  --background: 210 40% 6%;
+  --foreground: 210 20% 95%;
+
+  --card: 210 35% 9%;
+  --card-foreground: 210 20% 95%;
+
+  --primary: 214 89% 40%;
+  --primary-foreground: 210 20% 98%;
+
+  --secondary: 210 30% 14%;
+  --secondary-foreground: 210 20% 95%;
+
+  --muted: 210 25% 14%;
+  --muted-foreground: 210 15% 65%;
+
+  --accent: 214 89% 52%;
+  --accent-foreground: 210 20% 98%;
+
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 210 20% 98%;
+
+  --border: 210 25% 16%;
+  --input: 210 25% 16%;
+  --ring: 214 89% 52%;
+
+  --radius: 0.5rem;
+  --radius-sm: 0.25rem;
+  --radius-lg: 0.75rem;
+
+  --greek-blue: 214 89% 40%;
+  --greek-blue-light: 214 89% 62%;
+  --greek-white: 210 20% 98%;
+
+  --gradient-greek: linear-gradient(135deg, hsl(214 89% 38%), hsl(214 89% 62%));
+  --gradient-dark: linear-gradient(180deg, hsl(210 40% 6%), hsl(210 35% 10%));
+  --gradient-card: linear-gradient(145deg, hsl(210 35% 9%), hsl(210 30% 13%));
+  --shadow-glow: 0 0 40px hsl(214 89% 52% / 0.35);
+
+  --font-display: "Orbitron", sans-serif;
+  --font-body: "Inter", sans-serif;
+
+  --container-max: 1200px;
+}
+
+:root.light {
+  --background: 210 20% 98%;
+  --foreground: 210 40% 8%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 210 40% 8%;
+
+  --secondary: 210 25% 93%;
+  --secondary-foreground: 210 40% 8%;
+
+  --muted: 210 20% 93%;
+  --muted-foreground: 210 15% 40%;
+
+  --accent: 214 89% 46%;
+  --accent-foreground: 210 20% 98%;
+
+  --destructive: 0 72% 45%;
+
+  --border: 210 20% 88%;
+  --input: 210 20% 88%;
+  --ring: 214 89% 46%;
+
+  --gradient-dark: linear-gradient(180deg, hsl(210 20% 98%), hsl(210 20% 94%));
+  --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(210 20% 96%));
+  --shadow-glow: 0 0 30px hsl(214 89% 46% / 0.2);
+}

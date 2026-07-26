@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="el">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="assets/logo.png" />
+    <title>Greek Simracers - Η Ελληνική SimRacing Κοινότητα</title>
+    <meta
+      name="description"
+      content="Η μεγαλύτερη ελληνική κοινότητα για τους λάτρεις του Sim Racing. Forum, championships, άρθρα και πολλά περισσότερα."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Greek Simracers - Η Ελληνική SimRacing Κοινότητα" />
+    <meta property="og:image" content="assets/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+
+    <!-- Supabase JS (vendored, χωρίς CDN) — ορίζει το window.supabase -->
+    <script src="js/vendor/supabase.umd.js" defer></script>
+    <style>
+      body {
+        overflow: hidden;
+      }
+      .intro {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: 1.5rem;
+      }
+      .intro__logo {
+        width: 96px;
+        height: 96px;
+        margin-bottom: 0.5rem;
+      }
+      .intro__line {
+        font-family: var(--font-display);
+        font-size: clamp(1.5rem, 5vw, 2.75rem);
+        font-weight: 700;
+        min-height: 1.3em;
+      }
+      .intro__line::after {
+        content: "|";
+        margin-left: 2px;
+        animation: gsr-blink 1s step-end infinite;
+      }
+      @keyframes gsr-blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      .intro__progress {
+        width: min(320px, 70vw);
+        height: 4px;
+        border-radius: 999px;
+        background: hsl(var(--secondary));
+        overflow: hidden;
+      }
+      .intro__progress-bar {
+        height: 100%;
+        width: 0%;
+        background: var(--gradient-greek);
+        transition: width 0.1s linear;
+      }
+      .intro__actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+      }
+      .intro__actions--visible {
+        opacity: 1;
+      }
+      .intro__skip {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+      }
+    </style>
+  </head>
+  <body data-page="intro">
+    <div class="intro gsr__bg-dark-gradient">
+      <canvas class="gsr-bg-canvas" id="bg-canvas"></canvas>
+
+      <a href="home.html" class="intro__skip gsr__btn gsr__btn--ghost gsr__btn--sm" id="skip-link">SKIP →</a>
+
+      <img src="assets/logo.png" alt="Greek Simracers" class="intro__logo gsr__pulse" />
+      <div class="intro__line" id="intro-line"></div>
+      <div class="intro__progress"><div class="intro__progress-bar" id="intro-progress"></div></div>
+
+      <div class="intro__actions" id="intro-actions">
+        <a href="home.html" class="gsr__btn gsr__btn--primary" id="enter-link">ENTER</a>
+      </div>
+    </div>
+
+    <script type="module">
+      import { mountParticles } from "./js/backgrounds.js";
+
+      const SESSION_KEY = "gsr_intro_seen";
+
+      if (sessionStorage.getItem(SESSION_KEY)) {
+        window.location.replace("home.html");
+      } else {
+        mountParticles(document.getElementById("bg-canvas"), { count: 70, reactive: true });
+
+        const lines = ["Racing is our Passion", "Greek SimRacers Hub"];
+        const lineEl = document.getElementById("intro-line");
+        const progressBar = document.getElementById("intro-progress");
+        const actions = document.getElementById("intro-actions");
+
+        async function typewrite(text, speed = 45) {
+          lineEl.textContent = "";
+          for (const char of text) {
+            lineEl.textContent += char;
+            await new Promise((r) => setTimeout(r, speed));
+          }
+          await new Promise((r) => setTimeout(r, 500));
+        }
+
+        const DURATION_MS = 2600;
+        const start = performance.now();
+        function tick(now) {
+          const pct = Math.min(100, ((now - start) / DURATION_MS) * 100);
+          progressBar.style.width = `${pct}%`;
+          if (pct < 100) requestAnimationFrame(tick);
+        }
+        requestAnimationFrame(tick);
+
+        (async () => {
+          for (const line of lines) await typewrite(line);
+          actions.classList.add("intro__actions--visible");
+        })();
+
+        function enter() {
+          sessionStorage.setItem(SESSION_KEY, "1");
+        }
+        document.getElementById("enter-link").addEventListener("click", enter);
+        document.getElementById("skip-link").addEventListener("click", enter);
+      }
+    </script>
+  </body>
+</html>

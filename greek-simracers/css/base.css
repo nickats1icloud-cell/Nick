@@ -1,0 +1,366 @@
+/* Reset + typography + layout primitives + shared utility classes. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-body);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display);
+  line-height: 1.15;
+  margin: 0 0 0.5em;
+}
+
+p {
+  margin: 0 0 1em;
+}
+
+ul,
+ol {
+  margin: 0 0 1em;
+  padding-left: 1.5em;
+}
+
+/* Layout */
+
+.gsr__container {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+.gsr__section {
+  padding-block: 4rem;
+}
+
+/* Utilities */
+
+.gsr__text-gradient {
+  background: var(--gradient-greek);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.gsr__bg-gradient {
+  background: var(--gradient-greek);
+}
+
+.gsr__bg-dark-gradient {
+  background: var(--gradient-dark);
+}
+
+.gsr__bg-card-gradient {
+  background: var(--gradient-card);
+}
+
+.gsr__glow {
+  box-shadow: var(--shadow-glow);
+}
+
+/* Subtle diagonal-stripe texture used as a background accent. */
+.gsr__carbon-texture {
+  background-image: repeating-linear-gradient(
+    45deg,
+    hsl(var(--foreground) / 0.02) 0,
+    hsl(var(--foreground) / 0.02) 1px,
+    transparent 1px,
+    transparent 8px
+  );
+}
+
+@keyframes gsr-pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px hsl(var(--accent) / 0.25);
+  }
+  50% {
+    box-shadow: 0 0 40px hsl(var(--accent) / 0.5);
+  }
+}
+
+.gsr__pulse {
+  animation: gsr-pulse-glow 2.4s ease-in-out infinite;
+}
+
+.gsr__sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.gsr__skeleton {
+  background: linear-gradient(90deg, hsl(var(--muted)) 25%, hsl(var(--secondary)) 37%, hsl(var(--muted)) 63%);
+  background-size: 400% 100%;
+  animation: gsr-skeleton 1.4s ease infinite;
+  border-radius: var(--radius);
+}
+
+@keyframes gsr-skeleton {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+/* Buttons */
+
+.gsr__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.4rem;
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+  white-space: nowrap;
+}
+
+.gsr__btn:active {
+  transform: translateY(1px);
+}
+
+.gsr__btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.gsr__btn--primary {
+  background: var(--gradient-greek);
+  color: hsl(var(--primary-foreground));
+}
+
+.gsr__btn--primary:hover {
+  box-shadow: var(--shadow-glow);
+}
+
+.gsr__btn--outline {
+  background: transparent;
+  border-color: hsl(var(--border));
+  color: hsl(var(--foreground));
+}
+
+.gsr__btn--outline:hover {
+  border-color: hsl(var(--accent));
+  color: hsl(var(--accent));
+}
+
+.gsr__btn--ghost {
+  background: transparent;
+  color: hsl(var(--muted-foreground));
+}
+
+.gsr__btn--ghost:hover {
+  color: hsl(var(--foreground));
+  background: hsl(var(--secondary));
+}
+
+.gsr__btn--sm {
+  padding: 0.45rem 0.9rem;
+  font-size: 0.85rem;
+}
+
+.gsr__btn--block {
+  width: 100%;
+}
+
+/* Cards */
+
+.gsr__card {
+  background: var(--gradient-card);
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+}
+
+/* Forms */
+
+.gsr__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.1rem;
+}
+
+.gsr__label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: hsl(var(--muted-foreground));
+}
+
+.gsr__input,
+.gsr__textarea,
+.gsr__select {
+  background: hsl(var(--input));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  padding: 0.65rem 0.85rem;
+  color: hsl(var(--foreground));
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.gsr__input:focus,
+.gsr__textarea:focus,
+.gsr__select:focus {
+  outline: none;
+  border-color: hsl(var(--ring));
+  box-shadow: 0 0 0 3px hsl(var(--ring) / 0.25);
+}
+
+.gsr__textarea {
+  resize: vertical;
+  min-height: 8rem;
+}
+
+.gsr__error {
+  color: hsl(var(--destructive));
+  font-size: 0.8rem;
+}
+
+/* Badges */
+
+.gsr__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: hsl(var(--secondary));
+  color: hsl(var(--secondary-foreground));
+}
+
+.gsr__badge--accent {
+  background: hsl(var(--accent) / 0.15);
+  color: hsl(var(--accent));
+}
+
+.gsr__badge--outline {
+  background: transparent;
+  border: 1px solid hsl(var(--border));
+}
+
+/* Toasts (js/toast.js renders into #toast-root) */
+
+#toast-root {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: min(360px, calc(100vw - 2rem));
+}
+
+.gsr__toast {
+  padding: 0.85rem 1rem;
+  border-radius: var(--radius);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  box-shadow: 0 8px 24px hsl(0 0% 0% / 0.35);
+  font-size: 0.9rem;
+  animation: gsr-toast-in 0.2s ease;
+}
+
+.gsr__toast--error {
+  border-color: hsl(var(--destructive) / 0.6);
+}
+
+.gsr__toast--success {
+  border-color: hsl(var(--accent) / 0.6);
+}
+
+@keyframes gsr-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Markdown / user content rendering (articles, forum posts) */
+
+.gsr__prose {
+  color: hsl(var(--foreground));
+}
+.gsr__prose h1,
+.gsr__prose h2,
+.gsr__prose h3 {
+  margin-top: 1.5em;
+}
+.gsr__prose a {
+  color: hsl(var(--accent));
+  text-decoration: underline;
+}
+.gsr__prose blockquote {
+  border-left: 3px solid hsl(var(--accent) / 0.5);
+  padding-left: 1rem;
+  color: hsl(var(--muted-foreground));
+  font-style: italic;
+}
+.gsr__prose code {
+  background: hsl(var(--muted));
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9em;
+}
+.gsr__prose pre code {
+  display: block;
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+@media (max-width: 720px) {
+  .gsr__section {
+    padding-block: 2.5rem;
+  }
+}

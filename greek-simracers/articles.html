@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="el">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="assets/logo.png" />
+    <title>Άρθρα &amp; Νέα - Greek Simracers</title>
+    <meta name="description" content="Άρθρα, νέα, οδηγοί setup και συνεντεύξεις από την ελληνική κοινότητα sim racing." />
+
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+
+    <!-- Supabase JS (vendored, χωρίς CDN) — ορίζει το window.supabase -->
+    <script src="js/vendor/supabase.umd.js" defer></script>
+
+    <style>
+      /* Στυλ αποκλειστικά για τη σελίδα των άρθρων. */
+      .articles__layout {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 2rem;
+        align-items: start;
+      }
+
+      .articles__sidebar h3 {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: hsl(var(--muted-foreground));
+      }
+
+      .articles__filter {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 0.5rem 0.75rem;
+        margin-bottom: 0.25rem;
+        border: none;
+        border-radius: var(--radius);
+        background: transparent;
+        color: hsl(var(--muted-foreground));
+        cursor: pointer;
+      }
+
+      .articles__filter:hover {
+        background: hsl(var(--secondary));
+        color: hsl(var(--foreground));
+      }
+
+      .articles__filter--active {
+        background: hsl(var(--accent) / 0.15);
+        color: hsl(var(--accent));
+        font-weight: 600;
+      }
+
+      .articles__toolbar {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+      }
+
+      .articles__search {
+        flex: 1;
+        min-width: 220px;
+        max-width: 26rem;
+      }
+
+      .articles__grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+      }
+
+      .articles__card {
+        padding: 0;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      .articles__card:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-glow);
+      }
+
+      .articles__cover {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        object-fit: cover;
+      }
+
+      .articles__cover--placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .articles__cover--placeholder img {
+        height: 3.5rem;
+        opacity: 0.85;
+      }
+
+      .articles__card-body {
+        padding: 1.25rem;
+      }
+
+      .articles__badges {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.6rem;
+      }
+
+      .articles__card-title {
+        font-size: 1.05rem;
+        margin-bottom: 0.4rem;
+      }
+
+      .articles__meta,
+      .articles__counts {
+        font-size: 0.8rem;
+        color: hsl(var(--muted-foreground));
+        margin: 0;
+      }
+
+      .articles__counts {
+        display: flex;
+        gap: 1rem;
+        margin-top: 0.6rem;
+      }
+
+      .articles__empty {
+        grid-column: 1 / -1;
+        text-align: center;
+        color: hsl(var(--muted-foreground));
+        padding: 3rem 1rem;
+      }
+
+      .articles__dialog {
+        background: var(--gradient-card);
+        color: hsl(var(--foreground));
+        border: 1px solid hsl(var(--border));
+        border-radius: var(--radius-lg);
+        padding: 1.75rem;
+        width: min(560px, calc(100vw - 2rem));
+      }
+
+      .articles__dialog::backdrop {
+        background: hsl(210 40% 3% / 0.7);
+        backdrop-filter: blur(3px);
+      }
+
+      .articles__dialog-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+        margin-top: 0.5rem;
+      }
+
+      @media (max-width: 860px) {
+        .articles__layout {
+          grid-template-columns: 1fr;
+        }
+        .articles__grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body data-page="articles">
+    <div id="site-header"></div>
+
+    <main>
+      <section class="gsr__section">
+        <div class="gsr__container">
+          <h1 class="gsr-hero__title" style="text-align: center">
+            Άρθρα &amp; <span class="gsr__text-gradient">Νέα</span>
+          </h1>
+          <p class="gsr-hero__subtitle" style="margin-inline: auto; text-align: center">
+            Νέα της κοινότητας, οδηγοί setup, αναλύσεις αγώνων και συνεντεύξεις.
+          </p>
+
+          <div class="articles__layout">
+            <!-- Φίλτρα κατηγοριών (γεμίζουν δυναμικά από τη βάση) -->
+            <aside class="articles__sidebar">
+              <h3>Κατηγορίες</h3>
+              <div id="category-filters">
+                <div class="gsr__skeleton" style="height: 2.2rem; margin-bottom: 0.5rem"></div>
+                <div class="gsr__skeleton" style="height: 2.2rem; margin-bottom: 0.5rem"></div>
+                <div class="gsr__skeleton" style="height: 2.2rem"></div>
+              </div>
+            </aside>
+
+            <div>
+              <div class="articles__toolbar">
+                <input
+                  type="search"
+                  id="article-search"
+                  class="gsr__input articles__search"
+                  placeholder="Αναζήτηση άρθρου…"
+                  aria-label="Αναζήτηση άρθρου"
+                />
+                <button type="button" id="new-article-btn" class="gsr__btn gsr__btn--primary" hidden>
+                  Νέο Άρθρο
+                </button>
+              </div>
+
+              <div id="articles-grid" class="articles__grid">
+                <div class="gsr__skeleton" style="height: 18rem"></div>
+                <div class="gsr__skeleton" style="height: 18rem"></div>
+                <div class="gsr__skeleton" style="height: 18rem"></div>
+                <div class="gsr__skeleton" style="height: 18rem"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Dialog δημιουργίας νέου άρθρου (μόνο για συνδεδεμένα/εγκεκριμένα μέλη) -->
+    <dialog id="article-dialog" class="articles__dialog">
+      <h2 style="margin-bottom: 1rem">Νέο Άρθρο</h2>
+      <form id="article-form">
+        <div class="gsr__field">
+          <label class="gsr__label" for="article-title">Τίτλος</label>
+          <input type="text" id="article-title" class="gsr__input" required maxlength="160" />
+        </div>
+        <div class="gsr__field">
+          <label class="gsr__label" for="article-category">Κατηγορία</label>
+          <select id="article-category" class="gsr__select" required></select>
+        </div>
+        <div class="gsr__field">
+          <label class="gsr__label" for="article-cover">Εικόνα εξωφύλλου (URL, προαιρετικό)</label>
+          <input type="url" id="article-cover" class="gsr__input" placeholder="https://…" />
+        </div>
+        <div class="gsr__field">
+          <label class="gsr__label" for="article-content">Περιεχόμενο</label>
+          <textarea id="article-content" class="gsr__textarea" required rows="10"></textarea>
+          <span class="gsr__label" style="font-weight: 400">Υποστηρίζεται Markdown</span>
+        </div>
+        <div class="articles__dialog-actions">
+          <button type="button" id="article-cancel" class="gsr__btn gsr__btn--outline">Άκυρο</button>
+          <button type="submit" id="article-submit" class="gsr__btn gsr__btn--primary">Δημοσίευση</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div id="site-footer"></div>
+
+    <script type="module">
+      import { mountShell } from "./js/partials.js";
+      import { supabase } from "./js/supabase-client.js";
+      import { onAuthChange, getUser } from "./js/auth.js";
+      import { toast } from "./js/toast.js";
+      import { escapeHtml } from "./js/markdown.js";
+
+      mountShell(document.body.dataset.page);
+
+      const grid = document.getElementById("articles-grid");
+      const filtersEl = document.getElementById("category-filters");
+      const searchInput = document.getElementById("article-search");
+      const newBtn = document.getElementById("new-article-btn");
+      const dialog = document.getElementById("article-dialog");
+
+      let categories = [];
+      let articles = [];
+      let activeCategory = "all";
+      let searchTerm = "";
+
+      const fmtDate = (iso) =>
+        new Date(iso).toLocaleDateString("el-GR", { day: "numeric", month: "short", year: "numeric" });
+
+      /* Χρώμα κατηγορίας ως φόντο με χαμηλή διαφάνεια — μόνο για έγκυρα hex. */
+      function badgeStyle(color) {
+        if (!/^#[0-9a-fA-F]{6}$/.test(color || "")) return "";
+        return ` style="background: ${color}26; color: ${color}"`;
+      }
+
+      function safeCover(url) {
+        return /^https?:\/\/\S+$/i.test(url || "");
+      }
+
+      function cardHtml(article) {
+        const cat = article.category;
+        const cover = safeCover(article.cover_url)
+          ? `<img class="articles__cover" src="${escapeHtml(article.cover_url)}" alt="" loading="lazy" />`
+          : `<div class="articles__cover articles__cover--placeholder gsr__bg-gradient">
+               <img src="assets/logo.png" alt="" />
+             </div>`;
+        return `
+          <a class="gsr__card articles__card" href="article.html?id=${encodeURIComponent(article.id)}">
+            ${cover}
+            <div class="articles__card-body">
+              <div class="articles__badges">
+                ${cat ? `<span class="gsr__badge"${badgeStyle(cat.color)}>${escapeHtml(cat.name)}</span>` : ""}
+                ${article.pinned ? `<span class="gsr__badge gsr__badge--outline">📌 Καρφιτσωμένο</span>` : ""}
+              </div>
+              <h3 class="articles__card-title">${escapeHtml(article.title)}</h3>
+              <p class="articles__meta">${escapeHtml(article.authorName)} · ${fmtDate(article.created_at)}</p>
+              <p class="articles__counts">
+                <span>👁 ${article.views ?? 0}</span>
+                <span>❤ ${article.likeCount}</span>
+                <span>💬 ${article.commentCount}</span>
+              </p>
+            </div>
+          </a>`;
+      }
+
+      function renderFilters() {
+        const options = [{ id: "all", name: "Όλα" }, ...categories];
+        filtersEl.innerHTML = options
+          .map(
+            (cat) => `
+              <button type="button"
+                      class="articles__filter${String(cat.id) === String(activeCategory) ? " articles__filter--active" : ""}"
+                      data-category="${escapeHtml(String(cat.id))}">
+                ${escapeHtml(cat.name)}
+              </button>`,
+          )
+          .join("");
+        filtersEl.querySelectorAll(".articles__filter").forEach((btn) =>
+          btn.addEventListener("click", () => {
+            activeCategory = btn.dataset.category;
+            renderFilters();
+            renderGrid();
+          }),
+        );
+      }
+
+      function renderGrid() {
+        const term = searchTerm.trim().toLowerCase();
+        const visible = articles.filter(
+          (article) =>
+            (activeCategory === "all" || String(article.category_id) === String(activeCategory)) &&
+            (!term || article.title.toLowerCase().includes(term)),
+        );
+        grid.innerHTML = visible.length
+          ? visible.map(cardHtml).join("")
+          : `<p class="articles__empty">Δεν υπάρχουν άρθρα ακόμα.</p>`;
+      }
+
+      async function loadData() {
+        try {
+          const [catsRes, artsRes] = await Promise.all([
+            supabase.from("article_categories").select("id, name, slug, color").order("name"),
+            supabase
+              .from("articles")
+              .select("id, author_id, category_id, title, cover_url, pinned, views, created_at")
+              .eq("published", true)
+              .order("pinned", { ascending: false })
+              .order("created_at", { ascending: false }),
+          ]);
+          if (catsRes.error) throw catsRes.error;
+          if (artsRes.error) throw artsRes.error;
+          categories = catsRes.data ?? [];
+          articles = artsRes.data ?? [];
+
+          // Μετρητές likes/σχολίων και ονόματα συντακτών, μαζικά σε 3 queries.
+          const articleIds = articles.map((a) => a.id);
+          const authorIds = [...new Set(articles.map((a) => a.author_id).filter(Boolean))];
+          const [likesRes, commentsRes, profilesRes] = await Promise.all([
+            articleIds.length
+              ? supabase.from("article_likes").select("article_id").in("article_id", articleIds)
+              : { data: [] },
+            articleIds.length
+              ? supabase.from("article_comments").select("article_id").in("article_id", articleIds)
+              : { data: [] },
+            authorIds.length
+              ? supabase.from("profiles").select("user_id, display_name").in("user_id", authorIds)
+              : { data: [] },
+          ]);
+
+          const likeCounts = {};
+          (likesRes.data ?? []).forEach((row) => {
+            likeCounts[row.article_id] = (likeCounts[row.article_id] ?? 0) + 1;
+          });
+          const commentCounts = {};
+          (commentsRes.data ?? []).forEach((row) => {
+            commentCounts[row.article_id] = (commentCounts[row.article_id] ?? 0) + 1;
+          });
+          const authorNames = {};
+          (profilesRes.data ?? []).forEach((profile) => {
+            authorNames[profile.user_id] = profile.display_name;
+          });
+
+          articles.forEach((article) => {
+            article.likeCount = likeCounts[article.id] ?? 0;
+            article.commentCount = commentCounts[article.id] ?? 0;
+            article.authorName = authorNames[article.author_id] || "Μέλος";
+            article.category = categories.find((cat) => cat.id === article.category_id) ?? null;
+          });
+
+          renderFilters();
+          renderGrid();
+        } catch (err) {
+          console.error(err);
+          toast.error("Δεν ήταν δυνατή η φόρτωση των άρθρων.");
+          filtersEl.innerHTML = "";
+          grid.innerHTML = `<p class="articles__empty">Δεν υπάρχουν άρθρα ακόμα.</p>`;
+        }
+      }
+
+      searchInput.addEventListener("input", () => {
+        searchTerm = searchInput.value;
+        renderGrid();
+      });
+
+      /* Το κουμπί "Νέο Άρθρο" εμφανίζεται μόνο σε συνδεδεμένα + εγκεκριμένα μέλη. */
+      onAuthChange(({ user, isApproved }) => {
+        newBtn.hidden = !(user && isApproved);
+      });
+
+      newBtn.addEventListener("click", () => {
+        const select = document.getElementById("article-category");
+        select.innerHTML = categories
+          .map((cat) => `<option value="${escapeHtml(String(cat.id))}">${escapeHtml(cat.name)}</option>`)
+          .join("");
+        dialog.showModal();
+      });
+
+      document.getElementById("article-cancel").addEventListener("click", () => dialog.close());
+
+      document.getElementById("article-form").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const user = getUser();
+        if (!user) return;
+
+        const submitBtn = document.getElementById("article-submit");
+        submitBtn.disabled = true;
+        try {
+          const { data, error } = await supabase
+            .from("articles")
+            .insert({
+              author_id: user.id,
+              category_id: document.getElementById("article-category").value,
+              title: document.getElementById("article-title").value.trim(),
+              cover_url: document.getElementById("article-cover").value.trim() || null,
+              content: document.getElementById("article-content").value,
+              published: true,
+            })
+            .select("id")
+            .single();
+          if (error) throw error;
+          window.location.href = `article.html?id=${encodeURIComponent(data.id)}`;
+        } catch (err) {
+          console.error(err);
+          toast.error("Η δημοσίευση απέτυχε. Δοκίμασε ξανά.");
+          submitBtn.disabled = false;
+        }
+      });
+
+      loadData();
+    </script>
+  </body>
+</html>
