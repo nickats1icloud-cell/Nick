@@ -1,144 +1,774 @@
-/* ============ About hero ============ */
+/*
+  Σελίδα «Σχετικά με εμάς».
+  Μόνο layout & εμφάνιση — όλες οι κινήσεις έρχονται από το motion.css /
+  motion.js (data-reveal, data-stagger, fx-*). Καμία επανυλοποίηση εδώ.
+*/
+
+/* Τα reveals μετακινούν οριζόντια στοιχεία (translateX), οπότε κόβουμε
+   οποιαδήποτε οριζόντια υπερχείλιση χωρίς να δημιουργήσουμε scroll. */
+main {
+  overflow-x: clip;
+}
+
+/* Όταν μια κάρτα έχει και [data-reveal] και .fx-lift, το `transform: none`
+   της ολοκληρωμένης αποκάλυψης υπερισχύει του hover. Ανεβάζουμε τη
+   specificity ώστε το ανασήκωμα να δουλεύει κανονικά. */
+.js [data-reveal].is-visible.fx-lift:hover {
+  transform: translateY(-6px);
+}
+
+/* ============ Κοινό eyebrow (αριστερά ή κεντραρισμένο) ============ */
+.about-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0 0 1rem;
+}
+
+.about-eyebrow--center {
+  justify-content: center;
+}
+
+.about-eyebrow .line {
+  height: 1px;
+  width: 2.5rem;
+  flex: none;
+  background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.6));
+}
+
+.about-eyebrow .line.reverse {
+  background: linear-gradient(270deg, transparent, hsl(var(--primary) / 0.6));
+}
+
+.about-eyebrow > span:not(.line) {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: hsl(var(--primary-light));
+}
+
+/* ============ HERO ============ */
 .about-hero {
-  padding-top: calc(var(--header-height) + 3rem);
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  padding-block: calc(var(--header-height) + 5rem) 6rem;
   text-align: center;
+  border-bottom: 1px solid hsl(var(--border) / 0.5);
+}
+
+/* Απαλή λάμψη που ακολουθεί ελαφρά τον δείκτη (motion.js → .hero) */
+.about-hero .hero__glow {
+  position: absolute;
+  top: -14rem;
+  left: 50%;
+  margin-left: -20rem;
+  width: 40rem;
+  height: 34rem;
+  border-radius: 50%;
+  background: hsl(var(--primary) / 0.22);
+  filter: blur(130px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Ομόκεντροι δακτύλιοι — υπαινιγμός κοντέρ */
+.about-hero__rings {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: min(70rem, 150vw);
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  background:
+    repeating-radial-gradient(
+      circle at 50% 50%,
+      hsl(var(--primary) / 0.14) 0 1px,
+      transparent 1px 5.5rem
+    );
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 25%, transparent 68%);
+  mask-image: radial-gradient(circle at 50% 50%, #000 25%, transparent 68%);
+  opacity: 0.8;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.about-hero__inner {
+  position: relative;
+  z-index: 1;
+}
+
+.about-hero__eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 0 0 1.25rem;
+}
+
+.about-hero__eyebrow .line {
+  height: 1px;
+  width: 2.5rem;
+  flex: none;
+  background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.6));
+}
+
+.about-hero__eyebrow .line.reverse {
+  background: linear-gradient(270deg, transparent, hsl(var(--primary) / 0.6));
+}
+
+.about-hero__eyebrow > span:not(.line) {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: hsl(var(--primary-light));
+}
+
+.about-hero__title {
+  max-width: 20ch;
+  margin: 0 auto 1.5rem;
+  font-size: clamp(2.1rem, 6.2vw, 4.25rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.015em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+.about-hero__lead {
+  max-width: 44rem;
+  margin-inline: auto;
+  color: hsl(var(--muted-foreground));
+  font-size: clamp(0.98rem, 2.4vw, 1.1rem);
+  line-height: 1.75;
+}
+
+.about-hero__lead strong {
+  color: hsl(var(--foreground));
+  font-weight: 600;
+}
+
+.about-hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.85rem;
+  margin-top: 2.25rem;
+}
+
+.about-hero__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 2.25rem auto 0;
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--card) / 0.55);
+  backdrop-filter: blur(6px);
+  font-size: 0.8rem;
+  color: hsl(var(--muted-foreground));
+  text-align: left;
+}
+
+/* ============ ΣΤΑΤΙΣΤΙΚΑ ============ */
+.about-stats {
+  padding-block: 3.5rem;
+}
+
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.stat-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 1.6rem 0.9rem;
+  text-align: center;
+}
+
+.stat-tile__icon {
+  font-size: 1.4rem;
+  line-height: 1;
+  margin-bottom: 0.35rem;
+}
+
+.stat-tile__value {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.35rem, 4.2vw, 1.9rem);
+  line-height: 1.1;
+  background: var(--gradient-greek);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Η τελεία «ζωντανό» δεν πρέπει να χαθεί μέσα στο gradient text */
+.stat-tile__value .live-dot {
+  -webkit-text-fill-color: initial;
+}
+
+.stat-tile__label {
+  font-size: 0.78rem;
+  color: hsl(var(--muted-foreground));
+  line-height: 1.4;
+}
+
+.stat-tile--live {
+  border-color: hsl(var(--success) / 0.28);
+}
+
+/* ============ ΙΣΤΟΡΙΑ / ΑΠΟΣΤΟΛΗ ============ */
+.story__grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+.story__title {
+  font-size: clamp(1.6rem, 3.6vw, 2.5rem);
+  font-weight: 800;
+  text-transform: uppercase;
+  line-height: 1.15;
+  margin-bottom: 1.5rem;
+}
+
+.story__copy p {
+  color: hsl(var(--muted-foreground));
+  line-height: 1.8;
+  margin-bottom: 1.1rem;
+}
+
+.story__copy p strong {
+  color: hsl(var(--foreground));
+  font-weight: 600;
+}
+
+.story__sub {
+  margin-top: 2.25rem;
+  margin-bottom: 0.9rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: hsl(var(--primary-light));
+}
+
+.story__note {
+  margin-top: 1.75rem;
+  margin-bottom: 0;
+  padding-left: 1.1rem;
+  border-left: 2px solid hsl(var(--primary) / 0.5);
+  font-size: 0.92rem;
+  font-style: italic;
+}
+
+/* Στοιβαγμένη κάρτα με απόσπασμα */
+.story__stack {
+  position: relative;
+  padding: 0.75rem 0.75rem 0 0;
+}
+
+.story__stack::before,
+.story__stack::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-lg);
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--card) / 0.6);
+  pointer-events: none;
+}
+
+.story__stack::before {
+  transform: translate(0.9rem, -0.9rem) rotate(2.5deg);
+  opacity: 0.55;
+}
+
+.story__stack::after {
+  transform: translate(0.45rem, -0.45rem) rotate(1.2deg);
+  opacity: 0.8;
+}
+
+.story__quote {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  padding: 2.25rem 1.9rem 1.9rem;
+  border-color: hsl(var(--primary) / 0.3);
+  box-shadow: var(--shadow-racing);
+}
+
+.story__mark {
+  position: absolute;
+  top: 0.35rem;
+  right: 1.25rem;
+  font-family: var(--font-display);
+  font-size: 5rem;
+  line-height: 1;
+  color: hsl(var(--primary) / 0.25);
+  pointer-events: none;
+}
+
+.story__quote blockquote {
+  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.75;
+  color: hsl(var(--foreground) / 0.92);
+}
+
+.story__quote figcaption {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid hsl(var(--border));
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: hsl(var(--primary-light));
+}
+
+.story__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.75rem;
+}
+
+.story__flag {
+  margin-top: 1.5rem;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.story__flag .fx-checkers {
+  display: block;
+  opacity: 0.9;
+  filter: brightness(1.6);
+}
+
+/* ============ ΤΙ ΚΑΝΟΥΜΕ ============ */
+.offer-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.offer-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.9rem 1.6rem;
+}
+
+.offer-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 1.15rem;
+  border-radius: var(--radius-md);
+  border: 1px solid hsl(var(--primary) / 0.25);
+  background: hsl(var(--primary) / 0.12);
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.offer-card h3 {
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.7rem;
+}
+
+.offer-card p {
+  font-size: 0.92rem;
+  color: hsl(var(--muted-foreground));
+  line-height: 1.65;
+}
+
+.offer-card__go {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1.35rem;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: hsl(var(--primary-light));
+}
+
+.offer-card__go span[aria-hidden] {
+  transition: transform 0.25s ease;
+}
+
+.offer-card:hover .offer-card__go span[aria-hidden] {
+  transform: translateX(4px);
+}
+
+/* ============ ΧΡΟΝΟΛΟΓΙΟ ============ */
+.timeline-section {
   position: relative;
   overflow: hidden;
 }
 
-.about-hero__glow {
+.timeline-section__glow {
   position: absolute;
-  top: -10%;
+  top: 20%;
   left: 50%;
-  transform: translateX(-50%);
-  width: 40rem;
-  height: 26rem;
-  background: hsl(var(--primary) / 0.12);
+  width: 34rem;
+  height: 34rem;
+  margin-left: -17rem;
   border-radius: 50%;
-  filter: blur(140px);
+  background: hsl(var(--primary) / 0.1);
+  filter: blur(150px);
   pointer-events: none;
 }
 
-.about-hero__title {
+.timeline {
   position: relative;
-  font-size: clamp(2.25rem, 6vw, 4rem);
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
-  margin-bottom: 1.25rem;
+  max-width: 62rem;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
 }
 
-.about-hero__lead {
+/* Η ράγα */
+.timeline::before {
+  content: "";
+  position: absolute;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  left: 50%;
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 2px;
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    hsl(var(--primary) / 0.75) 10%,
+    hsl(var(--primary-light) / 0.9) 50%,
+    hsl(var(--primary) / 0.45) 88%,
+    transparent 100%
+  );
+}
+
+.timeline__item {
   position: relative;
-  max-width: 40rem;
-  margin-inline: auto;
-  color: hsl(var(--muted-foreground));
-  font-size: 1.05rem;
-  line-height: 1.7;
+  width: 50%;
+  padding-right: 3.25rem;
+  margin-bottom: 2.25rem;
 }
 
-/* ============ Stat cards ============ */
-.stat-card {
-  text-align: center;
-  padding: 1.75rem 1rem;
-}
-
-.stat-card__icon {
-  font-size: 1.75rem;
-  margin-bottom: 0.75rem;
-}
-
-.stat-card__value {
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 1.5rem;
-  color: hsl(var(--foreground));
-}
-
-.stat-card__label {
-  margin-top: 0.35rem;
-  font-size: 0.8rem;
-  color: hsl(var(--muted-foreground));
-}
-
-/* ============ Mission ============ */
-.mission {
-  align-items: center;
-}
-
-.mission__copy p {
-  color: hsl(var(--muted-foreground));
-  line-height: 1.75;
-  margin-bottom: 1rem;
-}
-
-.mission__copy p:last-child {
+.timeline__item:last-child {
   margin-bottom: 0;
 }
 
-.mission__perks {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.timeline__item:nth-child(even) {
+  margin-left: 50%;
+  padding-right: 0;
+  padding-left: 3.25rem;
 }
 
-.mission__perk {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  padding: 1rem;
+.timeline__dot {
+  position: absolute;
+  top: 2rem;
+  right: -0.55rem;
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 50%;
+  background: hsl(var(--background));
+  border: 2px solid hsl(var(--primary-light));
+  box-shadow: 0 0 0 4px hsl(var(--background)), 0 0 18px hsl(var(--primary) / 0.7);
 }
 
-.mission__perk-icon {
-  flex-shrink: 0;
-  display: flex;
+.timeline__dot::after {
+  content: "";
+  position: absolute;
+  inset: 0.2rem;
+  border-radius: 50%;
+  background: var(--gradient-greek);
+}
+
+.timeline__item:nth-child(even) .timeline__dot {
+  right: auto;
+  left: -0.55rem;
+}
+
+.timeline__item--now .timeline__dot {
+  border-color: hsl(var(--success));
+  box-shadow: 0 0 0 4px hsl(var(--background)), 0 0 20px hsl(var(--success) / 0.6);
+  animation: timeline-ping 2.4s ease-out infinite;
+}
+
+@keyframes timeline-ping {
+  0% { box-shadow: 0 0 0 4px hsl(var(--background)), 0 0 0 0 hsl(var(--success) / 0.55); }
+  70% { box-shadow: 0 0 0 4px hsl(var(--background)), 0 0 0 0.9rem hsl(var(--success) / 0); }
+  100% { box-shadow: 0 0 0 4px hsl(var(--background)), 0 0 0 0 hsl(var(--success) / 0); }
+}
+
+.timeline__card {
+  padding: 1.6rem;
+}
+
+.timeline__stage {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  border-radius: var(--radius-md);
-  background: hsl(var(--primary) / 0.12);
-  font-size: 1.25rem;
-}
-
-.mission__perk h3 {
-  font-size: 0.9rem;
+  gap: 0.45rem;
+  margin-bottom: 0.75rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid hsl(var(--primary) / 0.3);
+  background: hsl(var(--primary) / 0.14);
+  font-family: var(--font-display);
+  font-size: 0.66rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
-  margin-bottom: 0.3rem;
+  color: hsl(var(--primary-light));
 }
 
-.mission__perk p {
-  font-size: 0.8rem;
-  color: hsl(var(--muted-foreground));
-  line-height: 1.5;
+.timeline__stage--now {
+  border-color: hsl(var(--success) / 0.35);
+  background: hsl(var(--success) / 0.14);
+  color: hsl(var(--success));
 }
 
-/* ============ Offer cards ============ */
-.offer-card {
-  padding: 1.75rem;
-}
-
-.offer-card__icon {
-  font-size: 1.75rem;
-  margin-bottom: 1rem;
-}
-
-.offer-card h3 {
-  font-size: 0.9rem;
+.timeline__card h3 {
+  font-size: 1rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.55rem;
 }
 
-.offer-card p {
+.timeline__card p {
   font-size: 0.9rem;
   color: hsl(var(--muted-foreground));
-  line-height: 1.6;
+  line-height: 1.65;
+}
+
+.timeline__card--now {
+  border-color: hsl(var(--primary) / 0.45);
+  box-shadow: var(--shadow-racing);
+}
+
+/* ============ ΑΞΙΕΣ ============ */
+.values__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+
+.value-card {
+  position: relative;
+  padding: 1.75rem 1.5rem;
+}
+
+.value-card__num {
+  position: absolute;
+  top: 0.4rem;
+  right: 0.9rem;
+  font-family: var(--font-display);
+  font-size: 3.25rem;
+  font-weight: 900;
+  line-height: 1;
+  color: hsl(var(--foreground) / 0.05);
+  pointer-events: none;
+}
+
+.value-card h3 {
+  position: relative;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.65rem;
+  color: hsl(var(--primary-light));
+}
+
+.value-card p {
+  position: relative;
+  font-size: 0.9rem;
+  color: hsl(var(--muted-foreground));
+  line-height: 1.65;
+}
+
+/* ============ CTA ============ */
+.cta-panel {
+  position: relative;
+  max-width: 52rem;
+  margin-inline: auto;
+  border-radius: var(--radius-xl);
+  border: 1px solid hsl(var(--primary) / 0.28);
+  background: var(--gradient-card);
+  box-shadow: 0 30px 70px -40px hsl(214 89% 40% / 0.8);
+}
+
+.cta-panel__bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.cta-panel__inner {
+  position: relative;
+  z-index: 1;
+  padding: 3.25rem 2.5rem;
+  text-align: center;
+}
+
+.cta-panel__title {
+  max-width: 22ch;
+  margin: 0 auto 1.1rem;
+  font-size: clamp(1.6rem, 4vw, 2.6rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+.cta-panel__lead {
+  max-width: 40rem;
+  margin-inline: auto;
+  color: hsl(var(--muted-foreground));
+  line-height: 1.75;
+}
+
+.cta-panel__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+.cta-panel__links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem 1.5rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid hsl(var(--border) / 0.8);
+  font-size: 0.85rem;
+}
+
+.cta-panel__links a {
+  color: hsl(var(--muted-foreground));
+  transition: color 0.2s ease;
+}
+
+.cta-panel__links a:hover {
+  color: hsl(var(--primary-light));
+  text-decoration: underline;
+}
+
+/* ============ Responsive ============ */
+@media (max-width: 1000px) {
+  .story__grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .story__visual {
+    max-width: 34rem;
+  }
+
+  .offer-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .values__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 @media (max-width: 860px) {
-  .mission {
+  /* Χρονολόγιο: μονή στήλη με τη ράγα στα αριστερά */
+  .timeline::before {
+    left: 0.55rem;
+    margin-left: 0;
+  }
+
+  .timeline__item,
+  .timeline__item:nth-child(even) {
+    width: 100%;
+    margin-left: 0;
+    padding-left: 2.5rem;
+    padding-right: 0;
+  }
+
+  .timeline__dot,
+  .timeline__item:nth-child(even) .timeline__dot {
+    left: 0;
+    right: auto;
+    top: 1.6rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .about-hero {
+    padding-block: calc(var(--header-height) + 3rem) 4rem;
+  }
+
+  .about-hero__status {
+    font-size: 0.75rem;
+  }
+
+  .offer-grid {
     grid-template-columns: 1fr;
+  }
+
+  .cta-panel__inner {
+    padding: 2.5rem 1.4rem;
+  }
+
+  .cta-panel__actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 560px) {
+  .stat-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .values__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .story__stack {
+    padding: 0.5rem 0.5rem 0 0;
+  }
+
+  .story__quote {
+    padding: 1.9rem 1.35rem 1.5rem;
+  }
+
+  .story__mark {
+    font-size: 3.5rem;
+  }
+}
+
+/* ============ Λιγότερη κίνηση ============ */
+@media (prefers-reduced-motion: reduce) {
+  .timeline__item--now .timeline__dot {
+    animation: none;
+  }
+
+  .offer-card:hover .offer-card__go span[aria-hidden] {
+    transform: none;
   }
 }

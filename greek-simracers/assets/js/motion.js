@@ -83,6 +83,31 @@
       { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
     );
     targets.forEach((el) => observer.observe(el));
+
+    // Δίχτυ ασφαλείας: το κατώφλι του observer μπορεί να μην ικανοποιηθεί
+    // ποτέ για στοιχεία κολλημένα στο κάτω άκρο της σελίδας. Λίγο αφού
+    // σταματήσει το scroll, αποκαλύπτουμε ό,τι είναι ήδη μέσα στο viewport
+    // — έτσι δεν γίνεται να μείνει περιεχόμενο μόνιμα αόρατο.
+    const sweep = () => {
+      targets.forEach((el) => {
+        if (el.classList.contains("is-visible")) return;
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight && rect.bottom > 0) {
+          el.classList.add("is-visible");
+          observer.unobserve(el);
+        }
+      });
+    };
+
+    let sweepTimer = null;
+    const scheduleSweep = () => {
+      clearTimeout(sweepTimer);
+      sweepTimer = setTimeout(sweep, 500);
+    };
+    window.addEventListener("scroll", scheduleSweep, { passive: true });
+    window.addEventListener("resize", scheduleSweep, { passive: true });
+    window.addEventListener("load", scheduleSweep);
+    setTimeout(sweep, 1500);
   }
 
   /* ============ Scroll ============ */

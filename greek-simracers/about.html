@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Σχετικά με εμάς — Greek SimRacers</title>
-  <meta name="description" content="Ποιοι είμαστε οι Greek SimRacers: η αποστολή μας, η κοινότητα στο Discord, το podcast, τα πρωταθλήματα και το shop.">
+  <meta name="description" content="Ποιοι είμαστε οι Greek SimRacers: η ιστορία μας, η αποστολή μας, η κοινότητα στο Discord, το forum, το podcast, τα πρωταθλήματα και το shop.">
   <link rel="icon" href="assets/images/gsr-logo.png">
   <script>document.documentElement.classList.add('js');</script>
   <link rel="stylesheet" href="assets/css/tokens.css">
@@ -48,171 +48,385 @@
 
 <main>
   <!-- ============ HERO ============ -->
-  <section class="section about-hero">
-    <div class="about-hero__glow" aria-hidden="true"></div>
-    <div class="container">
-      <div class="section-eyebrow reveal">
-        <span class="line"></span>
+  <section class="about-hero hero fx-grain" aria-labelledby="about-title">
+    <div class="fx-mesh" aria-hidden="true"><span></span><span></span><span></span></div>
+    <div class="hero__glow" aria-hidden="true"></div>
+    <div class="about-hero__rings" aria-hidden="true"></div>
+
+    <div class="container about-hero__inner">
+      <p class="about-hero__eyebrow" data-reveal="down">
+        <span class="line" aria-hidden="true"></span>
         <span>Σχετικά με εμάς</span>
-        <span class="line reverse"></span>
-      </div>
-      <h1 class="about-hero__title reveal">
-        <span class="text-gradient">Greek</span> SimRacers
+        <span class="line reverse" aria-hidden="true"></span>
+      </p>
+
+      <h1 class="about-hero__title" id="about-title" data-text-reveal>
+        Η ελληνική <span class="fx-shimmer">παρέα</span> του sim racing
       </h1>
-      <p class="about-hero__lead reveal">
-        Η ελληνική κοινότητα για όσους αγαπούν το sim racing. Ενώνουμε racers κάθε επιπέδου
-        γύρω από το Discord, το podcast, τα πρωταθλήματα και το merchandise μας.
+
+      <p class="about-hero__lead" data-reveal="up">
+        Ξεκινήσαμε ως μια χούφτα άνθρωποι που έμεναν ξύπνιοι μέχρι αργά για έναν ακόμα γύρο.
+        Σήμερα οι <strong>Greek SimRacers</strong> είναι ένα σπίτι για κάθε Έλληνα racer — από
+        αυτόν που μόλις έστησε το πρώτο του τιμόνι, μέχρι αυτόν που κυνηγάει τα εκατοστά
+        του δευτερολέπτου στο Spa.
+      </p>
+
+      <div class="about-hero__ctas" data-reveal="up">
+        <a class="btn btn-primary fx-magnetic" href="https://discord.gg/v5RsBTnPpY" target="_blank" rel="noopener noreferrer">
+          🏁 Έλα στο Discord
+          <span class="visually-hidden">(ανοίγει σε νέα καρτέλα)</span>
+        </a>
+        <a class="btn btn-outline" href="forum.html">Δες το Forum</a>
+      </div>
+
+      <p class="about-hero__status" data-reveal="up">
+        <span class="live-dot" aria-hidden="true"></span>
+        Η κοινότητα είναι ζωντανή κάθε μέρα — στο Discord και στο forum
       </p>
     </div>
   </section>
 
-  <!-- ============ STATS ============ -->
-  <section class="section" style="padding-top:0;">
+  <!-- ============ ΣΤΑΤΙΣΤΙΚΑ ============ -->
+  <section class="section about-stats" aria-label="Η κοινότητα με αριθμούς">
     <div class="container">
-      <div class="grid grid-4">
-        <div class="card stat-card reveal">
-          <div class="stat-card__icon">👥</div>
-          <div class="stat-card__value">1.000+</div>
-          <div class="stat-card__label">Μέλη στην κοινότητα</div>
+      <div class="stat-row" data-stagger>
+        <article class="card stat-tile fx-lift" data-reveal="scale">
+          <span class="stat-tile__icon" aria-hidden="true">👥</span>
+          <span class="stat-tile__value" data-countup>1.000+</span>
+          <span class="stat-tile__label">Μέλη στην κοινότητα</span>
+        </article>
+
+        <article class="card stat-tile fx-lift" data-reveal="scale">
+          <span class="stat-tile__icon" aria-hidden="true">🧩</span>
+          <span class="stat-tile__value" data-countup>6</span>
+          <span class="stat-tile__label">Ενότητες στην πλατφόρμα</span>
+        </article>
+
+        <article class="card stat-tile fx-lift" data-reveal="scale">
+          <span class="stat-tile__icon" aria-hidden="true">📡</span>
+          <span class="stat-tile__value" data-countup>4</span>
+          <span class="stat-tile__label">Κανάλια που μας βρίσκεις</span>
+        </article>
+
+        <article class="card stat-tile stat-tile--live fx-lift" data-reveal="scale">
+          <span class="stat-tile__icon" aria-hidden="true">🏁</span>
+          <span class="stat-tile__value">
+            <span class="live-dot" aria-hidden="true"></span>
+            Δωρεάν
+          </span>
+          <span class="stat-tile__label">Συμμετοχή για όλους</span>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <div class="fx-checkers" aria-hidden="true"></div>
+
+  <!-- ============ Η ΙΣΤΟΡΙΑ / Η ΑΠΟΣΤΟΛΗ ============ -->
+  <section class="section story" aria-labelledby="story-title">
+    <div class="container story__grid">
+      <div class="story__copy" data-reveal="left">
+        <p class="about-eyebrow">
+          <span class="line" aria-hidden="true"></span>
+          <span>Η ιστορία μας</span>
+        </p>
+        <h2 class="story__title" id="story-title">
+          Από μια <span class="text-gradient">συζήτηση</span> σε μια κοινότητα
+        </h2>
+
+        <p>
+          Όλα ξεκίνησαν όπως ξεκινούν τα καλύτερα πράγματα: με μερικούς ανθρώπους που
+          μοιράζονταν setups, παράπονα για την πίσω άκρη του αυτοκινήτου και screenshots
+          από γύρους που κανείς άλλος δεν θα καταλάβαινε. Δεν υπήρχε πλάνο — υπήρχε μόνο
+          το κοινό πάθος για τη μηχανοκίνηση.
+        </p>
+        <p>
+          Με τον καιρό η παρέα μεγάλωσε και έγινε φανερό ότι έλειπε κάτι από την ελληνική
+          σκηνή: ένας χώρος όπου ο αρχάριος δεν θα φοβάται να ρωτήσει, ο έμπειρος θα έχει
+          λόγο να μείνει, και όλοι μαζί θα μπορούν να τρέξουν σε σοβαρούς, καθαρούς αγώνες.
+        </p>
+
+        <h3 class="story__sub">Η αποστολή μας</h3>
+        <p>
+          Να κάνουμε το sim racing στην Ελλάδα πιο <strong>προσιτό</strong>, πιο
+          <strong>οργανωμένο</strong> και πιο <strong>παρεΐστικο</strong>. Να δίνουμε στους
+          racers εργαλεία — forum, πρωταθλήματα, podcast, προβλέψεις — χωρίς να χάνουμε ποτέ
+          αυτό που μας ένωσε στην αρχή: τη χαρά ενός καλού γύρου με καλή παρέα.
+        </p>
+
+        <p class="story__note">
+          Είμαστε ακόμα στην αρχή και χτίζουμε σιγά σιγά. Ό,τι βλέπεις εδώ φτιάχτηκε από
+          μέλη της κοινότητας, για την κοινότητα.
+        </p>
+      </div>
+
+      <div class="story__visual" data-reveal="right">
+        <div class="story__stack">
+          <figure class="card story__quote" data-tilt>
+            <span class="story__mark" aria-hidden="true">”</span>
+            <blockquote>
+              Δεν μας ενδιαφέρει ποιος είναι ο πιο γρήγορος. Μας ενδιαφέρει να τερματίσουμε
+              όλοι με το αυτοκίνητο ολόκληρο και με διάθεση για επόμενο αγώνα.
+            </blockquote>
+            <figcaption>Η ομάδα των Greek SimRacers</figcaption>
+          </figure>
         </div>
-        <div class="card stat-card reveal">
-          <div class="stat-card__icon">🎙️</div>
-          <div class="stat-card__value">3</div>
-          <div class="stat-card__label">Επεισόδια Podcast</div>
-        </div>
-        <div class="card stat-card reveal">
-          <div class="stat-card__icon">🏆</div>
-          <div class="stat-card__value">Ενεργά</div>
-          <div class="stat-card__label">Πρωταθλήματα</div>
-        </div>
-        <div class="card stat-card reveal">
-          <div class="stat-card__icon">💬</div>
-          <div class="stat-card__value">Active</div>
-          <div class="stat-card__label">Discord</div>
+
+        <ul class="story__chips">
+          <li class="badge badge-primary">Καθαροί αγώνες</li>
+          <li class="badge badge-primary">Ανοιχτά σε αρχάριους</li>
+          <li class="badge badge-primary">Χωρίς συνδρομές</li>
+        </ul>
+
+        <div class="story__flag" aria-hidden="true">
+          <span class="fx-checkers"></span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ============ MISSION ============ -->
-  <section class="section">
+  <!-- ============ ΤΙ ΚΑΝΟΥΜΕ ============ -->
+  <section class="section offers" aria-labelledby="offers-title">
     <div class="container">
-      <div class="grid grid-2 mission">
-        <div class="mission__copy reveal">
-          <div class="section-eyebrow" style="justify-content:flex-start;">
-            <span class="line"></span>
-            <span>Η αποστολή μας</span>
-          </div>
-          <h2 class="section-title" style="text-align:left;">
-            Η ελληνική σκηνή <span class="text-gradient">sim racing</span>
-          </h2>
-          <p>
-            Στο Greek SimRacers πιστεύουμε ότι το sim racing είναι πολύ περισσότερο από ένα
-            hobby — είναι ένα αντικείμενο που απαιτεί δεξιοτεχνία, στρατηγική και πάθος,
-            ακριβώς όπως το πραγματικό motorsport.
-          </p>
-          <p>
-            Δημιουργήσαμε αυτή την κοινότητα για να δώσουμε στους Έλληνες SimRacers έναν χώρο
-            να συναντηθούν, να ανταλλάξουν εμπειρίες και να αγωνιστούν μαζί — μέσα από το
-            Discord, το podcast και τα πρωταθλήματά μας.
-          </p>
-          <p>
-            Βρισκόμαστε ακόμα στα πρώτα βήματα και χτίζουμε σταδιακά νέα εργαλεία και
-            λειτουργίες για την κοινότητα — πάντα με γνώμονα αυτό που πραγματικά χρειάζονται
-            οι Έλληνες racers.
-          </p>
-        </div>
-        <div class="mission__perks reveal">
-          <div class="card mission__perk">
-            <div class="mission__perk-icon">💬</div>
-            <div>
-              <h3>Ενεργή κοινότητα</h3>
-              <p>Ένα φιλόξενο Discord για συζητήσεις γύρω από setups, αγώνες και τεχνικά θέματα, για κάθε επίπεδο εμπειρίας.</p>
-            </div>
-          </div>
-          <div class="card mission__perk">
-            <div class="mission__perk-icon">🎙️</div>
-            <div>
-              <h3>Podcast &amp; νέα</h3>
-              <p>Επεισόδια με συζητήσεις, συνεντεύξεις και αναλύσεις γύρω από το sim racing και το motorsport.</p>
-            </div>
-          </div>
-          <div class="card mission__perk">
-            <div class="mission__perk-icon">🏆</div>
-            <div>
-              <h3>Πρωταθλήματα</h3>
-              <p>Αγώνες GT3, Formula και Endurance με την κοινότητα, σε συνεργασία με τα δημοφιλέστερα simulators.</p>
-            </div>
-          </div>
-          <div class="card mission__perk">
-            <div class="mission__perk-icon">❤️</div>
-            <div>
-              <h3>Πάθος για το motorsport</h3>
-              <p>Αγαπάμε εξίσου το virtual και το πραγματικό racing, και το μοιραζόμαστε με κάθε μέλος της κοινότητας.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+      <p class="section-eyebrow" data-reveal="up">
+        <span class="line" aria-hidden="true"></span>
+        <span>Τι κάνουμε</span>
+        <span class="line reverse" aria-hidden="true"></span>
+      </p>
+      <h2 class="section-title" id="offers-title" data-reveal="up">
+        Έξι λόγοι να <span class="text-gradient">μείνεις</span>
+      </h2>
+      <p class="section-subtitle" data-reveal="up">
+        Κάθε κομμάτι της πλατφόρμας γεννήθηκε από μια ανάγκη που είχαμε πρώτοι εμείς.
+      </p>
 
-  <!-- ============ WHAT WE OFFER ============ -->
-  <section class="section">
-    <div class="container">
-      <div class="section-eyebrow reveal">
-        <span class="line"></span>
-        <span>Τι κάνουμε σήμερα</span>
-        <span class="line reverse"></span>
-      </div>
-      <h2 class="section-title reveal">Τι θα βρεις <span class="text-gradient">εδώ</span></h2>
-      <p class="section-subtitle reveal">Τέσσερις πυλώνες γύρω από τους οποίους χτίζουμε την κοινότητα</p>
-
-      <div class="grid grid-4">
-        <a href="https://discord.gg/v5RsBTnPpY" target="_blank" rel="noopener noreferrer" class="card offer-card reveal">
-          <div class="offer-card__icon">💬</div>
+      <div class="offer-grid" data-stagger>
+        <a class="card offer-card fx-lift" href="https://discord.gg/v5RsBTnPpY" target="_blank" rel="noopener noreferrer" data-reveal="up">
+          <span class="offer-card__icon" aria-hidden="true">💬</span>
           <h3>Discord</h3>
-          <p>Ο κεντρικός χώρος συζητήσεων της κοινότητας, με κανάλια για κάθε simulator και θέμα.</p>
+          <p>
+            Η καρδιά της κοινότητας. Κανάλια ανά simulator, βοήθεια σε setups, στήσιμο
+            αγώνων και πολλή, πολλή κουβέντα.
+          </p>
+          <span class="offer-card__go">Μπες τώρα <span aria-hidden="true">→</span><span class="visually-hidden">(ανοίγει σε νέα καρτέλα)</span></span>
         </a>
-        <a href="podcasts.html" class="card offer-card reveal">
-          <div class="offer-card__icon">🎙️</div>
+
+        <a class="card offer-card fx-lift" href="forum.html" data-reveal="up">
+          <span class="offer-card__icon" aria-hidden="true">🗂️</span>
+          <h3>Forum</h3>
+          <p>
+            Για όσα δεν χωράνε σε ένα chat: οδηγοί, τεχνικές συζητήσεις, παρουσιάσεις
+            rigs και θέματα που αξίζει να τα βρεις ξανά σε έναν μήνα.
+          </p>
+          <span class="offer-card__go">Δες τις συζητήσεις <span aria-hidden="true">→</span></span>
+        </a>
+
+        <a class="card offer-card fx-lift" href="podcasts.html" data-reveal="up">
+          <span class="offer-card__icon" aria-hidden="true">🎙️</span>
           <h3>Podcast</h3>
-          <p>Επεισόδια με νέα, απόψεις και συνεντεύξεις από την ελληνική σκηνή sim racing.</p>
+          <p>
+            Κουβέντες για το sim racing και το πραγματικό motorsport, με καλεσμένους από
+            την ελληνική σκηνή. Διαθέσιμο σε YouTube και Spotify.
+          </p>
+          <span class="offer-card__go">Άκου επεισόδια <span aria-hidden="true">→</span></span>
         </a>
-        <a href="championships.html" class="card offer-card reveal">
-          <div class="offer-card__icon">🏆</div>
+
+        <a class="card offer-card fx-lift" href="championships.html" data-reveal="up">
+          <span class="offer-card__icon" aria-hidden="true">🏆</span>
           <h3>Πρωταθλήματα</h3>
-          <p>Οργανωμένοι αγώνες και σειρές πρωταθλημάτων ανοιχτά σε όλη την κοινότητα.</p>
+          <p>
+            Οργανωμένες σειρές αγώνων με κανονισμούς, βαθμολογίες και briefing πριν από
+            κάθε αγώνα. Χωρίς χάος στην πρώτη στροφή.
+          </p>
+          <span class="offer-card__go">Δες τα πρωταθλήματα <span aria-hidden="true">→</span></span>
         </a>
-        <a href="shop.html" class="card offer-card reveal">
-          <div class="offer-card__icon">🛍️</div>
+
+        <a class="card offer-card fx-lift" href="predictions.html" data-reveal="up">
+          <span class="offer-card__icon" aria-hidden="true">🔮</span>
+          <h3>Προβλέψεις</h3>
+          <p>
+            Το παιχνίδι μέσα στο παιχνίδι: μάντεψε τα αποτελέσματα, μάζεψε πόντους και
+            πάρε τα δικαιώματα καυχησιολογίας μέχρι τον επόμενο αγώνα.
+          </p>
+          <span class="offer-card__go">Παίξε μαζί μας <span aria-hidden="true">→</span></span>
+        </a>
+
+        <a class="card offer-card fx-lift" href="shop.html" data-reveal="up">
+          <span class="offer-card__icon" aria-hidden="true">🛍️</span>
           <h3>Shop</h3>
-          <p>Επίσημο merchandise της κοινότητας — ρούχα, αξεσουάρ και μπρελόκ.</p>
+          <p>
+            Επίσημο merchandise της κοινότητας — ρούχα, αξεσουάρ και μικρά πράγματα που
+            δείχνουν από ποια παρέα είσαι.
+          </p>
+          <span class="offer-card__go">Ρίξε μια ματιά <span aria-hidden="true">→</span></span>
         </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="fx-checkers" aria-hidden="true"></div>
+
+  <!-- ============ ΧΡΟΝΟΛΟΓΙΟ ============ -->
+  <section class="section timeline-section" aria-labelledby="timeline-title">
+    <div class="timeline-section__glow" aria-hidden="true" data-parallax="0.08"></div>
+    <div class="container">
+      <p class="section-eyebrow" data-reveal="up">
+        <span class="line" aria-hidden="true"></span>
+        <span>Η πορεία μας</span>
+        <span class="line reverse" aria-hidden="true"></span>
+      </p>
+      <h2 class="section-title" id="timeline-title" data-reveal="up">
+        Γύρος <span class="text-gradient">γύρο</span>
+      </h2>
+      <p class="section-subtitle" data-reveal="up">
+        Δεν κρατάμε ημερομηνίες — κρατάμε στιγμές. Να οι σημαντικότερες μέχρι σήμερα.
+      </p>
+
+      <ol class="timeline">
+        <li class="timeline__item" data-reveal="left">
+          <span class="timeline__dot" aria-hidden="true"></span>
+          <article class="card timeline__card fx-lift">
+            <span class="timeline__stage">Γύρος εκκίνησης</span>
+            <h3>Μια παρέα στα social</h3>
+            <p>
+              Η κοινότητα ξεκινά ανεπίσημα: μια ομάδα στο Facebook, μερικά κοινά races και
+              ατελείωτες συζητήσεις για το ποιο τιμόνι αξίζει τα λεφτά του.
+            </p>
+          </article>
+        </li>
+
+        <li class="timeline__item" data-reveal="right">
+          <span class="timeline__dot" aria-hidden="true"></span>
+          <article class="card timeline__card fx-lift">
+            <span class="timeline__stage">Πρώτο pit stop</span>
+            <h3>Το Discord γίνεται σπίτι</h3>
+            <p>
+              Ανοίγουμε server με κανάλια ανά simulator και ανά θέμα. Για πρώτη φορά
+              υπάρχει ένα σταθερό σημείο συνάντησης — και οι πρώτοι αυθόρμητοι αγώνες.
+            </p>
+          </article>
+        </li>
+
+        <li class="timeline__item" data-reveal="left">
+          <span class="timeline__dot" aria-hidden="true"></span>
+          <article class="card timeline__card fx-lift">
+            <span class="timeline__stage">Φωνή</span>
+            <h3>Τα πρώτα επεισόδια podcast</h3>
+            <p>
+              Πατάμε record. Το podcast βγαίνει σε YouTube και Spotify και δίνει βήμα σε
+              ανθρώπους της ελληνικής σκηνής που άξιζε να ακουστούν.
+            </p>
+          </article>
+        </li>
+
+        <li class="timeline__item" data-reveal="right">
+          <span class="timeline__dot" aria-hidden="true"></span>
+          <article class="card timeline__card fx-lift">
+            <span class="timeline__stage">Πράσινη σημαία</span>
+            <h3>Τα πρώτα πρωταθλήματα</h3>
+            <p>
+              Από τα φιλικά races περνάμε σε οργανωμένες σειρές: κανονισμοί, βαθμολογία,
+              υπεύθυνοι αγώνα και το πρώτο πραγματικό αίσθημα πρωταθλήματος.
+            </p>
+          </article>
+        </li>
+
+        <li class="timeline__item timeline__item--now" data-reveal="left">
+          <span class="timeline__dot" aria-hidden="true"></span>
+          <article class="card timeline__card timeline__card--now fx-lift">
+            <span class="timeline__stage timeline__stage--now">
+              <span class="live-dot" aria-hidden="true"></span> Σήμερα · 2026
+            </span>
+            <h3>Η νέα πλατφόρμα</h3>
+            <p>
+              Όλα κάτω από μία στέγη: forum με λογαριασμούς μελών, πρωταθλήματα, podcast,
+              προβλέψεις και shop. Και από εδώ και πέρα, ό,τι ζητήσει η κοινότητα.
+            </p>
+          </article>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ ΑΞΙΕΣ ============ -->
+  <section class="section values" aria-labelledby="values-title">
+    <div class="container">
+      <p class="section-eyebrow" data-reveal="up">
+        <span class="line" aria-hidden="true"></span>
+        <span>Οι αξίες μας</span>
+        <span class="line reverse" aria-hidden="true"></span>
+      </p>
+      <h2 class="section-title" id="values-title" data-reveal="up">
+        Τέσσερις κανόνες <span class="text-gradient">πίστας</span>
+      </h2>
+      <p class="section-subtitle" data-reveal="up">
+        Δεν χρειάζεται μεγάλος κανονισμός. Αυτά τα τέσσερα αρκούν.
+      </p>
+
+      <div class="values__grid" data-stagger>
+        <article class="value-card card fx-lift" data-reveal="blur">
+          <span class="value-card__num" aria-hidden="true">01</span>
+          <h3>Fair play</h3>
+          <p>Καθαρό racing, σεβασμός στον χώρο του διπλανού και ανάληψη ευθύνης όταν κάτι πάει στραβά.</p>
+        </article>
+
+        <article class="value-card card fx-lift" data-reveal="blur">
+          <span class="value-card__num" aria-hidden="true">02</span>
+          <h3>Σεβασμός</h3>
+          <p>Καμία ανοχή σε προσβολές. Ο ανταγωνισμός μένει στην πίστα, η κουβέντα παραμένει πολιτισμένη.</p>
+        </article>
+
+        <article class="value-card card fx-lift" data-reveal="blur">
+          <span class="value-card__num" aria-hidden="true">03</span>
+          <h3>Μάθηση</h3>
+          <p>Καμία ερώτηση δεν είναι χαζή. Μοιραζόμαστε setups, δεδομένα και λάθη — έτσι γίναμε όλοι γρηγορότεροι.</p>
+        </article>
+
+        <article class="value-card card fx-lift" data-reveal="blur">
+          <span class="value-card__num" aria-hidden="true">04</span>
+          <h3>Παρέα</h3>
+          <p>Πάνω από κάθε αποτέλεσμα, είμαστε παρέα. Το πρωτάθλημα τελειώνει· η κουβέντα συνεχίζεται.</p>
+        </article>
       </div>
     </div>
   </section>
 
   <!-- ============ CTA ============ -->
-  <section class="section">
+  <section class="section about-cta" aria-labelledby="cta-title">
     <div class="container">
-      <div class="community__card reveal">
-        <div class="community__perks">
-          <div class="community__perk">🏁 Ενεργή κοινότητα</div>
-          <div class="community__perk">🎙️ Podcast &amp; νέα</div>
-          <div class="community__perk">🏆 Πρωταθλήματα</div>
-          <div class="community__perk">🛍️ Επίσημο shop</div>
+      <div class="cta-panel fx-border" data-reveal="scale">
+        <div class="cta-panel__bg fx-grain" aria-hidden="true">
+          <div class="fx-mesh"><span></span><span></span><span></span></div>
         </div>
-        <h2 class="section-title" style="margin-bottom:1rem;">
-          Γίνε μέλος της <span class="text-gradient">κοινότητας</span>
-        </h2>
-        <p style="color:hsl(var(--muted-foreground)); max-width:32rem; margin:0 auto 1.5rem;">
-          Μπες στο Discord μας και ξεκίνα το ταξίδι σου στον κόσμο του sim racing.
-        </p>
-        <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
-          <a href="https://discord.gg/v5RsBTnPpY" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-            🏁 ΣΥΝΔΕΣΗ ΣΤΟ DISCORD
-          </a>
-          <a href="contact.html" class="btn btn-outline">Επικοινωνία</a>
+
+        <div class="cta-panel__inner">
+          <p class="about-eyebrow about-eyebrow--center">
+            <span class="line" aria-hidden="true"></span>
+            <span>Επόμενος γύρος</span>
+            <span class="line reverse" aria-hidden="true"></span>
+          </p>
+          <h2 class="cta-panel__title" id="cta-title">
+            Η θέση σου στο <span class="fx-shimmer">grid</span> σε περιμένει
+          </h2>
+          <p class="cta-panel__lead">
+            Δεν χρειάζεσαι ακριβό εξοπλισμό ούτε χρόνια εμπειρίας — μόνο διάθεση για καθαρό
+            racing και καλή παρέα. Μπες στο Discord, φτιάξε λογαριασμό στο forum και τα λέμε στην πίστα.
+          </p>
+
+          <div class="cta-panel__actions">
+            <a class="btn btn-primary fx-magnetic" href="https://discord.gg/v5RsBTnPpY" target="_blank" rel="noopener noreferrer">
+              🏁 Σύνδεση στο Discord
+              <span class="visually-hidden">(ανοίγει σε νέα καρτέλα)</span>
+            </a>
+            <a class="btn btn-outline" href="auth.html">Δημιουργία λογαριασμού</a>
+            <a class="btn btn-outline" href="contact.html">Επικοινωνία</a>
+          </div>
+
+          <ul class="cta-panel__links">
+            <li><a href="https://www.facebook.com/groups/greeksimracers" target="_blank" rel="noopener noreferrer">Ομάδα στο Facebook</a></li>
+            <li><a href="https://www.youtube.com/@GreekSimracers" target="_blank" rel="noopener noreferrer">Κανάλι στο YouTube</a></li>
+            <li><a href="https://open.spotify.com/show/62c9vN8ZOT4unAzzJmtOXD" target="_blank" rel="noopener noreferrer">Podcast στο Spotify</a></li>
+          </ul>
         </div>
       </div>
     </div>

@@ -33,31 +33,33 @@
   Το .reveal μένει για συμβατότητα· τα [data-reveal] δίνουν κατεύθυνση.
   Κρύβονται μόνο όταν τρέχει JS (.js), αλλιώς όλα είναι ορατά.
 */
+/*
+  Μόνο η ΚΡΥΦΗ κατάσταση ορίζει transform. Έτσι, μόλις αποκαλυφθεί το
+  στοιχείο, κανένας κανόνας από εδώ δεν πατάει πάνω σε άλλα transforms
+  (.fx-lift:hover, [data-tilt], .fx-magnetic) που ίσως έχει το ίδιο στοιχείο.
+*/
 .js .reveal,
 .js [data-reveal] {
-  opacity: 0;
   transition:
     opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
     transform 0.7s cubic-bezier(0.22, 1, 0.36, 1),
     filter 0.7s ease;
   transition-delay: calc(var(--stagger-i, 0) * 80ms);
+}
+
+.js .reveal:not(.is-visible),
+.js [data-reveal]:not(.is-visible) {
+  opacity: 0;
   will-change: opacity, transform;
 }
 
-.js .reveal,
-.js [data-reveal="up"] { transform: translateY(28px); }
-.js [data-reveal="down"] { transform: translateY(-28px); }
-.js [data-reveal="left"] { transform: translateX(-34px); }
-.js [data-reveal="right"] { transform: translateX(34px); }
-.js [data-reveal="scale"] { transform: scale(0.92); }
-.js [data-reveal="blur"] { filter: blur(10px); transform: translateY(16px); }
-
-.js .reveal.is-visible,
-.js [data-reveal].is-visible {
-  opacity: 1;
-  transform: none;
-  filter: none;
-}
+.js .reveal:not(.is-visible),
+.js [data-reveal="up"]:not(.is-visible) { transform: translateY(28px); }
+.js [data-reveal="down"]:not(.is-visible) { transform: translateY(-28px); }
+.js [data-reveal="left"]:not(.is-visible) { transform: translateX(-34px); }
+.js [data-reveal="right"]:not(.is-visible) { transform: translateX(34px); }
+.js [data-reveal="scale"]:not(.is-visible) { transform: scale(0.92); }
+.js [data-reveal="blur"]:not(.is-visible) { filter: blur(10px); transform: translateY(16px); }
 
 /* ============ Αποκάλυψη τίτλου λέξη-λέξη ============ */
 .js [data-text-reveal] .word {
@@ -458,6 +460,8 @@
 
   .js .reveal,
   .js [data-reveal],
+  .js .reveal:not(.is-visible),
+  .js [data-reveal]:not(.is-visible),
   .js [data-text-reveal] .word {
     opacity: 1;
     transform: none;
