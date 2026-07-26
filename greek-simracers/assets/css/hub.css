@@ -1,0 +1,738 @@
+/*
+  Championship Hub — design system.
+
+  Χτισμένο πάνω στα υπάρχοντα tokens (tokens.css): ίδια χρώματα, ίδιες
+  γραμματοσειρές, ίδιες γωνίες. Εδώ μπαίνει μόνο ό,τι χρειάζεται μια
+  εφαρμογή πρωταθλήματος: πλέγμα 12 στηλών, κάρτες αγωνιστικής, πίνακες
+  δεδομένων, στατιστικά, skeletons και καταστάσεις κενού/σφάλματος.
+
+  Ύφος: επαγγελματικό motorsport. Χωρίς RGB, χωρίς έντονα glow, χωρίς
+  περιττά gradients.
+*/
+
+:root {
+  /* Οι σελίδες δεδομένων θέλουν περισσότερο πλάτος από τις σελίδες κειμένου. */
+  --hub-max: 1440px;
+
+  /* Κλίμακα αποστάσεων: μεγάλες / κανονικές / μικρές ενότητες. */
+  --space-lg: 5rem;    /* 80px */
+  --space-md: 3rem;    /* 48px */
+  --space-sm: 1.5rem;  /* 24px */
+  --gutter: 1.5rem;
+
+  /* Σημασιολογικά χρώματα — το καθένα με μία μόνο δουλειά. */
+  --state-live: 0 84% 60%;
+  --state-success: 142 71% 45%;
+  --state-penalty: 45 93% 47%;
+  --state-info: 214 89% 52%;
+}
+
+.hub-container {
+  width: 100%;
+  max-width: var(--hub-max);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+@media (max-width: 640px) {
+  .hub-container {
+    padding-inline: 1rem; /* 16px στο κινητό */
+  }
+}
+
+/* ============ Πλέγμα 12 στηλών ============ */
+.grid-12 {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--gutter);
+}
+
+.col-3 { grid-column: span 3; }
+.col-4 { grid-column: span 4; }
+.col-6 { grid-column: span 6; }
+.col-8 { grid-column: span 8; }
+.col-9 { grid-column: span 9; }
+.col-12 { grid-column: span 12; }
+
+@media (max-width: 1024px) {
+  .col-3 { grid-column: span 6; }
+  .col-4 { grid-column: span 6; }
+  .col-8, .col-9 { grid-column: span 12; }
+}
+
+@media (max-width: 640px) {
+  .col-3, .col-4, .col-6, .col-8, .col-9 { grid-column: span 12; }
+}
+
+.stack-lg > * + * { margin-top: var(--space-lg); }
+.stack-md > * + * { margin-top: var(--space-md); }
+.stack-sm > * + * { margin-top: var(--space-sm); }
+
+.hub-section { padding-block: var(--space-md); }
+.hub-section--lg { padding-block: var(--space-lg); }
+
+/* ============ Επικεφαλίδα ενότητας ============ */
+.hub-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-sm);
+}
+
+.hub-head__title {
+  font-size: clamp(1.35rem, 2.5vw, 1.9rem);
+  letter-spacing: 0.02em;
+}
+
+.hub-head__sub {
+  margin: 0.35rem 0 0;
+  font-size: 0.9rem;
+  color: hsl(var(--muted-foreground));
+}
+
+/* ============ Hero ενότητας ============ */
+.hub-hero {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-lg);
+  background: var(--gradient-card);
+}
+
+.hub-hero__media {
+  position: absolute;
+  inset: 0;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  opacity: 0.28;
+}
+
+.hub-hero__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    hsl(var(--background) / 0.95) 0%,
+    hsl(var(--background) / 0.72) 55%,
+    hsl(var(--background) / 0.35) 100%
+  );
+}
+
+.hub-hero__body {
+  position: relative;
+  padding: clamp(1.5rem, 4vw, 3rem);
+}
+
+.hub-hero__title {
+  margin: 0.5rem 0;
+  font-size: clamp(1.75rem, 4vw, 3rem);
+  line-height: 1.05;
+}
+
+.hub-hero__sub {
+  max-width: 46ch;
+  color: hsl(var(--muted-foreground));
+}
+
+.hub-hero__stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-sm);
+}
+
+/* ============ Σήματα κατάστασης ============ */
+.state-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-family: var(--font-display);
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.state-badge::before {
+  content: "";
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.state-badge--live {
+  color: hsl(var(--state-live));
+  border-color: hsl(var(--state-live) / 0.4);
+  background: hsl(var(--state-live) / 0.1);
+}
+
+.state-badge--live::before {
+  animation: state-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes state-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.25; }
+}
+
+.state-badge--upcoming {
+  color: hsl(var(--state-info));
+  border-color: hsl(var(--state-info) / 0.4);
+  background: hsl(var(--state-info) / 0.1);
+}
+
+.state-badge--finished {
+  color: hsl(var(--muted-foreground));
+  border-color: hsl(var(--border));
+  background: hsl(var(--secondary) / 0.5);
+}
+
+.state-badge--penalty {
+  color: hsl(var(--state-penalty));
+  border-color: hsl(var(--state-penalty) / 0.4);
+  background: hsl(var(--state-penalty) / 0.1);
+}
+
+/* ============ Κάρτες ============ */
+.hub-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-md);
+  background: hsl(var(--card));
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+a.hub-card,
+.hub-card--interactive {
+  cursor: pointer;
+}
+
+a.hub-card:hover,
+.hub-card--interactive:hover {
+  border-color: hsl(var(--primary) / 0.45);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgb(0 0 0 / 0.35);
+}
+
+.hub-card__media {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: hsl(var(--secondary));
+}
+
+.hub-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hub-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+.hub-card__title {
+  font-size: 1rem;
+  letter-spacing: 0.01em;
+}
+
+.hub-card__sub {
+  margin: 0;
+  font-size: 0.82rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.hub-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.9rem;
+  font-size: 0.78rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.hub-card__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: auto;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid hsl(var(--border));
+  background: hsl(var(--secondary) / 0.35);
+}
+
+/* --- Κάρτα οδηγού --- */
+.driver-card__top {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1rem;
+}
+
+.driver-card__photo {
+  flex: none;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: var(--radius-sm);
+  object-fit: cover;
+  background: hsl(var(--secondary));
+}
+
+.driver-card__number {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  color: hsl(var(--primary-light));
+}
+
+.driver-card__name {
+  font-size: 1.05rem;
+  line-height: 1.2;
+}
+
+.driver-card__flag {
+  font-size: 0.82rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.driver-card__pos {
+  margin-left: auto;
+  text-align: right;
+}
+
+.driver-card__pos-value {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.driver-card__pos-label {
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+}
+
+/* --- Κάρτα στατιστικού --- */
+.stat-card {
+  padding: 1.1rem 1.25rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-md);
+  background: hsl(var(--card));
+}
+
+.stat-card__label {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+}
+
+.stat-card__value {
+  display: block;
+  margin-top: 0.35rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.stat-card__hint {
+  margin: 0.4rem 0 0;
+  font-size: 0.78rem;
+  color: hsl(var(--muted-foreground));
+}
+
+/* --- Κάρτα προόδου --- */
+.progress-track {
+  height: 0.4rem;
+  margin-top: 0.75rem;
+  border-radius: 999px;
+  background: hsl(var(--secondary));
+  overflow: hidden;
+}
+
+.progress-track__bar {
+  height: 100%;
+  border-radius: 999px;
+  background: hsl(var(--primary-light));
+  transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* --- Κατάταξη --- */
+.rank-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.rank-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid hsl(var(--border));
+  font-size: 0.88rem;
+}
+
+.rank-list li:last-child {
+  border-bottom: 0;
+}
+
+.rank-list__pos {
+  flex: none;
+  width: 1.75rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: hsl(var(--muted-foreground));
+}
+
+.rank-list li:nth-child(1) .rank-list__pos { color: hsl(45 93% 55%); }
+.rank-list li:nth-child(2) .rank-list__pos { color: hsl(210 12% 75%); }
+.rank-list li:nth-child(3) .rank-list__pos { color: hsl(28 60% 52%); }
+
+.rank-list__value {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+  color: hsl(var(--muted-foreground));
+}
+
+/* ============ Πίνακας δεδομένων ============ */
+.data-table__tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: var(--space-sm);
+}
+
+.data-table__search {
+  flex: 1 1 14rem;
+  min-width: 0;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-sm);
+  background: hsl(var(--secondary) / 0.5);
+  color: hsl(var(--foreground));
+  font: inherit;
+  font-size: 0.88rem;
+}
+
+.data-table__search:focus-visible {
+  outline: 2px solid hsl(var(--primary-light));
+  outline-offset: 1px;
+}
+
+.data-table__scroll {
+  overflow-x: auto;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-md);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+}
+
+.data-table th,
+.data-table td {
+  padding: 0.7rem 0.9rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.data-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: hsl(var(--secondary));
+  font-family: var(--font-display);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+}
+
+.data-table tbody tr {
+  border-top: 1px solid hsl(var(--border));
+}
+
+.data-table tbody tr:hover {
+  background: hsl(var(--secondary) / 0.4);
+}
+
+.data-table__sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border: 0;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.data-table__sort::after {
+  content: "↕";
+  opacity: 0.35;
+  font-size: 0.85em;
+}
+
+.data-table__sort[aria-sort="ascending"]::after { content: "↑"; opacity: 1; }
+.data-table__sort[aria-sort="descending"]::after { content: "↓"; opacity: 1; }
+
+.data-table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.data-table .pos {
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+.data-table__pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  font-size: 0.82rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.data-table__pager-btns {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.data-table__pager button {
+  padding: 0.35rem 0.7rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-sm);
+  background: hsl(var(--secondary) / 0.5);
+  color: hsl(var(--foreground));
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.data-table__pager button[disabled] {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* Στο κινητό ο πίνακας γίνεται κάρτες: κάθε κελί παίρνει τη δική του
+   ετικέτα από το data-label. */
+@media (max-width: 720px) {
+  .data-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .data-table__scroll {
+    border: 0;
+    overflow: visible;
+  }
+
+  .data-table tbody tr {
+    display: block;
+    margin-bottom: 0.75rem;
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius-md);
+    background: hsl(var(--card));
+  }
+
+  .data-table td {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.5rem 0.9rem;
+    white-space: normal;
+  }
+
+  .data-table td + td {
+    border-top: 1px solid hsl(var(--border) / 0.6);
+  }
+
+  .data-table td::before {
+    content: attr(data-label);
+    font-family: var(--font-display);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .data-table .num {
+    text-align: right;
+  }
+}
+
+/* ============ Skeletons ============ */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: hsl(var(--secondary));
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    hsl(var(--muted-foreground) / 0.12),
+    transparent
+  );
+  animation: skeleton-sweep 1.4s ease-in-out infinite;
+}
+
+@keyframes skeleton-sweep {
+  to { transform: translateX(100%); }
+}
+
+.skeleton--text { height: 0.7rem; }
+.skeleton--title { height: 1.1rem; width: 60%; }
+.skeleton--media { aspect-ratio: 16 / 9; border-radius: 0; }
+.skeleton--avatar { width: 3.5rem; height: 3.5rem; border-radius: var(--radius-sm); }
+.skeleton--row { height: 2.6rem; }
+
+/* ============ Κενές καταστάσεις & σφάλματα ============ */
+.hub-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: var(--space-md) var(--space-sm);
+  border: 1px dashed hsl(var(--border));
+  border-radius: var(--radius-md);
+  text-align: center;
+}
+
+.hub-state__icon {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background: hsl(var(--secondary));
+  font-size: 1.35rem;
+}
+
+.hub-state__title {
+  font-size: 1.05rem;
+}
+
+.hub-state__text {
+  margin: 0;
+  max-width: 40ch;
+  font-size: 0.88rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.hub-state--error {
+  border-style: solid;
+  border-color: hsl(var(--destructive) / 0.4);
+  background: hsl(var(--destructive) / 0.06);
+}
+
+.hub-state--error .hub-state__icon {
+  background: hsl(var(--destructive) / 0.15);
+}
+
+/* ============ Προσβασιμότητα ============ */
+.hub-card:focus-visible,
+.data-table__sort:focus-visible,
+.data-table__pager button:focus-visible {
+  outline: 2px solid hsl(var(--primary-light));
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton::after,
+  .state-badge--live::before {
+    animation: none;
+  }
+
+  .hub-card,
+  .progress-track__bar {
+    transition: none;
+  }
+}
+
+/* ============ Γραφήματα ============ */
+.chart-card {
+  padding: 1.25rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-md);
+  background: hsl(var(--card));
+}
+
+.chart-card__title {
+  margin-bottom: 0.85rem;
+  font-size: 0.95rem;
+}
+
+.chart {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-top: 0.85rem;
+  font-size: 0.78rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.chart-legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.chart-legend__swatch {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 2px;
+}
+
+/* Μόνο για αναγνώστες οθόνης (λεζάντες πινάκων κ.λπ.). */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}

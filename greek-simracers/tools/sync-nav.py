@@ -17,6 +17,9 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
+# Η offline.html είναι σκόπιμα λιτή: χωρίς μενού και χωρίς footer.
+SKIP = {"offline.html"}
+
 # Ενότητες του Championship Hub. Μπαίνουν εδώ όσο χτίζονται οι σελίδες τους —
 # προς το παρόν δείχνουν στις ενότητες της championships.html ώστε να μην
 # υπάρχει ούτε ένας νεκρός σύνδεσμος.
@@ -75,6 +78,9 @@ def main():
     missing = []
 
     for page in sorted(ROOT.glob("*.html")):
+        if page.name in SKIP:
+            continue
+
         text = page.read_text(encoding="utf-8")
         original = text
 

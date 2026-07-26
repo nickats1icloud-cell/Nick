@@ -1,0 +1,52 @@
+{
+  "name": "Greek SimRacers",
+  "short_name": "GSR Hub",
+  "description": "Η #1 Ελληνική πλατφόρμα SimRacing — πρωταθλήματα, forum, podcasts και κοινότητα.",
+  "lang": "el",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "id": "/Nick/greek-simracers/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#090d15",
+  "theme_color": "#090d15",
+  "categories": ["sports", "games", "social"],
+  "icons": [
+    {
+      "src": "assets/images/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/images/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/images/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Πρωταθλήματα",
+      "url": "./championships.html",
+      "icons": [{ "src": "assets/images/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Forum",
+      "url": "./forum.html",
+      "icons": [{ "src": "assets/images/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Προβλέψεις",
+      "url": "./predictions.html",
+      "icons": [{ "src": "assets/images/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

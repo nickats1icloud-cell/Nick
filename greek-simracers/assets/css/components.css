@@ -558,6 +558,15 @@
 .form-status[data-state="success"] { color: hsl(var(--success)); }
 .form-status[data-state="error"] { color: hsl(var(--destructive)); }
 
+/* Το κρυφό <svg> με τα <symbol>. Χωρίς display:none, γιατί κάποιοι
+   browsers δεν αποδίδουν <use> από κρυμμένο sprite. */
+.icon-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
 .social-icon {
   display: inline-flex;
   align-items: center;
