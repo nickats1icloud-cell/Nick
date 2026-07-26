@@ -1,0 +1,373 @@
+/* Στυλ για το admin.html — τον πίνακα διαχείρισης.
+   Layout, κουμπιά, .field, .form-status, .pill, dialog.modal κ.λπ.
+   έρχονται από το components.css· εδώ μπαίνουν μόνο τα επιπλέον. */
+
+/* ============ Section shell / πύλη πρόσβασης ============ */
+.admin-section {
+  padding-top: calc(var(--header-height) + 3rem);
+  min-height: calc(100vh - var(--header-height));
+}
+
+.is-hidden {
+  display: none;
+}
+
+.admin-gate__icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.admin-gate__cta {
+  margin-top: 1.5rem;
+}
+
+/* ============ Tabs ============ */
+.admin-tabs {
+  margin-bottom: 2.5rem;
+}
+
+.admin-tabpanel[hidden] {
+  display: none;
+}
+
+.admin-subfilters {
+  justify-content: flex-start;
+  margin-bottom: 1.5rem;
+}
+
+.admin-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.admin-heading {
+  font-size: 1.05rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ============ Λίστες εγγραφών ============ */
+.admin-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.admin-row {
+  background: var(--gradient-card);
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-md);
+  padding: 1rem 1.25rem;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem 1.25rem;
+  align-items: center;
+}
+
+.admin-row__main {
+  min-width: 0;
+}
+
+.admin-row__title {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.admin-row__num {
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  color: hsl(var(--primary-light));
+  margin-right: 0.6rem;
+  white-space: nowrap;
+}
+
+.admin-row__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.7rem;
+  margin-top: 0.45rem;
+  font-size: 0.8rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.admin-row__meta .badge {
+  text-transform: none;
+}
+
+.admin-row__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+@media (max-width: 640px) {
+  .admin-row {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-row__actions {
+    justify-content: flex-start;
+    padding-top: 0.6rem;
+    border-top: 1px solid hsl(var(--border) / 0.6);
+  }
+}
+
+/* ============ Επιπλέον badges ============ */
+.badge-warning {
+  background: hsl(38 92% 50% / 0.15);
+  border-color: hsl(38 92% 50% / 0.35);
+  color: hsl(38 92% 60%);
+}
+
+.badge-danger {
+  background: hsl(var(--destructive) / 0.12);
+  border-color: hsl(var(--destructive) / 0.35);
+  color: hsl(var(--destructive));
+}
+
+/* ============ Κουμπιά / controls γραμμών ============ */
+.btn-danger {
+  background: none;
+  border-color: hsl(var(--destructive) / 0.4);
+  color: hsl(var(--destructive));
+}
+
+.btn-danger:hover {
+  background: hsl(var(--destructive) / 0.12);
+  border-color: hsl(var(--destructive));
+}
+
+.btn:disabled,
+.admin-select:disabled,
+.admin-toggle input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.admin-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.8rem;
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.admin-toggle input {
+  width: 1rem;
+  height: 1rem;
+  accent-color: hsl(var(--primary));
+  cursor: pointer;
+}
+
+.admin-select {
+  background: hsl(var(--secondary) / 0.6);
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 0.75rem;
+  font-size: 0.82rem;
+  color: hsl(var(--foreground));
+  cursor: pointer;
+}
+
+.admin-select:focus {
+  outline: none;
+  border-color: hsl(var(--primary));
+}
+
+/* ============ Φόρμες μέσα σε dialog ============ */
+.admin-form {
+  position: relative;
+  padding: 2rem;
+}
+
+.admin-form h3 {
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 1.5rem;
+  padding-right: 2.5rem;
+}
+
+.admin-form__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1.1rem;
+}
+
+@media (max-width: 560px) {
+  .admin-form__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-form {
+    padding: 1.5rem;
+  }
+}
+
+/* Το components.css καλύπτει input/textarea των .field — εδώ και τα select */
+.field select {
+  background: hsl(var(--secondary) / 0.5);
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  color: hsl(var(--foreground));
+}
+
+.field select:focus {
+  outline: none;
+  border-color: hsl(var(--primary));
+}
+
+.admin-check {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.85rem;
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+}
+
+.admin-check input {
+  width: 1.05rem;
+  height: 1.05rem;
+  accent-color: hsl(var(--primary));
+  cursor: pointer;
+}
+
+.admin-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+.admin-form__hint {
+  font-size: 0.85rem;
+  color: hsl(var(--muted-foreground));
+  margin-bottom: 1.1rem;
+  overflow-wrap: anywhere;
+}
+
+/* ============ Μηνύματα επικοινωνίας (expandable) ============ */
+.admin-msg {
+  background: var(--gradient-card);
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.admin-msg__row {
+  width: 100%;
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem 0.9rem;
+  flex-wrap: wrap;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 1rem 1.25rem;
+  color: hsl(var(--foreground));
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.admin-msg__row:hover {
+  background: hsl(var(--secondary) / 0.35);
+}
+
+.admin-msg__name {
+  font-weight: 600;
+}
+
+.admin-msg__email,
+.admin-msg__date {
+  font-size: 0.8rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.admin-msg__subject {
+  flex-basis: 100%;
+  font-size: 0.85rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.admin-msg__chevron {
+  margin-left: auto;
+  color: hsl(var(--muted-foreground));
+  transition: transform 0.2s ease;
+}
+
+.admin-msg__row[aria-expanded="true"] .admin-msg__chevron {
+  transform: rotate(180deg);
+}
+
+.admin-msg__body {
+  padding: 0 1.25rem 1.25rem;
+  font-size: 0.9rem;
+  color: hsl(var(--muted-foreground));
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  border-top: 1px solid hsl(var(--border) / 0.6);
+  padding-top: 1rem;
+}
+
+/* ============ Toasts ============ */
+.admin-toasts {
+  position: fixed;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  z-index: 300;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: min(22rem, calc(100vw - 2.5rem));
+}
+
+.admin-toast {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-md);
+  padding: 0.8rem 1.1rem;
+  font-size: 0.85rem;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.45);
+  animation: admin-toast-in 0.25s ease;
+}
+
+.admin-toast[data-state="success"] {
+  border-color: hsl(var(--success) / 0.5);
+  color: hsl(var(--success));
+}
+
+.admin-toast[data-state="error"] {
+  border-color: hsl(var(--destructive) / 0.5);
+  color: hsl(var(--destructive));
+}
+
+@keyframes admin-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-toast {
+    animation: none;
+  }
+}

@@ -36,6 +36,8 @@
       <a href="games-hub.html">Games Hub</a>
       <a href="podcasts.html">Podcasts</a>
       <a href="championships.html">Πρωταθλήματα</a>
+      <a href="forum.html">Forum</a>
+      <a href="predictions.html">Προβλέψεις</a>
       <a href="shop.html" aria-current="page">Shop</a>
       <a href="contact.html">Επικοινωνία</a>
 
@@ -63,11 +65,26 @@
   <!-- ============ PRODUCTS ============ -->
   <section class="section shop-section">
     <div class="container">
-      <div class="pill-filters reveal" id="shop-filters" role="group" aria-label="Φίλτρα κατηγορίας προϊόντων">
-        <button type="button" class="pill is-active" data-category="Όλα">Όλα</button>
-        <button type="button" class="pill" data-category="Ρούχα">Ρούχα</button>
-        <button type="button" class="pill" data-category="Αξεσουάρ">Αξεσουάρ</button>
-        <button type="button" class="pill" data-category="Μπρελόκ">Μπρελόκ</button>
+      <div class="shop-toolbar reveal">
+        <div class="pill-filters" id="shop-filters" role="group" aria-label="Φίλτρα κατηγορίας προϊόντων">
+          <button type="button" class="pill is-active" data-category="Όλα">Όλα</button>
+          <button type="button" class="pill" data-category="Ρούχα">Ρούχα</button>
+          <button type="button" class="pill" data-category="Αξεσουάρ">Αξεσουάρ</button>
+          <button type="button" class="pill" data-category="Μπρελόκ">Μπρελόκ</button>
+        </div>
+
+        <div class="shop-toolbar__actions">
+          <button type="button" class="btn btn-outline btn-sm" id="orders-open" hidden>Οι Παραγγελίες μου</button>
+          <button type="button" class="btn btn-outline btn-sm shop-cart-btn" id="cart-open" aria-label="Καλάθι αγορών, 0 προϊόντα">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="9" cy="21" r="1"></circle>
+              <circle cx="20" cy="21" r="1"></circle>
+              <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+            <span aria-hidden="true">Καλάθι</span>
+            <span class="shop-cart-btn__count" id="cart-count" aria-hidden="true" hidden>0</span>
+          </button>
+        </div>
       </div>
 
       <div id="shop-state" class="state-message" hidden></div>
@@ -92,6 +109,7 @@
       <div id="modal-sizes" class="shop-modal__sizes" hidden>
         <p class="shop-modal__sizes-label">Μέγεθος</p>
         <div class="shop-modal__size-buttons" id="modal-size-buttons"></div>
+        <p class="shop-modal__size-hint" id="modal-size-hint" role="status" hidden>Διάλεξε πρώτα μέγεθος 😉</p>
       </div>
 
       <div class="shop-modal__footer">
@@ -99,13 +117,101 @@
           <span class="shop-modal__price-current" id="modal-price"></span>
           <span class="shop-modal__price-original" id="modal-original-price" hidden></span>
         </div>
-        <a href="https://discord.gg/v5RsBTnPpY" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
-          Ρώτησε για αγορά στο Discord
-        </a>
+        <button type="button" class="btn btn-primary" id="modal-add">Προσθήκη στο καλάθι</button>
       </div>
+      <p class="shop-modal__contact">
+        Απορίες για το προϊόν; <a href="https://discord.gg/v5RsBTnPpY" target="_blank" rel="noopener noreferrer">Ρώτησέ μας στο Discord</a>
+      </p>
     </div>
   </div>
 </dialog>
+
+<!-- ============ CART MODAL ============ -->
+<dialog class="modal shop-dialog" id="cart-modal" aria-labelledby="cart-title">
+  <button type="button" class="modal-close" id="cart-close" aria-label="Κλείσιμο">✕</button>
+  <div class="shop-dialog__inner">
+    <h2 class="shop-dialog__title" id="cart-title">Το Καλάθι μου</h2>
+    <p class="shop-dialog__empty" id="cart-empty">Το καλάθι σου είναι άδειο. Ρίξε μια ματιά στα προϊόντα μας!</p>
+    <div class="cart-items" id="cart-items"></div>
+    <div class="cart-footer" id="cart-footer" hidden>
+      <div class="cart-total">
+        <span>Σύνολο</span>
+        <strong id="cart-total">€0.00</strong>
+      </div>
+      <button type="button" class="btn btn-primary" id="checkout-open">Ολοκλήρωση Παραγγελίας</button>
+      <p class="form-status" id="cart-status" role="status"></p>
+    </div>
+  </div>
+</dialog>
+
+<!-- ============ CHECKOUT MODAL ============ -->
+<dialog class="modal shop-dialog" id="checkout-modal" aria-labelledby="checkout-title">
+  <button type="button" class="modal-close" id="checkout-close" aria-label="Κλείσιμο">✕</button>
+
+  <div class="shop-dialog__inner" id="checkout-main">
+    <h2 class="shop-dialog__title" id="checkout-title">Ολοκλήρωση Παραγγελίας</h2>
+    <div class="checkout-summary" id="checkout-summary"></div>
+    <p class="checkout-note">
+      Δεν χρειάζεται online πληρωμή: η παραγγελία καταχωρείται ως «Σε αναμονή» και θα επικοινωνήσουμε
+      μαζί σου μέσω email ή <a href="https://discord.gg/v5RsBTnPpY" target="_blank" rel="noopener noreferrer">Discord</a>
+      για την πληρωμή (π.χ. αντικαταβολή ή κατάθεση σε IBAN) και την αποστολή.
+    </p>
+
+    <form id="checkout-form">
+      <div class="field">
+        <label for="checkout-name">Ονοματεπώνυμο *</label>
+        <input type="text" id="checkout-name" name="full_name" required autocomplete="name">
+      </div>
+      <div class="field">
+        <label for="checkout-email">Email *</label>
+        <input type="email" id="checkout-email" name="email" required autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="checkout-phone">Τηλέφωνο</label>
+        <input type="tel" id="checkout-phone" name="phone" autocomplete="tel">
+      </div>
+      <div class="field">
+        <label for="checkout-address">Διεύθυνση *</label>
+        <input type="text" id="checkout-address" name="address" required autocomplete="street-address">
+      </div>
+      <div class="checkout-form__row">
+        <div class="field">
+          <label for="checkout-city">Πόλη *</label>
+          <input type="text" id="checkout-city" name="city" required autocomplete="address-level2">
+        </div>
+        <div class="field">
+          <label for="checkout-postal">Τ.Κ. *</label>
+          <input type="text" id="checkout-postal" name="postal_code" required autocomplete="postal-code">
+        </div>
+      </div>
+      <div class="field">
+        <label for="checkout-notes">Σημειώσεις</label>
+        <textarea id="checkout-notes" name="notes" rows="3" placeholder="π.χ. κουδούνι, όροφος, ώρες παράδοσης..."></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary checkout-submit" id="checkout-submit">Υποβολή Παραγγελίας</button>
+      <p class="form-status" id="checkout-status" role="status"></p>
+    </form>
+  </div>
+
+  <div class="shop-dialog__inner checkout-success" id="checkout-success" hidden>
+    <div class="checkout-success__emoji" aria-hidden="true">🎉</div>
+    <h2 class="shop-dialog__title" id="checkout-success-title">Η παραγγελία σου καταχωρήθηκε!</h2>
+    <p>Θα επικοινωνήσουμε μαζί σου για την πληρωμή και την αποστολή.</p>
+    <button type="button" class="btn btn-primary" id="checkout-success-close">Τέλεια!</button>
+  </div>
+</dialog>
+
+<!-- ============ ORDERS MODAL ============ -->
+<dialog class="modal shop-dialog" id="orders-modal" aria-labelledby="orders-title">
+  <button type="button" class="modal-close" id="orders-close" aria-label="Κλείσιμο">✕</button>
+  <div class="shop-dialog__inner">
+    <h2 class="shop-dialog__title" id="orders-title">Οι Παραγγελίες μου</h2>
+    <div class="orders-list" id="orders-list"></div>
+  </div>
+</dialog>
+
+<!-- Σύντομα μηνύματα επιβεβαίωσης (π.χ. «μπήκε στο καλάθι») -->
+<div class="shop-toast" id="shop-toast" role="status"></div>
 
 <footer class="site-footer">
   <div class="container">

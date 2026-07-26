@@ -169,7 +169,8 @@
   cursor: pointer;
 }
 
-@media (max-width: 860px) {
+/* Με 9 links + auth το μενού χρειάζεται περισσότερο χώρο πριν διπλώσει */
+@media (max-width: 1120px) {
   .main-nav {
     position: fixed;
     inset-inline: 0;

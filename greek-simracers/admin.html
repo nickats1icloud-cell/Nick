@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Διαχείριση — Greek SimRacers</title>
+  <meta name="description" content="Πίνακας διαχείρισης περιεχομένου για τους διαχειριστές της κοινότητας Greek SimRacers.">
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="assets/images/gsr-logo.png">
+  <script>document.documentElement.classList.add('js');</script>
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/motion.css">
+  <link rel="stylesheet" href="assets/css/admin.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a class="brand" href="index.html">
+      <img src="assets/images/gsr-logo.png" alt="Greek SimRacers λογότυπο">
+      <span>Greek<span class="text-gradient">SimRacers</span></span>
+    </a>
+
+    <button class="nav-toggle" aria-label="Άνοιγμα μενού" aria-expanded="false">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+    </button>
+
+    <nav class="main-nav" aria-label="Κύρια πλοήγηση">
+      <a href="index.html">Αρχική</a>
+      <a href="about.html">Σχετικά</a>
+      <a href="games-hub.html">Games Hub</a>
+      <a href="podcasts.html">Podcasts</a>
+      <a href="championships.html">Πρωταθλήματα</a>
+      <a href="forum.html">Forum</a>
+      <a href="predictions.html">Προβλέψεις</a>
+      <a href="shop.html">Shop</a>
+      <a href="contact.html">Επικοινωνία</a>
+
+      <div class="nav-auth" id="nav-auth"></div>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="section admin-section">
+    <div class="container">
+      <div class="section-eyebrow reveal">
+        <span class="line"></span>
+        <span>Admin Panel</span>
+        <span class="line reverse"></span>
+      </div>
+      <h1 class="section-title reveal">Πίνακας <span class="text-gradient">Διαχείρισης</span></h1>
+      <p class="section-subtitle reveal">Διαχείριση podcasts, πρωταθλημάτων, προϊόντων, παραγγελιών, προβλέψεων και μηνυμάτων</p>
+
+      <!-- ============ Καταστάσεις πύλης πρόσβασης ============ -->
+      <div id="admin-loading" class="state-message">
+        <div class="spinner"></div>
+        <p>Έλεγχος πρόσβασης…</p>
+      </div>
+
+      <div id="admin-signin" class="state-message is-hidden">
+        <p class="admin-gate__icon" aria-hidden="true">🔒</p>
+        <p>Πρέπει να συνδεθείς για να δεις αυτή τη σελίδα.</p>
+        <a class="btn btn-primary admin-gate__cta" href="auth.html">Σύνδεση</a>
+      </div>
+
+      <div id="admin-denied" class="state-message is-hidden">
+        <p class="admin-gate__icon" aria-hidden="true">⛔</p>
+        <p>Δεν έχεις πρόσβαση διαχειριστή.</p>
+        <a class="btn btn-outline admin-gate__cta" href="index.html">Επιστροφή στην αρχική</a>
+      </div>
+
+      <div id="admin-unavailable" class="state-message is-hidden">
+        <p class="admin-gate__icon" aria-hidden="true">⚠️</p>
+        <p>Η υπηρεσία δεν είναι διαθέσιμη αυτή τη στιγμή. Δοκίμασε να ανανεώσεις τη σελίδα σε λίγο.</p>
+      </div>
+
+      <!-- ============ Πάνελ διαχείρισης ============ -->
+      <div id="admin-panel" class="is-hidden">
+        <div class="pill-filters admin-tabs" role="tablist" aria-label="Ενότητες διαχείρισης">
+          <button type="button" class="pill is-active" role="tab" id="tab-podcasts" aria-controls="panel-podcasts" aria-selected="true" data-tab="podcasts">Podcasts</button>
+          <button type="button" class="pill" role="tab" id="tab-championships" aria-controls="panel-championships" aria-selected="false" data-tab="championships">Πρωταθλήματα</button>
+          <button type="button" class="pill" role="tab" id="tab-products" aria-controls="panel-products" aria-selected="false" data-tab="products">Προϊόντα</button>
+          <button type="button" class="pill" role="tab" id="tab-orders" aria-controls="panel-orders" aria-selected="false" data-tab="orders">Παραγγελίες</button>
+          <button type="button" class="pill" role="tab" id="tab-predictions" aria-controls="panel-predictions" aria-selected="false" data-tab="predictions">Προβλέψεις</button>
+          <button type="button" class="pill" role="tab" id="tab-messages" aria-controls="panel-messages" aria-selected="false" data-tab="messages">Μηνύματα</button>
+        </div>
+
+        <!-- Podcasts -->
+        <section id="panel-podcasts" class="admin-tabpanel" role="tabpanel" aria-labelledby="tab-podcasts">
+          <div class="admin-toolbar">
+            <h2 class="admin-heading">Επεισόδια Podcast</h2>
+            <button type="button" class="btn btn-primary btn-sm" id="podcast-new-btn">+ Νέο Επεισόδιο</button>
+          </div>
+          <div id="podcasts-list"></div>
+        </section>
+
+        <!-- Πρωταθλήματα -->
+        <section id="panel-championships" class="admin-tabpanel" role="tabpanel" aria-labelledby="tab-championships" hidden>
+          <div class="admin-toolbar">
+            <h2 class="admin-heading">Πρωταθλήματα</h2>
+            <button type="button" class="btn btn-primary btn-sm" id="champ-new-btn">+ Νέο Πρωτάθλημα</button>
+          </div>
+          <div id="championships-list"></div>
+        </section>
+
+        <!-- Προϊόντα -->
+        <section id="panel-products" class="admin-tabpanel" role="tabpanel" aria-labelledby="tab-products" hidden>
+          <div class="admin-toolbar">
+            <h2 class="admin-heading">Προϊόντα Shop</h2>
+            <button type="button" class="btn btn-primary btn-sm" id="prod-new-btn">+ Νέο Προϊόν</button>
+          </div>
+          <div id="products-list"></div>
+        </section>
+
+        <!-- Παραγγελίες -->
+        <section id="panel-orders" class="admin-tabpanel" role="tabpanel" aria-labelledby="tab-orders" hidden>
+          <div class="admin-toolbar">
+            <h2 class="admin-heading">Παραγγελίες</h2>
+          </div>
+          <div class="pill-filters admin-subfilters" id="orders-filters"></div>
+          <div id="orders-list"></div>
+        </section>
+
+        <!-- Προβλέψεις -->
+        <section id="panel-predictions" class="admin-tabpanel" role="tabpanel" aria-labelledby="tab-predictions" hidden>
+          <div class="admin-toolbar">
+            <h2 class="admin-heading">Προβλέψεις</h2>
+            <button type="button" class="btn btn-primary btn-sm" id="pred-new-btn">+ Νέα Πρόβλεψη</button>
+          </div>
+          <div id="predictions-list"></div>
+        </section>
+
+        <!-- Μηνύματα -->
+        <section id="panel-messages" class="admin-tabpanel" role="tabpanel" aria-labelledby="tab-messages" hidden>
+          <div class="admin-toolbar">
+            <h2 class="admin-heading">Μηνύματα Επικοινωνίας</h2>
+          </div>
+          <div id="messages-list"></div>
+        </section>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ============ Dialog: Επεισόδιο Podcast ============ -->
+<dialog class="modal" id="podcast-dialog" aria-labelledby="podcast-dialog-title">
+  <form class="admin-form" id="podcast-form">
+    <button type="button" class="modal-close" data-close-dialog aria-label="Κλείσιμο">✕</button>
+    <h3 id="podcast-dialog-title">Νέο Επεισόδιο</h3>
+    <input type="hidden" name="id">
+    <div class="admin-form__grid">
+      <div class="field">
+        <label for="podcast-number">Αριθμός επεισοδίου *</label>
+        <input id="podcast-number" name="episode_number" type="number" min="1" step="1" required>
+      </div>
+      <div class="field">
+        <label for="podcast-duration">Διάρκεια</label>
+        <input id="podcast-duration" name="duration" type="text" placeholder="π.χ. 45 λεπτά">
+      </div>
+    </div>
+    <div class="field">
+      <label for="podcast-title">Τίτλος *</label>
+      <input id="podcast-title" name="title" type="text" required>
+    </div>
+    <div class="field">
+      <label for="podcast-description">Περιγραφή</label>
+      <textarea id="podcast-description" name="description" rows="3"></textarea>
+    </div>
+    <div class="admin-form__grid">
+      <div class="field">
+        <label for="podcast-host">Παρουσιαστής</label>
+        <input id="podcast-host" name="host" type="text">
+      </div>
+      <div class="field">
+        <label for="podcast-category">Κατηγορία</label>
+        <input id="podcast-category" name="category" type="text" placeholder="π.χ. Συνέντευξη">
+      </div>
+    </div>
+    <div class="field">
+      <label for="podcast-spotify">Spotify URL</label>
+      <input id="podcast-spotify" name="spotify_url" type="url" placeholder="https://open.spotify.com/episode/…">
+    </div>
+    <label class="admin-check">
+      <input type="checkbox" name="published">
+      <span>Δημοσιευμένο</span>
+    </label>
+    <div class="admin-form__actions">
+      <button type="button" class="btn btn-outline btn-sm" data-close-dialog>Ακύρωση</button>
+      <button type="submit" class="btn btn-primary btn-sm">Αποθήκευση</button>
+    </div>
+    <p class="form-status" id="podcast-status" role="status"></p>
+  </form>
+</dialog>
+
+<!-- ============ Dialog: Πρωτάθλημα ============ -->
+<dialog class="modal" id="champ-dialog" aria-labelledby="champ-dialog-title">
+  <form class="admin-form" id="champ-form">
+    <button type="button" class="modal-close" data-close-dialog aria-label="Κλείσιμο">✕</button>
+    <h3 id="champ-dialog-title">Νέο Πρωτάθλημα</h3>
+    <input type="hidden" name="id">
+    <div class="field">
+      <label for="champ-title">Τίτλος *</label>
+      <input id="champ-title" name="title" type="text" required>
+    </div>
+    <div class="field">
+      <label for="champ-description">Περιγραφή</label>
+      <textarea id="champ-description" name="description" rows="3"></textarea>
+    </div>
+    <div class="admin-form__grid">
+      <div class="field">
+        <label for="champ-category">Κατηγορία</label>
+        <input id="champ-category" name="category" type="text" placeholder="π.χ. GT3">
+      </div>
+      <div class="field">
+        <label for="champ-status">Κατάσταση</label>
+        <select id="champ-status" name="status">
+          <option value="upcoming">Έρχεται</option>
+          <option value="active">Ενεργό</option>
+          <option value="completed">Ολοκληρωμένο</option>
+        </select>
+      </div>
+    </div>
+    <div class="admin-form__grid">
+      <div class="field">
+        <label for="champ-races-completed">Αγώνες που έγιναν</label>
+        <input id="champ-races-completed" name="races_completed" type="number" min="0" step="1" value="0">
+      </div>
+      <div class="field">
+        <label for="champ-races-total">Σύνολο αγώνων</label>
+        <input id="champ-races-total" name="races_total" type="number" min="0" step="1" value="0">
+      </div>
+    </div>
+    <div class="admin-form__grid">
+      <div class="field">
+        <label for="champ-participants">Συμμετέχοντες</label>
+        <input id="champ-participants" name="participants" type="number" min="0" step="1" value="0">
+      </div>
+      <div class="field">
+        <label for="champ-start-date">Ημερομηνία έναρξης</label>
+        <input id="champ-start-date" name="start_date" type="date">
+      </div>
+    </div>
+    <div class="field">
+      <label for="champ-image">Εικόνα (URL, προαιρετικό)</label>
+      <input id="champ-image" name="image_url" type="text">
+    </div>
+    <div class="admin-form__actions">
+      <button type="button" class="btn btn-outline btn-sm" data-close-dialog>Ακύρωση</button>
+      <button type="submit" class="btn btn-primary btn-sm">Αποθήκευση</button>
+    </div>
+    <p class="form-status" id="champ-status-msg" role="status"></p>
+  </form>
+</dialog>
+
+<!-- ============ Dialog: Προϊόν ============ -->
+<dialog class="modal" id="prod-dialog" aria-labelledby="prod-dialog-title">
+  <form class="admin-form" id="prod-form">
+    <button type="button" class="modal-close" data-close-dialog aria-label="Κλείσιμο">✕</button>
+    <h3 id="prod-dialog-title">Νέο Προϊόν</h3>
+    <input type="hidden" name="id">
+    <div class="field">
+      <label for="prod-name">Όνομα *</label>
+      <input id="prod-name" name="name" type="text" required>
+    </div>
+    <div class="field">
+      <label for="prod-description">Περιγραφή</label>
+      <textarea id="prod-description" name="description" rows="3"></textarea>
+    </div>
+    <div class="admin-form__grid">
+      <div class="field">
+        <label for="prod-price">Τιμή (€) *</label>
+        <input id="prod-price" name="price" type="number" min="0" step="0.01" required>
+      </div>
+      <div class="field">
+        <label for="prod-original-price">Αρχική τιμή (€, προαιρετικό)</label>
+        <input id="prod-original-price" name="original_price" type="number" min="0" step="0.01">
+      </div>
+    </div>
+    <div class="admin-form__grid">
+      <div class="field">
+        <label for="prod-image">Εικόνα</label>
+        <select id="prod-image" name="image_url">
+          <option value="tshirt-black">tshirt-black</option>
+          <option value="tshirt-white">tshirt-white</option>
+          <option value="hoodie-navy">hoodie-navy</option>
+          <option value="cap-blue">cap-blue</option>
+          <option value="keychain-helmet">keychain-helmet</option>
+          <option value="keychain-wheel">keychain-wheel</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="prod-category">Κατηγορία</label>
+        <select id="prod-category" name="category">
+          <option value="Ρούχα">Ρούχα</option>
+          <option value="Αξεσουάρ">Αξεσουάρ</option>
+          <option value="Μπρελόκ">Μπρελόκ</option>
+        </select>
+      </div>
+    </div>
+    <div class="admin-form__grid">
+      <div class="field">
+        <label for="prod-badge">Badge (προαιρετικό)</label>
+        <input id="prod-badge" name="badge" type="text" placeholder="π.χ. Νέο, -20%">
+      </div>
+      <div class="field">
+        <label for="prod-stock">Απόθεμα</label>
+        <input id="prod-stock" name="stock" type="number" min="0" step="1" value="0">
+      </div>
+    </div>
+    <div class="field">
+      <label for="prod-sizes">Μεγέθη (χωρισμένα με κόμμα, προαιρετικό)</label>
+      <input id="prod-sizes" name="sizes" type="text" placeholder="π.χ. S, M, L, XL">
+    </div>
+    <label class="admin-check">
+      <input type="checkbox" name="active" checked>
+      <span>Ενεργό (εμφανίζεται στο shop)</span>
+    </label>
+    <div class="admin-form__actions">
+      <button type="button" class="btn btn-outline btn-sm" data-close-dialog>Ακύρωση</button>
+      <button type="submit" class="btn btn-primary btn-sm">Αποθήκευση</button>
+    </div>
+    <p class="form-status" id="prod-status" role="status"></p>
+  </form>
+</dialog>
+
+<!-- ============ Dialog: Νέα Πρόβλεψη ============ -->
+<dialog class="modal" id="pred-dialog" aria-labelledby="pred-dialog-title">
+  <form class="admin-form" id="pred-form">
+    <button type="button" class="modal-close" data-close-dialog aria-label="Κλείσιμο">✕</button>
+    <h3 id="pred-dialog-title">Νέα Πρόβλεψη</h3>
+    <div class="field">
+      <label for="pred-title">Τίτλος *</label>
+      <input id="pred-title" name="title" type="text" required>
+    </div>
+    <div class="field">
+      <label for="pred-description">Περιγραφή</label>
+      <textarea id="pred-description" name="description" rows="2"></textarea>
+    </div>
+    <div class="field">
+      <label for="pred-options">Επιλογές (μία ανά γραμμή, τουλάχιστον 2) *</label>
+      <textarea id="pred-options" name="options" rows="4" required placeholder="π.χ.&#10;Verstappen&#10;Leclerc&#10;Norris"></textarea>
+    </div>
+    <div class="admin-form__grid">
+      <div class="field">
+        <label for="pred-closes-at">Κλείνει στις (προαιρετικό)</label>
+        <input id="pred-closes-at" name="closes_at" type="datetime-local">
+      </div>
+      <div class="field">
+        <label for="pred-status">Κατάσταση</label>
+        <select id="pred-status" name="status">
+          <option value="open">Ανοιχτή</option>
+          <option value="closed">Κλειστή</option>
+        </select>
+      </div>
+    </div>
+    <div class="admin-form__actions">
+      <button type="button" class="btn btn-outline btn-sm" data-close-dialog>Ακύρωση</button>
+      <button type="submit" class="btn btn-primary btn-sm">Δημιουργία</button>
+    </div>
+    <p class="form-status" id="pred-status-msg" role="status"></p>
+  </form>
+</dialog>
+
+<!-- ============ Dialog: Οριστικοποίηση Πρόβλεψης ============ -->
+<dialog class="modal" id="settle-dialog" aria-labelledby="settle-dialog-title">
+  <form class="admin-form" id="settle-form">
+    <button type="button" class="modal-close" data-close-dialog aria-label="Κλείσιμο">✕</button>
+    <h3 id="settle-dialog-title">Οριστικοποίηση Πρόβλεψης</h3>
+    <p class="admin-form__hint" id="settle-event-title"></p>
+    <div class="field">
+      <label for="settle-result">Νικήτρια επιλογή *</label>
+      <select id="settle-result" name="result" required></select>
+    </div>
+    <div class="admin-form__actions">
+      <button type="button" class="btn btn-outline btn-sm" data-close-dialog>Ακύρωση</button>
+      <button type="submit" class="btn btn-primary btn-sm">Οριστικοποίηση</button>
+    </div>
+    <p class="form-status" id="settle-status" role="status"></p>
+  </form>
+</dialog>
+
+<!-- Περιοχή για toast ειδοποιήσεις -->
+<div class="admin-toasts" id="admin-toasts" aria-live="polite"></div>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="index.html" style="margin-bottom:1rem;">
+          <img src="assets/images/gsr-logo.png" alt="Greek SimRacers λογότυπο">
+          <span>Greek<span class="text-gradient">SimRacers</span></span>
+        </a>
+        <p style="color:hsl(var(--muted-foreground)); font-size:0.9rem; max-width:22rem; line-height:1.6;">
+          Η #1 Ελληνική πλατφόρμα SimRacing. Αγώνες, πληροφόρηση και πάθος για τη virtual μηχανοκίνηση.
+        </p>
+        <div style="display:flex; gap:0.6rem; margin-top:1.5rem;">
+          <a href="https://discord.gg/v5RsBTnPpY" target="_blank" rel="noopener noreferrer" aria-label="Discord" class="social-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
+          </a>
+          <a href="https://www.youtube.com/@GreekSimracers" target="_blank" rel="noopener noreferrer" aria-label="YouTube" class="social-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          </a>
+          <a href="https://www.facebook.com/groups/greeksimracers" target="_blank" rel="noopener noreferrer" aria-label="Facebook" class="social-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+          <a href="https://open.spotify.com/show/62c9vN8ZOT4unAzzJmtOXD" target="_blank" rel="noopener noreferrer" aria-label="Spotify" class="social-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <h4>Πλοήγηση</h4>
+        <a href="index.html">Αρχική</a>
+        <a href="games-hub.html">Games Hub</a>
+        <a href="podcasts.html">Podcasts</a>
+        <a href="championships.html">Πρωταθλήματα</a>
+        <a href="shop.html">Shop</a>
+      </div>
+
+      <div>
+        <h4>Κοινότητα &amp; Νομικά</h4>
+        <a href="about.html">Σχετικά με εμάς</a>
+        <a href="contact.html">Επικοινωνία</a>
+        <a href="support.html">Support</a>
+        <a href="terms.html">Όροι Χρήσης</a>
+        <a href="privacy.html">Πολιτική Απορρήτου</a>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© <span data-current-year>2026</span> Greek SimRacers. Όλα τα δικαιώματα κατοχυρωμένα.</p>
+      <p>Made with ❤️ in Greece</p>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/motion.js"></script>
+<script src="assets/js/admin.js"></script>
+</body>
+</html>

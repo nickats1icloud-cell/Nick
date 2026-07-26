@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Επαναφορά Κωδικού — Greek SimRacers</title>
-  <meta name="description" content="Επαναφορά κωδικού πρόσβασης για τον λογαριασμό σου στο Greek SimRacers.">
+  <title>Προβλέψεις — Greek SimRacers</title>
+  <meta name="description" content="Μάντεψε τα αποτελέσματα των αγώνων SimRacing και δες τις προβλέψεις της ελληνικής κοινότητας Greek SimRacers.">
   <link rel="icon" href="assets/images/gsr-logo.png">
   <script>document.documentElement.classList.add('js');</script>
   <link rel="stylesheet" href="assets/css/tokens.css">
   <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/components.css">
   <link rel="stylesheet" href="assets/css/motion.css">
-  <link rel="stylesheet" href="assets/css/auth.css">
+  <link rel="stylesheet" href="assets/css/predictions.css">
 </head>
 <body>
 
@@ -37,7 +37,7 @@
       <a href="podcasts.html">Podcasts</a>
       <a href="championships.html">Πρωταθλήματα</a>
       <a href="forum.html">Forum</a>
-      <a href="predictions.html">Προβλέψεις</a>
+      <a href="predictions.html" aria-current="page">Προβλέψεις</a>
       <a href="shop.html">Shop</a>
       <a href="contact.html">Επικοινωνία</a>
 
@@ -47,70 +47,34 @@
 </header>
 
 <main>
-  <section class="section auth-section">
+  <!-- ============ HERO ============ -->
+  <section class="preds-hero">
+    <div class="container preds-hero__content">
+      <div class="section-eyebrow reveal">
+        <span class="line"></span>
+        <span>Greek SimRacers</span>
+        <span class="line reverse"></span>
+      </div>
+
+      <h1 class="section-title reveal">
+        🔮 <span class="text-gradient">ΠΡΟΒΛΕΨΕΙΣ</span>
+      </h1>
+
+      <p class="section-subtitle reveal">
+        Μάντεψε τα αποτελέσματα των αγώνων και μάζεψε πόντους με την κοινότητα
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ PREDICTIONS ============ -->
+  <section class="section preds-section" id="predictions">
     <div class="container">
-      <div class="card auth-card reveal">
-        <p class="auth-unavailable" id="auth-unavailable">
-          <span class="auth-unavailable__icon" aria-hidden="true">⚠️</span>
-          <span>Η σύνδεση με τον διακομιστή δεν είναι διαθέσιμη αυτή τη στιγμή. Δοκίμασε να ανανεώσεις τη σελίδα ή ξαναπροσπάθησε αργότερα.</span>
-        </p>
+      <div class="pill-filters reveal" id="predictions-filters" aria-label="Φίλτρο κατάστασης προβλέψεων"></div>
 
-        <!-- ============ STEP A: request the reset email ============ -->
-        <div class="auth-step" id="request-step">
-          <h1>Επαναφορά Κωδικού</h1>
-          <p class="auth-card__subtitle">Στείλε μας το email σου και θα σου στείλουμε σύνδεσμο για να ορίσεις νέο κωδικό.</p>
-
-          <form id="request-form" novalidate>
-            <div class="field">
-              <label for="request-email">Email</label>
-              <input type="email" id="request-email" name="email" autocomplete="email" required>
-            </div>
-
-            <button type="submit" class="btn btn-primary auth-form__submit">Αποστολή Συνδέσμου</button>
-            <p class="form-status" id="request-status" role="status" aria-live="polite"></p>
-          </form>
-        </div>
-
-        <!-- ============ STEP A: confirmation after sending ============ -->
-        <div class="auth-step is-hidden" id="request-sent-step">
-          <div class="auth-success">
-            <div class="auth-success__icon" aria-hidden="true">📧</div>
-            <h1>Έλεγξε τα Email σου</h1>
-            <p>Αν υπάρχει λογαριασμός με αυτό το email, θα λάβεις σύντομα έναν σύνδεσμο για να ορίσεις νέο κωδικό.</p>
-            <a href="index.html" class="btn btn-outline">Επιστροφή στην Αρχική</a>
-          </div>
-        </div>
-
-        <!-- ============ STEP B: set a new password (arrives via emailed link) ============ -->
-        <div class="auth-step is-hidden" id="update-step">
-          <h1>Νέος Κωδικός</h1>
-          <p class="auth-card__subtitle">Όρισε τον νέο κωδικό πρόσβασής σου.</p>
-
-          <form id="update-form" novalidate>
-            <div class="field">
-              <label for="update-password">Νέος Κωδικός</label>
-              <input type="password" id="update-password" name="password" autocomplete="new-password" minlength="6" required>
-              <span class="field-hint">Τουλάχιστον 6 χαρακτήρες.</span>
-            </div>
-
-            <div class="field">
-              <label for="update-password-confirm">Επιβεβαίωση Κωδικού</label>
-              <input type="password" id="update-password-confirm" name="password_confirm" autocomplete="new-password" minlength="6" required>
-            </div>
-
-            <button type="submit" class="btn btn-primary auth-form__submit">Αποθήκευση Κωδικού</button>
-            <p class="form-status" id="update-status" role="status" aria-live="polite"></p>
-          </form>
-        </div>
-
-        <!-- ============ STEP B: confirmation after updating ============ -->
-        <div class="auth-step is-hidden" id="update-done-step">
-          <div class="auth-success">
-            <div class="auth-success__icon" aria-hidden="true">✅</div>
-            <h1>Ο Κωδικός Άλλαξε</h1>
-            <p>Ο νέος σου κωδικός αποθηκεύτηκε. Θα μεταφερθείς αυτόματα στην αρχική σελίδα.</p>
-            <a href="index.html" class="btn btn-outline">Μετάβαση τώρα</a>
-          </div>
+      <div class="preds-grid" id="predictions-list" aria-live="polite">
+        <div class="state-message">
+          <div class="spinner"></div>
+          <p>Φόρτωση προβλέψεων…</p>
         </div>
       </div>
     </div>
@@ -121,14 +85,14 @@
   <div class="container">
     <div class="footer-grid">
       <div>
-        <a class="brand" href="index.html" style="margin-bottom:1rem;">
+        <a class="brand footer-brand" href="index.html">
           <img src="assets/images/gsr-logo.png" alt="Greek SimRacers λογότυπο">
           <span>Greek<span class="text-gradient">SimRacers</span></span>
         </a>
-        <p style="color:hsl(var(--muted-foreground)); font-size:0.9rem; max-width:22rem; line-height:1.6;">
+        <p class="footer-tagline">
           Η #1 Ελληνική πλατφόρμα SimRacing. Αγώνες, πληροφόρηση και πάθος για τη virtual μηχανοκίνηση.
         </p>
-        <div style="display:flex; gap:0.6rem; margin-top:1.5rem;">
+        <div class="footer-socials">
           <a href="https://discord.gg/v5RsBTnPpY" target="_blank" rel="noopener noreferrer" aria-label="Discord" class="social-icon">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
           </a>
@@ -175,6 +139,6 @@
 <script src="assets/js/main.js"></script>
 <script src="assets/js/auth.js"></script>
 <script src="assets/js/motion.js"></script>
-<script src="assets/js/reset-password.js"></script>
+<script src="assets/js/predictions.js"></script>
 </body>
 </html>
