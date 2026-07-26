@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="el">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="assets/logo.png" />
+    <title>Άρθρο - Greek Simracers</title>
+    <meta name="description" content="Άρθρο από την ελληνική κοινότητα sim racing." />
+
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+
+    <!-- Supabase JS (vendored, χωρίς CDN) — ορίζει το window.supabase -->
+    <script src="js/vendor/supabase.umd.js" defer></script>
+
+    <style>
+      /* Στυλ αποκλειστικά για τη σελίδα μεμονωμένου άρθρου. */
+      .article__wrap {
+        max-width: 46rem;
+        margin-inline: auto;
+      }
+
+      .article__back {
+        display: inline-block;
+        margin-bottom: 1.5rem;
+        color: hsl(var(--muted-foreground));
+        font-size: 0.9rem;
+      }
+
+      .article__back:hover {
+        color: hsl(var(--accent));
+      }
+
+      .article__title {
+        font-size: clamp(1.6rem, 4vw, 2.4rem);
+      }
+
+      .article__meta {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+        color: hsl(var(--muted-foreground));
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .article__cover {
+        width: 100%;
+        border-radius: var(--radius-lg);
+        margin-bottom: 1.5rem;
+      }
+
+      .article__actions {
+        display: flex;
+        gap: 1rem;
+        margin-block: 2rem;
+        padding-block: 1.25rem;
+        border-top: 1px solid hsl(var(--border));
+        border-bottom: 1px solid hsl(var(--border));
+      }
+
+      .article__comment {
+        margin-bottom: 1rem;
+      }
+
+      .article__comment-meta {
+        font-size: 0.8rem;
+        color: hsl(var(--muted-foreground));
+        margin-bottom: 0.4rem;
+      }
+
+      .article__comment-body {
+        margin: 0;
+        white-space: pre-wrap;
+        overflow-wrap: break-word;
+      }
+
+      .article__hint {
+        color: hsl(var(--muted-foreground));
+        font-size: 0.9rem;
+      }
+
+      .article__notfound {
+        text-align: center;
+        padding-block: 3rem;
+      }
+    </style>
+  </head>
+  <body data-page="articles">
+    <div id="site-header"></div>
+
+    <main>
+      <section class="gsr__section">
+        <div class="gsr__container article__wrap">
+          <a href="articles.html" class="article__back">← Πίσω στα άρθρα</a>
+
+          <!-- Το άρθρο (skeleton μέχρι να φορτώσει) -->
+          <div id="article-root">
+            <div class="gsr__skeleton" style="height: 2.5rem; margin-bottom: 1rem"></div>
+            <div class="gsr__skeleton" style="height: 1rem; width: 60%; margin-bottom: 2rem"></div>
+            <div class="gsr__skeleton" style="height: 16rem"></div>
+          </div>
+
+          <!-- Like + σχόλια — εμφανίζονται μόνο όταν βρεθεί το άρθρο -->
+          <div id="article-social" hidden>
+            <div class="article__actions">
+              <button type="button" id="like-btn" class="gsr__btn gsr__btn--outline">❤ 0</button>
+            </div>
+
+            <h2 style="font-size: 1.3rem">Σχόλια</h2>
+            <div id="comments-list"></div>
+            <div id="comment-form-slot" style="margin-top: 1.5rem"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script type="module">
+      import { mountShell } from "./js/partials.js";
+      import { supabase } from "./js/supabase-client.js";
+      import { onAuthChange, getUser, getIsApproved } from "./js/auth.js";
+      import { toast } from "./js/toast.js";
+      import { renderMarkdown, escapeHtml } from "./js/markdown.js";
+
+      // Περιμένουμε το shell (κάνει και initAuth) ώστε το getUser()
+      // να έχει σωστή τιμή πριν φορτώσουμε likes/σχόλια.
+      await mountShell(document.body.dataset.page);
+
+      const root = document.getElementById("article-root");
+      const social = document.getElementById("article-social");
+      const likeBtn = document.getElementById("like-btn");
+      const commentsList = document.getElementById("comments-list");
+      const commentSlot = document.getElementById("comment-form-slot");
+
+      const articleId = new URLSearchParams(window.location.search).get("id");
+
+      let likeCount = 0;
+      let likedByMe = false;
+      let likeBusy = false;
+
+      const fmtDate = (iso) =>
+        new Date(iso).toLocaleDateString("el-GR", { day: "numeric", month: "short", year: "numeric" });
+
+      function badgeStyle(color) {
+        if (!/^#[0-9a-fA-F]{6}$/.test(color || "")) return "";
+        return ` style="background: ${color}26; color: ${color}"`;
+      }
+
+      function showNotFound() {
+        social.hidden = true;
+        root.innerHTML = `
+          <div class="gsr__card article__notfound">
+            <h2>Το άρθρο δεν βρέθηκε</h2>
+            <p class="article__hint">Μπορεί να διαγράφηκε ή ο σύνδεσμος να είναι λανθασμένος.</p>
+            <a href="articles.html" class="gsr__btn gsr__btn--primary">Πίσω στα άρθρα</a>
+          </div>`;
+      }
+
+      function renderLikeButton() {
+        likeBtn.textContent = `❤ ${likeCount}`;
+        likeBtn.classList.toggle("gsr__btn--primary", likedByMe);
+        likeBtn.classList.toggle("gsr__btn--outline", !likedByMe);
+      }
+
+      async function loadArticle() {
+        const { data: article, error } = await supabase
+          .from("articles")
+          .select("*, article_categories(name, color)")
+          .eq("id", articleId)
+          .maybeSingle();
+        if (error) throw error;
+        if (!article) {
+          showNotFound();
+          return;
+        }
+
+        // Μέτρηση προβολής — fire and forget, τυχόν σφάλμα αγνοείται.
+        supabase.rpc("increment_article_views", { article_id: articleId }).then(() => {});
+
+        // Όνομα συντάκτη από το profiles.
+        let authorName = "Μέλος";
+        if (article.author_id) {
+          const { data: profiles } = await supabase
+            .from("profiles")
+            .select("user_id, display_name")
+            .in("user_id", [article.author_id]);
+          if (profiles?.[0]?.display_name) authorName = profiles[0].display_name;
+        }
+
+        const cat = article.article_categories;
+        const coverOk = /^https?:\/\/\S+$/i.test(article.cover_url || "");
+        document.title = `${article.title} - Greek Simracers`;
+
+        root.innerHTML = `
+          <h1 class="article__title">${escapeHtml(article.title)}</h1>
+          <div class="article__meta">
+            <span>${escapeHtml(authorName)}</span>
+            <span>${fmtDate(article.created_at)}</span>
+            <span>👁 ${(article.views ?? 0) + 1}</span>
+            ${cat ? `<span class="gsr__badge"${badgeStyle(cat.color)}>${escapeHtml(cat.name)}</span>` : ""}
+          </div>
+          ${coverOk ? `<img class="article__cover" src="${escapeHtml(article.cover_url)}" alt="" />` : ""}
+          <div class="gsr__prose">${renderMarkdown(article.content)}</div>`;
+
+        social.hidden = false;
+        await Promise.all([loadLikes(), loadComments()]);
+      }
+
+      async function loadLikes() {
+        const user = getUser();
+        const { count } = await supabase
+          .from("article_likes")
+          .select("*", { count: "exact", head: true })
+          .eq("article_id", articleId);
+        likeCount = count ?? 0;
+
+        likedByMe = false;
+        if (user) {
+          const { data } = await supabase
+            .from("article_likes")
+            .select("id")
+            .eq("article_id", articleId)
+            .eq("user_id", user.id)
+            .maybeSingle();
+          likedByMe = Boolean(data);
+        }
+        renderLikeButton();
+      }
+
+      likeBtn.addEventListener("click", async () => {
+        const user = getUser();
+        if (!user) {
+          toast("Συνδέσου για να αφήσεις like");
+          return;
+        }
+        if (likeBusy) return;
+        likeBusy = true;
+        try {
+          if (likedByMe) {
+            const { error } = await supabase
+              .from("article_likes")
+              .delete()
+              .eq("article_id", articleId)
+              .eq("user_id", user.id);
+            if (error) throw error;
+            likedByMe = false;
+            likeCount = Math.max(0, likeCount - 1);
+          } else {
+            const { error } = await supabase
+              .from("article_likes")
+              .insert({ article_id: articleId, user_id: user.id });
+            if (error) throw error;
+            likedByMe = true;
+            likeCount += 1;
+          }
+          renderLikeButton();
+        } catch (err) {
+          console.error(err);
+          toast.error("Κάτι πήγε στραβά. Δοκίμασε ξανά.");
+        } finally {
+          likeBusy = false;
+        }
+      });
+
+      async function loadComments() {
+        const { data: comments, error } = await supabase
+          .from("article_comments")
+          .select("id, author_id, content, created_at")
+          .eq("article_id", articleId)
+          .order("created_at", { ascending: true });
+        if (error) throw error;
+
+        // Ονόματα σχολιαστών μαζικά από το profiles.
+        const authorIds = [...new Set((comments ?? []).map((c) => c.author_id).filter(Boolean))];
+        const names = {};
+        if (authorIds.length) {
+          const { data: profiles } = await supabase
+            .from("profiles")
+            .select("user_id, display_name")
+            .in("user_id", authorIds);
+          (profiles ?? []).forEach((profile) => {
+            names[profile.user_id] = profile.display_name;
+          });
+        }
+
+        commentsList.innerHTML = (comments ?? []).length
+          ? comments
+              .map(
+                (comment) => `
+                  <div class="gsr__card article__comment">
+                    <div class="article__comment-meta">
+                      <strong>${escapeHtml(names[comment.author_id] || "Μέλος")}</strong> ·
+                      ${fmtDate(comment.created_at)}
+                    </div>
+                    <p class="article__comment-body">${escapeHtml(comment.content)}</p>
+                  </div>`,
+              )
+              .join("")
+          : `<p class="article__hint">Δεν υπάρχουν σχόλια ακόμα. Γίνε ο πρώτος!</p>`;
+      }
+
+      /* Φόρμα σχολίου μόνο για συνδεδεμένα + εγκεκριμένα μέλη. */
+      function renderCommentForm({ user, isApproved }) {
+        if (!(user && isApproved)) {
+          commentSlot.innerHTML = `<p class="article__hint">Συνδέσου για να αφήσεις σχόλιο.</p>`;
+          return;
+        }
+        commentSlot.innerHTML = `
+          <form id="comment-form">
+            <div class="gsr__field">
+              <label class="gsr__label" for="comment-content">Το σχόλιό σου</label>
+              <textarea id="comment-content" class="gsr__textarea" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="gsr__btn gsr__btn--primary">Υποβολή σχολίου</button>
+          </form>`;
+
+        document.getElementById("comment-form").addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const textarea = document.getElementById("comment-content");
+          const content = textarea.value.trim();
+          if (!content) return;
+          try {
+            const { error } = await supabase
+              .from("article_comments")
+              .insert({ article_id: articleId, author_id: getUser().id, content });
+            if (error) throw error;
+            textarea.value = "";
+            toast.success("Το σχόλιο δημοσιεύτηκε.");
+            await loadComments();
+          } catch (err) {
+            console.error(err);
+            toast.error("Η υποβολή του σχολίου απέτυχε.");
+          }
+        });
+      }
+
+      onAuthChange(renderCommentForm);
+
+      if (!articleId) {
+        showNotFound();
+      } else {
+        loadArticle().catch((err) => {
+          console.error(err);
+          toast.error("Δεν ήταν δυνατή η φόρτωση του άρθρου.");
+          showNotFound();
+        });
+      }
+    </script>
+  </body>
+</html>

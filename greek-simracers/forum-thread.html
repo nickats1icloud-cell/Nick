@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="el">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="assets/logo.png" />
+    <title>Thread - Greek Simracers</title>
+    <meta name="description" content="Συζήτηση στο forum της ελληνικής κοινότητας sim racing." />
+
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+
+    <!-- Supabase JS (vendored, χωρίς CDN) — ορίζει το window.supabase -->
+    <script src="js/vendor/supabase.umd.js" defer></script>
+
+    <style>
+      /* Στυλ αποκλειστικά για τη σελίδα ενός thread. */
+      .forum__wrap {
+        max-width: 48rem;
+        margin-inline: auto;
+      }
+
+      .forum__breadcrumb {
+        font-size: 0.9rem;
+        color: hsl(var(--muted-foreground));
+        margin-bottom: 1.5rem;
+      }
+
+      .forum__breadcrumb a:hover {
+        color: hsl(var(--accent));
+      }
+
+      .forum__thread-title {
+        font-size: clamp(1.4rem, 3.5vw, 2rem);
+        margin-bottom: 1.5rem;
+      }
+
+      /* Το αρχικό post (OP) ξεχωρίζει με χρωματιστό περίγραμμα. */
+      .forum__op {
+        border-color: hsl(var(--accent) / 0.6);
+        box-shadow: 0 0 24px hsl(var(--accent) / 0.12);
+        margin-bottom: 1.5rem;
+      }
+
+      .forum__post {
+        margin-bottom: 1rem;
+      }
+
+      .forum__post-meta {
+        display: flex;
+        gap: 0.75rem;
+        align-items: baseline;
+        font-size: 0.85rem;
+        color: hsl(var(--muted-foreground));
+        margin-bottom: 0.75rem;
+        border-bottom: 1px solid hsl(var(--border));
+        padding-bottom: 0.6rem;
+      }
+
+      .forum__post-meta strong {
+        color: hsl(var(--foreground));
+      }
+
+      .forum__replies-title {
+        font-size: 1.1rem;
+        margin-block: 2rem 1rem;
+      }
+
+      .forum__locked {
+        text-align: center;
+        color: hsl(var(--muted-foreground));
+      }
+
+      .forum__hint {
+        color: hsl(var(--muted-foreground));
+        font-size: 0.9rem;
+      }
+
+      .forum__notfound {
+        text-align: center;
+        padding-block: 3rem;
+      }
+    </style>
+  </head>
+  <body data-page="forum">
+    <div id="site-header"></div>
+
+    <main>
+      <section class="gsr__section">
+        <div class="gsr__container forum__wrap">
+          <nav class="forum__breadcrumb" aria-label="Breadcrumb">
+            <a href="forum.html">Forum</a> <span aria-hidden="true">›</span>
+            <a href="forum.html" id="crumb-category">…</a>
+          </nav>
+
+          <!-- Thread + απαντήσεις (skeleton μέχρι να φορτώσουν) -->
+          <div id="thread-root">
+            <div class="gsr__skeleton" style="height: 2rem; width: 70%; margin-bottom: 1.5rem"></div>
+            <div class="gsr__skeleton" style="height: 10rem; margin-bottom: 1rem"></div>
+            <div class="gsr__skeleton" style="height: 6rem"></div>
+          </div>
+
+          <div id="reply-slot" style="margin-top: 2rem"></div>
+        </div>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script type="module">
+      import { mountShell } from "./js/partials.js";
+      import { supabase } from "./js/supabase-client.js";
+      import { onAuthChange, getUser } from "./js/auth.js";
+      import { toast } from "./js/toast.js";
+      import { renderMarkdown, escapeHtml } from "./js/markdown.js";
+
+      mountShell(document.body.dataset.page);
+
+      const root = document.getElementById("thread-root");
+      const replySlot = document.getElementById("reply-slot");
+      const crumbEl = document.getElementById("crumb-category");
+
+      const threadId = new URLSearchParams(window.location.search).get("id");
+
+      let thread = null;
+      let viewCounted = false; // ώστε το RPC προβολών να τρέξει μόνο μία φορά
+
+      const fmtDate = (iso) =>
+        new Date(iso).toLocaleDateString("el-GR", { day: "numeric", month: "short", year: "numeric" });
+
+      function showNotFound() {
+        replySlot.innerHTML = "";
+        root.innerHTML = `
+          <div class="gsr__card forum__notfound">
+            <h2>Το thread δεν βρέθηκε</h2>
+            <p class="forum__hint">Μπορεί να διαγράφηκε ή ο σύνδεσμος να είναι λανθασμένος.</p>
+            <a href="forum.html" class="gsr__btn gsr__btn--primary">Πίσω στο Forum</a>
+          </div>`;
+      }
+
+      function postHtml(post, name, extraClass = "") {
+        return `
+          <article class="gsr__card forum__post ${extraClass}">
+            <div class="forum__post-meta">
+              <strong>${escapeHtml(name || "Μέλος")}</strong>
+              <span>${fmtDate(post.created_at)}</span>
+            </div>
+            <div class="gsr__prose">${renderMarkdown(post.content)}</div>
+          </article>`;
+      }
+
+      async function loadThread() {
+        const { data, error } = await supabase
+          .from("forum_threads")
+          .select("*, forum_categories(id, name)")
+          .eq("id", threadId)
+          .maybeSingle();
+        if (error) throw error;
+        if (!data) {
+          showNotFound();
+          return;
+        }
+        thread = data;
+
+        // Μέτρηση προβολής — μία φορά, fire and forget, τυχόν σφάλμα αγνοείται.
+        if (!viewCounted) {
+          viewCounted = true;
+          supabase.rpc("increment_thread_views", { thread_id: threadId }).then(() => {});
+        }
+
+        // Breadcrumb πίσω στην κατηγορία.
+        if (thread.forum_categories) {
+          crumbEl.textContent = thread.forum_categories.name;
+          crumbEl.href = `forum-category.html?id=${encodeURIComponent(thread.forum_categories.id)}`;
+        }
+        document.title = `${thread.title} - Forum - Greek Simracers`;
+
+        // Απαντήσεις με χρονολογική σειρά.
+        const { data: posts, error: postsError } = await supabase
+          .from("forum_posts")
+          .select("id, author_id, content, created_at")
+          .eq("thread_id", threadId)
+          .order("created_at", { ascending: true });
+        if (postsError) throw postsError;
+
+        // Ονόματα συντακτών (OP + απαντήσεις) μαζικά από το profiles.
+        const authorIds = [
+          ...new Set([thread.author_id, ...(posts ?? []).map((p) => p.author_id)].filter(Boolean)),
+        ];
+        const names = {};
+        if (authorIds.length) {
+          const { data: profiles } = await supabase
+            .from("profiles")
+            .select("user_id, display_name")
+            .in("user_id", authorIds);
+          (profiles ?? []).forEach((profile) => {
+            names[profile.user_id] = profile.display_name;
+          });
+        }
+
+        const repliesHtml = (posts ?? []).length
+          ? posts.map((post) => postHtml(post, names[post.author_id])).join("")
+          : `<p class="forum__hint">Δεν υπάρχουν απαντήσεις ακόμα.</p>`;
+
+        root.innerHTML = `
+          <h1 class="forum__thread-title">
+            ${thread.pinned ? "📌 " : ""}${thread.locked ? "🔒 " : ""}${escapeHtml(thread.title)}
+          </h1>
+          ${postHtml(thread, names[thread.author_id], "forum__op")}
+          <h2 class="forum__replies-title">Απαντήσεις</h2>
+          <div id="replies-list">${repliesHtml}</div>`;
+
+        renderReplyForm(authState);
+      }
+
+      /* Φόρμα απάντησης: κλειδωμένο thread → μήνυμα, αλλιώς μόνο για μέλη. */
+      let authState = { user: null, isApproved: false };
+
+      function renderReplyForm(state) {
+        if (!thread) return;
+        if (thread.locked) {
+          replySlot.innerHTML = `
+            <div class="gsr__card forum__locked">🔒 Το thread είναι κλειδωμένο</div>`;
+          return;
+        }
+        if (!(state.user && state.isApproved)) {
+          replySlot.innerHTML = `
+            <div class="gsr__card">
+              <p style="margin: 0" class="forum__hint">
+                Συνδέσου για να απαντήσεις.
+                <a href="auth.html" style="color: hsl(var(--accent))">Σύνδεση / Εγγραφή</a>
+              </p>
+            </div>`;
+          return;
+        }
+        replySlot.innerHTML = `
+          <form id="reply-form">
+            <div class="gsr__field">
+              <label class="gsr__label" for="reply-content">Η απάντησή σου</label>
+              <textarea id="reply-content" class="gsr__textarea" rows="6" required></textarea>
+              <span class="gsr__label" style="font-weight: 400">Υποστηρίζεται Markdown</span>
+            </div>
+            <button type="submit" class="gsr__btn gsr__btn--primary">Απάντηση</button>
+          </form>`;
+
+        document.getElementById("reply-form").addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const textarea = document.getElementById("reply-content");
+          const content = textarea.value.trim();
+          if (!content) return;
+          try {
+            const { error } = await supabase
+              .from("forum_posts")
+              .insert({ thread_id: threadId, author_id: getUser().id, content });
+            if (error) throw error;
+            toast.success("Η απάντηση δημοσιεύτηκε.");
+            await loadThread(); // ξαναφορτώνουμε για να φανεί η νέα απάντηση
+          } catch (err) {
+            console.error(err);
+            toast.error("Η αποστολή της απάντησης απέτυχε.");
+          }
+        });
+      }
+
+      onAuthChange((state) => {
+        authState = state;
+        renderReplyForm(state);
+      });
+
+      if (!threadId) {
+        showNotFound();
+      } else {
+        loadThread().catch((err) => {
+          console.error(err);
+          toast.error("Δεν ήταν δυνατή η φόρτωση του thread.");
+          showNotFound();
+        });
+      }
+    </script>
+  </body>
+</html>

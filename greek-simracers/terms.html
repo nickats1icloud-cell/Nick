@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="el">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="assets/logo.png" />
+    <title>Όροι Χρήσης - Greek Simracers</title>
+    <meta
+      name="description"
+      content="Οι όροι χρήσης της πλατφόρμας Greek Simracers: λογαριασμοί, κανόνες κοινότητας, πνευματική ιδιοκτησία και εφαρμοστέο δίκαιο."
+    />
+
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+
+    <!-- Supabase JS (vendored, χωρίς CDN) — ορίζει το window.supabase -->
+    <script src="js/vendor/supabase.umd.js" defer></script>
+
+    <!-- Τα tokens.css/base.css δεν κάνουν @import τις γραμματοσειρές, οπότε φορτώνονται εδώ. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Page-specific styles: στενή, ευανάγνωστη στήλη για νομικό κείμενο. -->
+    <style>
+      .legal__container {
+        max-width: 48rem;
+      }
+
+      .legal__updated {
+        color: hsl(var(--muted-foreground));
+        font-size: 0.9rem;
+        margin-bottom: 2.5rem;
+      }
+
+      .legal__section {
+        margin-bottom: 2rem;
+      }
+
+      .legal__section h2 {
+        font-size: 1.15rem;
+        margin-bottom: 0.6rem;
+      }
+
+      .legal__section p {
+        color: hsl(var(--muted-foreground));
+      }
+
+      .legal__section a {
+        color: hsl(var(--accent));
+      }
+    </style>
+  </head>
+  <body data-page="terms">
+    <div id="site-header"></div>
+
+    <main>
+      <section class="gsr__section">
+        <div class="gsr__container legal__container">
+          <h1>Όροι Χρήσης</h1>
+          <p class="legal__updated">Τελευταία ενημέρωση: Φεβρουάριος 2026</p>
+
+          <div class="legal__section">
+            <h2>1. Αποδοχή Όρων</h2>
+            <p>
+              Με την πρόσβαση και τη χρήση της πλατφόρμας Greek Simracers αποδέχεσαι πλήρως τους παρόντες Όρους
+              Χρήσης. Εάν δεν συμφωνείς με οποιονδήποτε από αυτούς, σε παρακαλούμε να μην χρησιμοποιείς τις υπηρεσίες
+              μας. Η συνέχιση της χρήσης μετά από τυχόν τροποποίηση των όρων συνιστά αποδοχή της νέας έκδοσης.
+            </p>
+          </div>
+
+          <div class="legal__section">
+            <h2>2. Περιγραφή Υπηρεσιών</h2>
+            <p>
+              Η Greek Simracers είναι μια διαδικτυακή κοινότητα sim racing που προσφέρει forum συζητήσεων, άρθρα και
+              οδηγούς, διοργάνωση championships, καθώς και εργαλεία επικοινωνίας μεταξύ των μελών. Οι υπηρεσίες
+              παρέχονται δωρεάν και ενδέχεται να εμπλουτίζονται, να τροποποιούνται ή να διακόπτονται χωρίς
+              προηγούμενη ειδοποίηση.
+            </p>
+          </div>
+
+          <div class="legal__section">
+            <h2>3. Λογαριασμοί Χρηστών</h2>
+            <p>
+              Η δημιουργία λογαριασμού απαιτεί έγκριση από τους διαχειριστές της κοινότητας, οι οποίοι διατηρούν το
+              δικαίωμα να απορρίψουν ή να απενεργοποιήσουν λογαριασμούς που παραβιάζουν τους κανόνες. Είσαι
+              αποκλειστικά υπεύθυνος για τη φύλαξη των κωδικών πρόσβασής σου και για κάθε δραστηριότητα που γίνεται
+              μέσω του λογαριασμού σου. Οφείλεις να μας ενημερώσεις άμεσα εάν αντιληφθείς μη εξουσιοδοτημένη χρήση.
+            </p>
+          </div>
+
+          <div class="legal__section">
+            <h2>4. Κανόνες Κοινότητας</h2>
+            <p>
+              Σεβόμαστε όλα τα μέλη ανεξαρτήτως επιπέδου και εμπειρίας — προσβλητικά σχόλια, παρενόχληση και spam
+              απαγορεύονται αυστηρά. Στους αγώνες ισχύει η αρχή του fair play: σκόπιμες συγκρούσεις, αντιαθλητική
+              οδήγηση και κάθε μορφή εξαπάτησης οδηγούν σε ποινές ή αποκλεισμό. Οι διαχειριστές μπορούν να
+              αφαιρέσουν περιεχόμενο που παραβιάζει τους κανόνες χωρίς προειδοποίηση.
+            </p>
+          </div>
+
+          <div class="legal__section">
+            <h2>5. Πνευματική Ιδιοκτησία</h2>
+            <p>
+              Το λογότυπο, ο σχεδιασμός και το πρωτότυπο περιεχόμενο της πλατφόρμας ανήκουν στην Greek Simracers και
+              προστατεύονται από τη νομοθεσία περί πνευματικής ιδιοκτησίας. Το περιεχόμενο που δημοσιεύεις (posts,
+              άρθρα, εικόνες) παραμένει δικό σου, αλλά μας παραχωρείς άδεια εμφάνισής του στην πλατφόρμα. Δεν
+              επιτρέπεται η αναδημοσίευση περιεχομένου της κοινότητας χωρίς αναφορά της πηγής.
+            </p>
+          </div>
+
+          <div class="legal__section">
+            <h2>6. Περιορισμός Ευθύνης</h2>
+            <p>
+              Η πλατφόρμα παρέχεται «ως έχει», χωρίς εγγυήσεις αδιάλειπτης ή χωρίς σφάλματα λειτουργίας. Η Greek
+              Simracers δεν φέρει ευθύνη για τυχόν ζημίες που προκύπτουν από τη χρήση ή την αδυναμία χρήσης των
+              υπηρεσιών, ούτε για το περιεχόμενο που δημοσιεύουν τα μέλη ή για συνδέσμους προς ιστότοπους τρίτων.
+            </p>
+          </div>
+
+          <div class="legal__section">
+            <h2>7. Τροποποίηση Όρων</h2>
+            <p>
+              Διατηρούμε το δικαίωμα να τροποποιούμε τους παρόντες όρους οποτεδήποτε, ενημερώνοντας την ημερομηνία
+              «Τελευταία ενημέρωση» στην κορυφή της σελίδας. Για ουσιώδεις αλλαγές θα καταβάλλουμε εύλογη προσπάθεια
+              ενημέρωσης των μελών μέσω της πλατφόρμας. Σε συνιστούμε να ελέγχεις περιοδικά αυτή τη σελίδα.
+            </p>
+          </div>
+
+          <div class="legal__section">
+            <h2>8. Εφαρμοστέο Δίκαιο</h2>
+            <p>
+              Οι παρόντες όροι διέπονται από το ελληνικό δίκαιο. Κάθε διαφορά που τυχόν προκύψει από τη χρήση της
+              πλατφόρμας υπάγεται στην αποκλειστική αρμοδιότητα των δικαστηρίων της Αθήνας, εκτός εάν ο νόμος ορίζει
+              διαφορετικά.
+            </p>
+          </div>
+
+          <div class="legal__section">
+            <h2>9. Επικοινωνία</h2>
+            <p>
+              Για οποιαδήποτε απορία σχετικά με τους Όρους Χρήσης, επικοινώνησε μαζί μας στο
+              <a href="mailto:info@greeksimracers.gr">info@greeksimracers.gr</a> ή μέσω της
+              <a href="contact.html">φόρμας επικοινωνίας</a>.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script type="module">
+      import { mountShell } from "./js/partials.js";
+      mountShell(document.body.dataset.page);
+    </script>
+  </body>
+</html>

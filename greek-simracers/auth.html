@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="el">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="assets/logo.png" />
+    <title>Σύνδεση / Εγγραφή - Greek Simracers</title>
+    <meta name="description" content="Συνδέσου ή γίνε μέλος της ελληνικής κοινότητας sim racing." />
+
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+
+    <!-- Supabase JS (vendored, χωρίς CDN) — ορίζει το window.supabase -->
+    <script src="js/vendor/supabase.umd.js" defer></script>
+    <style>
+      .auth {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        min-height: calc(100vh - 4.25rem);
+      }
+      .auth__form-panel {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 3rem 1.5rem;
+      }
+      .auth__form-box {
+        width: 100%;
+        max-width: 24rem;
+      }
+      .auth__tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+      .auth__tab {
+        flex: 1;
+        padding: 0.6rem;
+        border: 1px solid hsl(var(--border));
+        border-radius: var(--radius);
+        background: transparent;
+        color: hsl(var(--muted-foreground));
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .auth__tab--active {
+        background: var(--gradient-greek);
+        border-color: transparent;
+        color: hsl(var(--primary-foreground));
+      }
+      .auth__visual {
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 3rem;
+      }
+      .auth__visual-content {
+        position: relative;
+        z-index: 1;
+      }
+      .auth__visual h2 {
+        font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+      }
+      .auth__pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.4rem;
+      }
+      .auth__pill {
+        padding: 0.4rem 0.8rem;
+        border: 1px solid hsl(var(--border));
+        border-radius: 999px;
+        background: transparent;
+        color: hsl(var(--muted-foreground));
+        font-size: 0.85rem;
+        cursor: pointer;
+      }
+      .auth__pill--active {
+        border-color: hsl(var(--accent));
+        color: hsl(var(--accent));
+        background: hsl(var(--accent) / 0.1);
+      }
+      .auth__link {
+        background: none;
+        border: none;
+        padding: 0;
+        color: hsl(var(--accent));
+        font-size: 0.85rem;
+        cursor: pointer;
+      }
+      .auth__step-note {
+        color: hsl(var(--muted-foreground));
+        font-size: 0.9rem;
+        margin-bottom: 1.25rem;
+      }
+      @media (max-width: 860px) {
+        .auth {
+          grid-template-columns: 1fr;
+        }
+        .auth__visual {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body data-page="auth">
+    <div id="site-header"></div>
+
+    <main class="auth">
+      <!-- Αριστερά: φόρμες -->
+      <section class="auth__form-panel">
+        <div class="auth__form-box">
+          <div class="auth__tabs" id="auth-tabs">
+            <button type="button" class="auth__tab auth__tab--active" data-mode="login">Σύνδεση</button>
+            <button type="button" class="auth__tab" data-mode="signup">Εγγραφή</button>
+          </div>
+
+          <!-- Σύνδεση -->
+          <form id="form-login">
+            <div class="gsr__field">
+              <label class="gsr__label" for="login-email">Email</label>
+              <input class="gsr__input" type="email" id="login-email" required autocomplete="email" />
+            </div>
+            <div class="gsr__field">
+              <label class="gsr__label" for="login-password">Κωδικός</label>
+              <input class="gsr__input" type="password" id="login-password" required autocomplete="current-password" />
+            </div>
+            <button type="submit" class="gsr__btn gsr__btn--primary gsr__btn--block">Σύνδεση</button>
+            <p style="margin-top: 1rem; text-align: center">
+              <button type="button" class="auth__link" id="show-forgot">Ξέχασες τον κωδικό;</button>
+            </p>
+          </form>
+
+          <!-- Εγγραφή, βήμα 1: στοιχεία λογαριασμού -->
+          <form id="form-signup-1" hidden>
+            <div class="gsr__field">
+              <label class="gsr__label" for="su-name">Ονοματεπώνυμο</label>
+              <input class="gsr__input" type="text" id="su-name" required autocomplete="name" />
+            </div>
+            <div class="gsr__field">
+              <label class="gsr__label" for="su-email">Email</label>
+              <input class="gsr__input" type="email" id="su-email" required autocomplete="email" />
+            </div>
+            <div class="gsr__field">
+              <label class="gsr__label" for="su-password">Κωδικός (τουλάχιστον 6 χαρακτήρες)</label>
+              <input class="gsr__input" type="password" id="su-password" required minlength="6" autocomplete="new-password" />
+            </div>
+            <button type="submit" class="gsr__btn gsr__btn--primary gsr__btn--block">Συνέχεια →</button>
+          </form>
+
+          <!-- Εγγραφή, βήμα 2: προφίλ οδηγού -->
+          <form id="form-signup-2" hidden>
+            <h3>Ο Οδηγός σου</h3>
+            <p class="auth__step-note">Πες μας λίγα λόγια για το setup σου — βοηθάει την κοινότητα να σε γνωρίσει.</p>
+
+            <div class="gsr__field">
+              <span class="gsr__label">Αγαπημένο Sim</span>
+              <div class="auth__pills" id="sim-pills"></div>
+            </div>
+            <div class="gsr__field">
+              <span class="gsr__label">Τύπος Setup</span>
+              <div class="auth__pills" id="setup-pills"></div>
+            </div>
+            <div class="gsr__field">
+              <label class="gsr__label" for="su-track">Αγαπημένη Πίστα</label>
+              <input class="gsr__input" type="text" id="su-track" placeholder="π.χ. Spa-Francorchamps" />
+            </div>
+            <button type="submit" class="gsr__btn gsr__btn--primary gsr__btn--block">Ολοκλήρωση Εγγραφής</button>
+          </form>
+
+          <!-- Επαναφορά κωδικού -->
+          <form id="form-forgot" hidden>
+            <h3>Επαναφορά κωδικού</h3>
+            <p class="auth__step-note">Θα σου στείλουμε email με σύνδεσμο επαναφοράς.</p>
+            <div class="gsr__field">
+              <label class="gsr__label" for="forgot-email">Email</label>
+              <input class="gsr__input" type="email" id="forgot-email" required autocomplete="email" />
+            </div>
+            <button type="submit" class="gsr__btn gsr__btn--primary gsr__btn--block">Αποστολή</button>
+            <p style="margin-top: 1rem; text-align: center">
+              <button type="button" class="auth__link" id="back-to-login">← Πίσω στη σύνδεση</button>
+            </p>
+          </form>
+        </div>
+      </section>
+
+      <!-- Δεξιά: visual panel -->
+      <section class="auth__visual gsr__bg-dark-gradient gsr__carbon-texture">
+        <canvas class="gsr-bg-canvas" id="auth-canvas"></canvas>
+        <div class="auth__visual-content">
+          <img src="assets/logo.png" alt="" width="110" style="margin-inline: auto" class="gsr__pulse" />
+          <h2>Ζήσε την <span class="gsr__text-gradient">Αδρεναλίνη</span></h2>
+          <p style="color: hsl(var(--muted-foreground))">Η μεγαλύτερη ελληνική κοινότητα sim racing σε περιμένει.</p>
+          <p class="gsr__badge gsr__badge--accent">1000+ Μέλη</p>
+        </div>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script type="module">
+      import { mountShell } from "./js/partials.js";
+      import { mountParticles } from "./js/backgrounds.js";
+      import { supabase } from "./js/supabase-client.js";
+      import { toast } from "./js/toast.js";
+
+      mountShell(document.body.dataset.page);
+      mountParticles(document.getElementById("auth-canvas"), { count: 45, reactive: false, speed: 0.5 });
+
+      const SIM_OPTIONS = [
+        "Assetto Corsa",
+        "ACC",
+        "iRacing",
+        "rFactor 2",
+        "Gran Turismo",
+        "Forza Motorsport",
+        "F1 Series",
+        "Automobilista 2",
+        "Le Mans Ultimate",
+        "Άλλο",
+      ];
+      const SETUP_OPTIONS = ["Τιμόνι", "Controller", "Πληκτρολόγιο"];
+
+      const forms = {
+        login: document.getElementById("form-login"),
+        signup1: document.getElementById("form-signup-1"),
+        signup2: document.getElementById("form-signup-2"),
+        forgot: document.getElementById("form-forgot"),
+      };
+      const tabs = document.getElementById("auth-tabs");
+
+      function showForm(name) {
+        Object.entries(forms).forEach(([key, el]) => (el.hidden = key !== name));
+        tabs
+          .querySelectorAll(".auth__tab")
+          .forEach((t) =>
+            t.classList.toggle(
+              "auth__tab--active",
+              (t.dataset.mode === "login" && name === "login") ||
+                (t.dataset.mode === "signup" && name.startsWith("signup")),
+            ),
+          );
+      }
+
+      tabs.addEventListener("click", (e) => {
+        const mode = e.target.dataset.mode;
+        if (mode === "login") showForm("login");
+        if (mode === "signup") showForm("signup1");
+      });
+      document.getElementById("show-forgot").addEventListener("click", () => showForm("forgot"));
+      document.getElementById("back-to-login").addEventListener("click", () => showForm("login"));
+
+      // Pill single-select helper: renders options, tracks selection in a closure.
+      function pillGroup(containerId, options) {
+        const container = document.getElementById(containerId);
+        let selected = null;
+        options.forEach((option) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "auth__pill";
+          btn.textContent = option;
+          btn.addEventListener("click", () => {
+            selected = option;
+            container
+              .querySelectorAll(".auth__pill")
+              .forEach((p) => p.classList.toggle("auth__pill--active", p === btn));
+          });
+          container.appendChild(btn);
+        });
+        return () => selected;
+      }
+
+      const getSim = pillGroup("sim-pills", SIM_OPTIONS);
+      const getSetup = pillGroup("setup-pills", SETUP_OPTIONS);
+
+      function busy(form, isBusy) {
+        form.querySelector("button[type=submit]").disabled = isBusy;
+      }
+
+      // --- Σύνδεση ---
+      forms.login.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        busy(forms.login, true);
+        const { error } = await supabase.auth.signInWithPassword({
+          email: document.getElementById("login-email").value.trim(),
+          password: document.getElementById("login-password").value,
+        });
+        busy(forms.login, false);
+        if (error) {
+          toast.error("Αποτυχία σύνδεσης: λάθος email ή κωδικός.");
+          return;
+        }
+        // Το approval gate (js/auth.js) θα αποσυνδέσει μη εγκεκριμένους
+        // λογαριασμούς και θα δείξει το σχετικό μήνυμα.
+        window.location.href = "home.html";
+      });
+
+      // --- Εγγραφή: βήμα 1 κρατά τα στοιχεία, βήμα 2 κάνει το signUp ---
+      const pending = { name: "", email: "", password: "" };
+
+      forms.signup1.addEventListener("submit", (e) => {
+        e.preventDefault();
+        pending.name = document.getElementById("su-name").value.trim();
+        pending.email = document.getElementById("su-email").value.trim();
+        pending.password = document.getElementById("su-password").value;
+        showForm("signup2");
+      });
+
+      forms.signup2.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        busy(forms.signup2, true);
+
+        const { data, error } = await supabase.auth.signUp({
+          email: pending.email,
+          password: pending.password,
+          options: { data: { full_name: pending.name, display_name: pending.name } },
+        });
+
+        if (error) {
+          busy(forms.signup2, false);
+          toast.error(error.message.includes("already") ? "Το email χρησιμοποιείται ήδη." : "Κάτι πήγε στραβά στην εγγραφή.");
+          return;
+        }
+
+        // Συμπλήρωση προφίλ οδηγού (το profiles row δημιουργείται από
+        // database trigger κατά το signUp).
+        const userId = data.user?.id;
+        if (userId) {
+          await supabase
+            .from("profiles")
+            .update({
+              display_name: pending.name,
+              favorite_sim: getSim(),
+              setup_type: getSetup(),
+              favorite_track: document.getElementById("su-track").value.trim() || null,
+            })
+            .eq("user_id", userId);
+        }
+
+        // Οι νέοι λογαριασμοί χρειάζονται έγκριση διαχειριστή πριν την
+        // πρώτη σύνδεση — αποσυνδέουμε αμέσως και ενημερώνουμε.
+        await supabase.auth.signOut();
+        busy(forms.signup2, false);
+        toast.success("Ο λογαριασμός σου δημιουργήθηκε και αναμένει έγκριση από τους διαχειριστές.");
+        showForm("login");
+      });
+
+      // --- Επαναφορά κωδικού ---
+      forms.forgot.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        busy(forms.forgot, true);
+        const email = document.getElementById("forgot-email").value.trim();
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}${window.location.pathname.replace("auth.html", "reset-password.html")}`,
+        });
+        busy(forms.forgot, false);
+        if (error) {
+          toast.error("Δεν μπορέσαμε να στείλουμε το email επαναφοράς.");
+          return;
+        }
+        toast.success("Σου στείλαμε email με οδηγίες επαναφοράς.");
+        showForm("login");
+      });
+    </script>
+  </body>
+</html>

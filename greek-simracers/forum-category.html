@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="el">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="assets/logo.png" />
+    <title>Κατηγορία Forum - Greek Simracers</title>
+    <meta name="description" content="Συζητήσεις της κατηγορίας στο forum της ελληνικής κοινότητας sim racing." />
+
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+
+    <!-- Supabase JS (vendored, χωρίς CDN) — ορίζει το window.supabase -->
+    <script src="js/vendor/supabase.umd.js" defer></script>
+
+    <style>
+      /* Στυλ αποκλειστικά για τη σελίδα λίστας threads μιας κατηγορίας. */
+      .forum__wrap {
+        max-width: 52rem;
+        margin-inline: auto;
+      }
+
+      .forum__breadcrumb {
+        font-size: 0.9rem;
+        color: hsl(var(--muted-foreground));
+        margin-bottom: 1.5rem;
+      }
+
+      .forum__breadcrumb a:hover {
+        color: hsl(var(--accent));
+      }
+
+      .forum__head {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 2rem;
+      }
+
+      .forum__head p {
+        margin: 0;
+        color: hsl(var(--muted-foreground));
+      }
+
+      .forum__threads {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .forum__thread {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.25rem;
+        transition: border-color 0.15s ease;
+      }
+
+      .forum__thread:hover {
+        border-color: hsl(var(--accent));
+      }
+
+      .forum__thread-info {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .forum__thread-title {
+        font-size: 1rem;
+        margin: 0 0 0.15rem;
+      }
+
+      .forum__thread-meta {
+        margin: 0;
+        font-size: 0.8rem;
+        color: hsl(var(--muted-foreground));
+      }
+
+      .forum__thread-stats {
+        flex-shrink: 0;
+        text-align: right;
+        font-size: 0.8rem;
+        color: hsl(var(--muted-foreground));
+      }
+
+      .forum__empty {
+        text-align: center;
+        color: hsl(var(--muted-foreground));
+        padding: 3rem 1rem;
+      }
+
+      .forum__dialog {
+        background: var(--gradient-card);
+        color: hsl(var(--foreground));
+        border: 1px solid hsl(var(--border));
+        border-radius: var(--radius-lg);
+        padding: 1.75rem;
+        width: min(560px, calc(100vw - 2rem));
+      }
+
+      .forum__dialog::backdrop {
+        background: hsl(210 40% 3% / 0.7);
+        backdrop-filter: blur(3px);
+      }
+
+      .forum__dialog-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+        margin-top: 0.5rem;
+      }
+    </style>
+  </head>
+  <body data-page="forum">
+    <div id="site-header"></div>
+
+    <main>
+      <section class="gsr__section">
+        <div class="gsr__container forum__wrap">
+          <nav class="forum__breadcrumb" aria-label="Breadcrumb">
+            <a href="forum.html">Forum</a> <span aria-hidden="true">›</span>
+            <span id="crumb-category">…</span>
+          </nav>
+
+          <div class="forum__head">
+            <div>
+              <h1 id="category-title" style="font-size: 1.8rem">
+                <span class="gsr__skeleton" style="display: inline-block; width: 14rem; height: 1.8rem"></span>
+              </h1>
+              <p id="category-description"></p>
+            </div>
+            <button type="button" id="new-thread-btn" class="gsr__btn gsr__btn--primary" hidden>
+              Νέο Thread
+            </button>
+          </div>
+
+          <!-- Προτροπή σύνδεσης όταν ο επισκέπτης δεν μπορεί να ανοίξει thread -->
+          <div id="login-hint" class="gsr__card" style="margin-bottom: 1.5rem">
+            <p style="margin: 0; color: hsl(var(--muted-foreground))">
+              Συνδέσου για να ξεκινήσεις συζήτηση.
+              <a href="auth.html" style="color: hsl(var(--accent))">Σύνδεση / Εγγραφή</a>
+            </p>
+          </div>
+
+          <div id="thread-list" class="forum__threads">
+            <div class="gsr__skeleton" style="height: 4.5rem"></div>
+            <div class="gsr__skeleton" style="height: 4.5rem"></div>
+            <div class="gsr__skeleton" style="height: 4.5rem"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Dialog δημιουργίας νέου thread -->
+    <dialog id="thread-dialog" class="forum__dialog">
+      <h2 style="margin-bottom: 1rem">Νέο Thread</h2>
+      <form id="thread-form">
+        <div class="gsr__field">
+          <label class="gsr__label" for="thread-title">Τίτλος</label>
+          <input type="text" id="thread-title" class="gsr__input" required maxlength="160" />
+        </div>
+        <div class="gsr__field">
+          <label class="gsr__label" for="thread-content">Περιεχόμενο</label>
+          <textarea id="thread-content" class="gsr__textarea" required rows="8"></textarea>
+          <span class="gsr__label" style="font-weight: 400">Υποστηρίζεται Markdown</span>
+        </div>
+        <div class="forum__dialog-actions">
+          <button type="button" id="thread-cancel" class="gsr__btn gsr__btn--outline">Άκυρο</button>
+          <button type="submit" id="thread-submit" class="gsr__btn gsr__btn--primary">Δημοσίευση</button>
+        </div>
+      </form>
+    </dialog>
+
+    <div id="site-footer"></div>
+
+    <script type="module">
+      import { mountShell } from "./js/partials.js";
+      import { supabase } from "./js/supabase-client.js";
+      import { onAuthChange, getUser } from "./js/auth.js";
+      import { toast } from "./js/toast.js";
+      import { escapeHtml } from "./js/markdown.js";
+
+      mountShell(document.body.dataset.page);
+
+      const titleEl = document.getElementById("category-title");
+      const descEl = document.getElementById("category-description");
+      const crumbEl = document.getElementById("crumb-category");
+      const listEl = document.getElementById("thread-list");
+      const newBtn = document.getElementById("new-thread-btn");
+      const loginHint = document.getElementById("login-hint");
+      const dialog = document.getElementById("thread-dialog");
+
+      const categoryId = new URLSearchParams(window.location.search).get("id");
+
+      const fmtDate = (iso) =>
+        new Date(iso).toLocaleDateString("el-GR", { day: "numeric", month: "short", year: "numeric" });
+
+      function showNotFound() {
+        titleEl.textContent = "Η κατηγορία δεν βρέθηκε";
+        crumbEl.textContent = "—";
+        loginHint.hidden = true;
+        listEl.innerHTML = `
+          <div class="forum__empty">
+            <p>Μπορεί να διαγράφηκε ή ο σύνδεσμος να είναι λανθασμένος.</p>
+            <a href="forum.html" class="gsr__btn gsr__btn--primary">Πίσω στο Forum</a>
+          </div>`;
+      }
+
+      async function loadCategory() {
+        const { data: category, error } = await supabase
+          .from("forum_categories")
+          .select("id, name, description")
+          .eq("id", categoryId)
+          .maybeSingle();
+        if (error) throw error;
+        if (!category) {
+          showNotFound();
+          return false;
+        }
+        titleEl.textContent = category.name;
+        descEl.textContent = category.description || "";
+        crumbEl.textContent = category.name;
+        document.title = `${category.name} - Forum - Greek Simracers`;
+        return true;
+      }
+
+      async function loadThreads() {
+        const { data: threads, error } = await supabase
+          .from("forum_threads")
+          .select("id, author_id, title, pinned, locked, created_at, updated_at")
+          .eq("category_id", categoryId)
+          .order("pinned", { ascending: false })
+          .order("updated_at", { ascending: false });
+        if (error) throw error;
+
+        if (!threads?.length) {
+          listEl.innerHTML = `<p class="forum__empty">Δεν υπάρχουν threads ακόμα. Ξεκίνα εσύ την πρώτη συζήτηση!</p>`;
+          return;
+        }
+
+        // Πλήθος απαντήσεων + ονόματα συντακτών, μαζικά σε 2 queries.
+        const threadIds = threads.map((t) => t.id);
+        const authorIds = [...new Set(threads.map((t) => t.author_id).filter(Boolean))];
+        const [postsRes, profilesRes] = await Promise.all([
+          supabase.from("forum_posts").select("thread_id").in("thread_id", threadIds),
+          authorIds.length
+            ? supabase.from("profiles").select("user_id, display_name").in("user_id", authorIds)
+            : { data: [] },
+        ]);
+
+        const replyCounts = {};
+        (postsRes.data ?? []).forEach((row) => {
+          replyCounts[row.thread_id] = (replyCounts[row.thread_id] ?? 0) + 1;
+        });
+        const names = {};
+        (profilesRes.data ?? []).forEach((profile) => {
+          names[profile.user_id] = profile.display_name;
+        });
+
+        listEl.innerHTML = threads
+          .map(
+            (thread) => `
+              <a class="gsr__card forum__thread" href="forum-thread.html?id=${encodeURIComponent(thread.id)}">
+                <div class="forum__thread-info">
+                  <h3 class="forum__thread-title">
+                    ${thread.pinned ? "📌 " : ""}${thread.locked ? "🔒 " : ""}${escapeHtml(thread.title)}
+                  </h3>
+                  <p class="forum__thread-meta">από ${escapeHtml(names[thread.author_id] || "Μέλος")}</p>
+                </div>
+                <div class="forum__thread-stats">
+                  💬 ${replyCounts[thread.id] ?? 0}<br />
+                  ${fmtDate(thread.updated_at || thread.created_at)}
+                </div>
+              </a>`,
+          )
+          .join("");
+      }
+
+      /* Κουμπί "Νέο Thread" μόνο για συνδεδεμένα + εγκεκριμένα μέλη· αλλιώς hint. */
+      onAuthChange(({ user, isApproved }) => {
+        const canPost = Boolean(user && isApproved);
+        newBtn.hidden = !canPost;
+        loginHint.hidden = canPost;
+      });
+
+      newBtn.addEventListener("click", () => dialog.showModal());
+      document.getElementById("thread-cancel").addEventListener("click", () => dialog.close());
+
+      document.getElementById("thread-form").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const user = getUser();
+        if (!user) return;
+
+        const submitBtn = document.getElementById("thread-submit");
+        submitBtn.disabled = true;
+        try {
+          const { data, error } = await supabase
+            .from("forum_threads")
+            .insert({
+              category_id: categoryId,
+              author_id: user.id,
+              title: document.getElementById("thread-title").value.trim(),
+              content: document.getElementById("thread-content").value,
+            })
+            .select("id")
+            .single();
+          if (error) throw error;
+          window.location.href = `forum-thread.html?id=${encodeURIComponent(data.id)}`;
+        } catch (err) {
+          console.error(err);
+          toast.error("Η δημιουργία του thread απέτυχε. Δοκίμασε ξανά.");
+          submitBtn.disabled = false;
+        }
+      });
+
+      if (!categoryId) {
+        showNotFound();
+      } else {
+        loadCategory()
+          .then((found) => (found ? loadThreads() : null))
+          .catch((err) => {
+            console.error(err);
+            toast.error("Δεν ήταν δυνατή η φόρτωση της κατηγορίας.");
+            showNotFound();
+          });
+      }
+    </script>
+  </body>
+</html>

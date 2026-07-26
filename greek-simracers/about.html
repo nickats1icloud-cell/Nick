@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="el">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="assets/logo.png" />
+    <title>Σχετικά με εμάς - Greek Simracers</title>
+    <meta name="description" content="Η μεγαλύτερη ελληνική κοινότητα για τους λάτρεις του Sim Racing από το 2020." />
+
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+
+    <!-- Supabase JS (vendored, χωρίς CDN) — ορίζει το window.supabase -->
+    <script src="js/vendor/supabase.umd.js" defer></script>
+  </head>
+  <body data-page="about">
+    <div id="site-header"></div>
+
+    <main>
+      <section class="gsr__section" style="text-align: center">
+        <div class="gsr__container">
+          <h1 class="gsr-hero__title"><span class="gsr__text-gradient">Greek</span> SimRacers</h1>
+          <p class="gsr-hero__subtitle" style="margin-inline: auto">
+            Η μεγαλύτερη ελληνική κοινότητα για τους λάτρεις του Sim Racing. Από το 2020, ενώνουμε χιλιάδες Έλληνες
+            racers με κοινό πάθος: την εικονική μηχανοκίνηση.
+          </p>
+
+          <div class="gsr__grid gsr__grid--4" style="max-width: 48rem; margin-inline: auto">
+            <div class="gsr-hero__stat"><strong>5.000+</strong><span>Μέλη</span></div>
+            <div class="gsr-hero__stat"><strong>200+</strong><span>Αγώνες</span></div>
+            <div class="gsr-hero__stat"><strong>50+</strong><span>Podcasts</span></div>
+            <div class="gsr-hero__stat"><strong>3+</strong><span>Χρόνια</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="gsr__section">
+        <div class="gsr__container" style="max-width: 48rem">
+          <h2 style="text-align: center; margin-bottom: 1.5rem">
+            Η <span class="gsr__text-gradient">Αποστολή</span> μας
+          </h2>
+          <p>
+            Πιστεύουμε ότι το sim racing είναι ένα πραγματικό άθλημα, που απαιτεί δεξιότητα, αφοσίωση και συνεχή
+            βελτίωση — ακριβώς όπως το motorsport στην πίστα. Στόχος μας είναι να δώσουμε στους Έλληνες simracers τον
+            χώρο και τα εργαλεία για να εξελιχθούν.
+          </p>
+          <p>
+            Χτίζουμε μια κοινότητα όπου αρχάριοι και έμπειροι οδηγοί μοιράζονται γνώση, διοργανώνουν κοινούς αγώνες
+            και υποστηρίζουν ο ένας τον άλλον — μέσα από forum συζητήσεων, ζωντανά podcasts και τακτικά championships.
+          </p>
+          <p>
+            Μέσα από άρθρα, οδηγούς setup και συνεντεύξεις με οδηγούς, δουλεύουμε καθημερινά ώστε το ελληνικό sim
+            racing να γίνεται όλο και πιο δυνατό.
+          </p>
+        </div>
+      </section>
+
+      <section class="gsr__section">
+        <div class="gsr__container">
+          <div class="gsr__grid gsr__grid--4">
+            <div class="gsr__card">
+              <h3>Ανταγωνιστικοί Αγώνες</h3>
+              <p>Τακτικά championships και events σε δημοφιλή sim, με πραγματικές βαθμολογίες και standings.</p>
+            </div>
+            <div class="gsr__card">
+              <h3>Κοινότητα Πρώτα</h3>
+              <p>Ένα φιλόξενο forum όπου κάθε racer, ανεξαρτήτου επιπέδου, νιώθει μέλος της παρέας.</p>
+            </div>
+            <div class="gsr__card">
+              <h3>Εκπαίδευση &amp; Ανάπτυξη</h3>
+              <p>Άρθρα, οδηγοί setup και συμβουλές από έμπειρους οδηγούς για να βελτιωθείς γρηγορότερα.</p>
+            </div>
+            <div class="gsr__card">
+              <h3>Πάθος για το Motorsport</h3>
+              <p>Η αγάπη για τη μηχανοκίνηση είναι το κοινό νήμα που μας ενώνει, μέσα κι έξω από την πίστα.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="gsr__section" style="text-align: center">
+        <div class="gsr__container">
+          <h2>Γίνε μέλος της <span class="gsr__text-gradient">κοινότητας</span></h2>
+          <div class="gsr-hero__ctas">
+            <a href="auth.html" class="gsr__btn gsr__btn--primary">Εγγραφή</a>
+            <a href="contact.html" class="gsr__btn gsr__btn--outline">Επικοινωνία</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script type="module">
+      import { mountShell } from "./js/partials.js";
+      mountShell(document.body.dataset.page);
+    </script>
+  </body>
+</html>

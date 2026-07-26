@@ -11,6 +11,18 @@ after the Honda Civic EK's LCD cluster. The README, in-code comments, and UI
 copy are in Greek — match that language when writing user-facing strings or
 comments in this codebase.
 
+## Sub-projects
+
+- **`greek-simracers/`** — a second, fully independent site (greeksimracers.gr
+  rebuild): plain static HTML/CSS/JS with **no build step and no npm** — do
+  not add bundlers or frameworks there. Dynamic features (auth, forum,
+  articles, championships, contact form) use Supabase via the vendored
+  `js/vendor/supabase.umd.js` bundle; config lives in `js/config.js`; the DB
+  schema is `supabase/migrations/001_wave1_schema.sql`. See its own README.md
+  for conventions. It deploys as-is to `/Nick/greek-simracers/` via a copy
+  step in `.github/workflows/deploy.yml`. Preview locally with
+  `python3 -m http.server` (ES modules don't run from `file://`).
+
 ## Commands
 
 ```bash

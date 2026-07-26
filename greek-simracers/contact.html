@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="el">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="assets/logo.png" />
+    <title>Επικοινωνία - Greek Simracers</title>
+    <meta
+      name="description"
+      content="Επικοινώνησε με την ομάδα των Greek Simracers — ερωτήσεις για εγγραφή, αγώνες, συνεργασίες και τεχνική υποστήριξη."
+    />
+
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+
+    <!-- Supabase JS (vendored, χωρίς CDN) — ορίζει το window.supabase -->
+    <script src="js/vendor/supabase.umd.js" defer></script>
+
+    <!-- Τα tokens.css/base.css δεν κάνουν @import τις γραμματοσειρές, οπότε φορτώνονται εδώ. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Page-specific styles: ό,τι δεν καλύπτεται από τα shared components. -->
+    <style>
+      /* Δύο στήλες: αριστερά info cards, δεξιά η φόρμα. Στοίβαξη σε κινητό. */
+      .contact__layout {
+        display: grid;
+        grid-template-columns: 1fr 1.6fr;
+        gap: 2rem;
+        align-items: start;
+      }
+
+      @media (max-width: 860px) {
+        .contact__layout {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .contact__info-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .contact__info-card {
+        display: flex;
+        gap: 0.9rem;
+        align-items: flex-start;
+      }
+
+      .contact__info-emoji {
+        font-size: 1.5rem;
+        line-height: 1;
+      }
+
+      .contact__info-card h3 {
+        font-size: 0.95rem;
+        margin-bottom: 0.2rem;
+      }
+
+      .contact__info-card p {
+        color: hsl(var(--muted-foreground));
+        font-size: 0.9rem;
+        margin-bottom: 0;
+      }
+
+      .contact__info-card a {
+        color: hsl(var(--accent));
+      }
+
+      /* FAQ quick-fill κουμπιά πάνω από τη φόρμα. */
+      .contact__faq {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .contact__faq-btn {
+        padding: 0.4rem 0.9rem;
+        border-radius: 999px;
+        border: 1px solid hsl(var(--border));
+        background: transparent;
+        color: hsl(var(--muted-foreground));
+        font-size: 0.82rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: color 0.15s ease, border-color 0.15s ease;
+      }
+
+      .contact__faq-btn:hover {
+        border-color: hsl(var(--accent));
+        color: hsl(var(--accent));
+      }
+
+      /* Μετρητής χαρακτήρων κάτω από το textarea. */
+      .contact__counter {
+        text-align: right;
+        font-size: 0.75rem;
+        color: hsl(var(--muted-foreground));
+      }
+    </style>
+  </head>
+  <body data-page="contact">
+    <div id="site-header"></div>
+
+    <main>
+      <section class="gsr__section">
+        <div class="gsr__container" style="max-width: 64rem">
+          <h1 class="gsr-hero__title" style="text-align: center">
+            <span class="gsr__text-gradient">Επικοινωνία</span>
+          </h1>
+          <p class="gsr-hero__subtitle" style="text-align: center">
+            Έχεις ερώτηση, ιδέα ή πρόβλημα; Στείλε μας μήνυμα — απαντάμε σε όλους.
+          </p>
+
+          <div class="contact__layout">
+            <!-- Αριστερή στήλη: τρόποι επικοινωνίας. -->
+            <div class="contact__info-list">
+              <div class="gsr__card contact__info-card">
+                <span class="contact__info-emoji" aria-hidden="true">📧</span>
+                <div>
+                  <h3>Email</h3>
+                  <p><a href="mailto:info@greeksimracers.gr">info@greeksimracers.gr</a></p>
+                </div>
+              </div>
+
+              <div class="gsr__card contact__info-card">
+                <span class="contact__info-emoji" aria-hidden="true">💬</span>
+                <div>
+                  <h3>Discord</h3>
+                  <p>Μπες στον server μας</p>
+                </div>
+              </div>
+
+              <div class="gsr__card contact__info-card">
+                <span class="contact__info-emoji" aria-hidden="true">🕐</span>
+                <div>
+                  <h3>Ώρες Υποστήριξης</h3>
+                  <p>Καθημερινές 18:00–23:00</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Δεξιά στήλη: FAQ quick-fill + φόρμα. -->
+            <div class="gsr__card">
+              <p class="gsr__label" style="margin-bottom: 0.5rem">Συχνά θέματα — πάτησε για γρήγορη συμπλήρωση:</p>
+              <div class="contact__faq" id="contact-faq">
+                <button type="button" class="contact__faq-btn">Εγγραφή στο Forum</button>
+                <button type="button" class="contact__faq-btn">Πρόβλημα σύνδεσης</button>
+                <button type="button" class="contact__faq-btn">Κανονισμοί αγώνων</button>
+                <button type="button" class="contact__faq-btn">Συνεργασία</button>
+              </div>
+
+              <form id="contact-form" novalidate>
+                <div class="gsr__field">
+                  <label class="gsr__label" for="contact-name">Όνομα *</label>
+                  <input type="text" class="gsr__input" id="contact-name" name="name" required autocomplete="name" />
+                </div>
+
+                <div class="gsr__field">
+                  <label class="gsr__label" for="contact-email">Email *</label>
+                  <input
+                    type="email"
+                    class="gsr__input"
+                    id="contact-email"
+                    name="email"
+                    required
+                    autocomplete="email"
+                  />
+                </div>
+
+                <div class="gsr__field">
+                  <label class="gsr__label" for="contact-subject">Θέμα</label>
+                  <input type="text" class="gsr__input" id="contact-subject" name="subject" />
+                </div>
+
+                <div class="gsr__field">
+                  <label class="gsr__label" for="contact-message">Μήνυμα *</label>
+                  <textarea
+                    class="gsr__textarea"
+                    id="contact-message"
+                    name="message"
+                    required
+                    maxlength="2000"
+                  ></textarea>
+                  <span class="contact__counter" id="contact-counter">0 / 2000</span>
+                </div>
+
+                <button type="submit" class="gsr__btn gsr__btn--primary gsr__btn--block" id="contact-submit">
+                  Αποστολή Μηνύματος
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script type="module">
+      import { mountShell } from "./js/partials.js";
+      import { supabase } from "./js/supabase-client.js";
+      import { toast } from "./js/toast.js";
+
+      mountShell(document.body.dataset.page);
+
+      const form = document.getElementById("contact-form");
+      const submitBtn = document.getElementById("contact-submit");
+      const messageEl = document.getElementById("contact-message");
+      const counterEl = document.getElementById("contact-counter");
+      const subjectEl = document.getElementById("contact-subject");
+
+      // FAQ quick-fill: το κείμενο του κουμπιού γεμίζει το πεδίο "Θέμα".
+      document.getElementById("contact-faq").addEventListener("click", (event) => {
+        const btn = event.target.closest(".contact__faq-btn");
+        if (!btn) return;
+        subjectEl.value = btn.textContent.trim();
+        messageEl.focus();
+      });
+
+      // Ζωντανός μετρητής χαρακτήρων για το μήνυμα.
+      messageEl.addEventListener("input", () => {
+        counterEl.textContent = `${messageEl.value.length} / 2000`;
+      });
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const name = document.getElementById("contact-name").value.trim();
+        const email = document.getElementById("contact-email").value.trim();
+        const subject = subjectEl.value.trim();
+        const message = messageEl.value.trim();
+
+        // Βασικός client-side έλεγχος πριν το insert.
+        if (!name || !email || !message) {
+          toast.error("Συμπλήρωσε όλα τα υποχρεωτικά πεδία (Όνομα, Email, Μήνυμα).");
+          return;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          toast.error("Το email δεν φαίνεται έγκυρο — έλεγξέ το και προσπάθησε ξανά.");
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Αποστολή…";
+
+        try {
+          const { error } = await supabase
+            .from("contact_submissions")
+            .insert({ name, email, subject: subject || null, message });
+
+          if (error) throw error;
+
+          toast.success("Το μήνυμά σου εστάλη! Θα επικοινωνήσουμε σύντομα.");
+          form.reset();
+          counterEl.textContent = "0 / 2000";
+        } catch {
+          toast.error(
+            "Κάτι πήγε στραβά και το μήνυμα δεν εστάλη. Δοκίμασε ξανά ή στείλε μας απευθείας στο email info@greeksimracers.gr.",
+          );
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "Αποστολή Μηνύματος";
+        }
+      });
+    </script>
+  </body>
+</html>

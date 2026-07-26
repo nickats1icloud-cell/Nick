@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="el">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="assets/logo.png" />
+    <title>Greek Simracers - Η #1 Ελληνική SimRacing Κοινότητα</title>
+    <meta
+      name="description"
+      content="Η #1 πλατφόρμα για Έλληνες SimRacers. Forum, άρθρα, championships και gaming κοινότητα."
+    />
+
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+
+    <!-- Supabase JS (vendored, χωρίς CDN) — ορίζει το window.supabase -->
+    <script src="js/vendor/supabase.umd.js" defer></script>
+
+    <!-- Τα tokens.css/base.css δεν κάνουν @import τις γραμματοσειρές, οπότε φορτώνονται εδώ. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Page-specific styles: ό,τι δεν καλύπτεται από τα shared components. -->
+    <style>
+      .home__logo {
+        width: 120px;
+        height: auto;
+        margin: 0 auto 1.5rem;
+        border-radius: 50%;
+      }
+
+      /* Feature cards: όλη η κάρτα είναι link, με μικρό hover lift. */
+      .home__feature {
+        display: block;
+        height: 100%;
+        transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      .home__feature:hover {
+        transform: translateY(-3px);
+        border-color: hsl(var(--accent) / 0.6);
+        box-shadow: var(--shadow-glow);
+      }
+
+      .home__feature-emoji {
+        font-size: 2rem;
+        display: block;
+        margin-bottom: 0.75rem;
+      }
+
+      .home__feature p {
+        color: hsl(var(--muted-foreground));
+        font-size: 0.92rem;
+        margin-bottom: 0;
+      }
+
+      /* Λίστα τελευταίων threads από το forum. */
+      .home__threads {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        max-width: 48rem;
+        margin-inline: auto;
+      }
+
+      .home__thread {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 1rem 1.25rem;
+        transition: border-color 0.15s ease;
+      }
+
+      .home__thread:hover {
+        border-color: hsl(var(--accent) / 0.6);
+      }
+
+      .home__thread-title {
+        font-weight: 600;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .home__thread-date {
+        color: hsl(var(--muted-foreground));
+        font-size: 0.8rem;
+        white-space: nowrap;
+      }
+
+      .home__section-title {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+    </style>
+  </head>
+  <body data-page="home">
+    <div id="site-header"></div>
+
+    <main>
+      <!-- ===== Hero ===== -->
+      <section class="gsr-hero gsr__bg-dark-gradient">
+        <canvas class="gsr-bg-canvas" id="hero-canvas"></canvas>
+
+        <div class="gsr-hero__content gsr__container">
+          <span class="gsr__badge gsr__badge--accent gsr-hero__badge">🏁 Η #1 Ελληνική Κοινότητα</span>
+
+          <img src="assets/logo.png" alt="Greek Simracers" class="home__logo gsr__pulse" />
+
+          <h1 class="gsr-hero__title">Greek <span class="gsr__text-gradient">SimRacers</span></h1>
+          <p class="gsr-hero__subtitle">
+            Η #1 πλατφόρμα για Έλληνες SimRacers. Forum, Άρθρα, Championships και Gaming κοινότητα.
+          </p>
+
+          <div class="gsr-hero__ctas">
+            <a href="auth.html" class="gsr__btn gsr__btn--primary" id="hero-cta">ΓΙΝΕ ΜΕΛΟΣ</a>
+            <a href="forum.html" class="gsr__btn gsr__btn--outline">Forum</a>
+          </div>
+
+          <div class="gsr-hero__stats">
+            <div class="gsr-hero__stat"><strong>1.000+</strong><span>Μέλη</span></div>
+            <div class="gsr-hero__stat"><strong>10+</strong><span>Championships</span></div>
+            <div class="gsr-hero__stat"><strong>Active</strong><span>Forum</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Features ===== -->
+      <section class="gsr__section">
+        <div class="gsr__container">
+          <h2 class="home__section-title">Τι θα βρεις <span class="gsr__text-gradient">εδώ</span></h2>
+
+          <div class="gsr__grid gsr__grid--3">
+            <a href="forum.html" class="gsr__card home__feature">
+              <span class="home__feature-emoji" aria-hidden="true">💬</span>
+              <h3>Forum</h3>
+              <p>Συζητήσεις για setups, τεχνική υποστήριξη, αγώνες και ό,τι αφορά το sim racing.</p>
+            </a>
+
+            <a href="articles.html" class="gsr__card home__feature">
+              <span class="home__feature-emoji" aria-hidden="true">📰</span>
+              <h3>Άρθρα &amp; Νέα</h3>
+              <p>Νέα, οδηγοί και συνεντεύξεις από τον κόσμο του ελληνικού sim racing.</p>
+            </a>
+
+            <a href="championships.html" class="gsr__card home__feature">
+              <span class="home__feature-emoji" aria-hidden="true">🏆</span>
+              <h3>Championships</h3>
+              <p>Διοργανώσεις και πρωταθλήματα σε ACC, iRacing, F1 και άλλα sims.</p>
+            </a>
+
+            <a href="members.html" class="gsr__card home__feature">
+              <span class="home__feature-emoji" aria-hidden="true">👥</span>
+              <h3>Μέλη</h3>
+              <p>Γνώρισε τους οδηγούς της κοινότητας και βρες συμπαίκτες.</p>
+            </a>
+
+            <a href="#" class="gsr__card home__feature">
+              <span class="home__feature-emoji" aria-hidden="true">🎙️</span>
+              <h3>Podcasts <span class="gsr__badge gsr__badge--accent">Σύντομα</span></h3>
+              <p>Το podcast της κοινότητας — συζητήσεις και καλεσμένοι από τον χώρο.</p>
+            </a>
+
+            <a href="about.html" class="gsr__card home__feature">
+              <span class="home__feature-emoji" aria-hidden="true">🇬🇷</span>
+              <h3>Κοινότητα</h3>
+              <p>Μάθε ποιοι είμαστε και γιατί χτίζουμε το ελληνικό sim racing μαζί.</p>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== Ζωντανή κοινότητα: τελευταία threads από το forum ===== -->
+      <section class="gsr__section">
+        <div class="gsr__container">
+          <h2 class="home__section-title">Ζωντανή <span class="gsr__text-gradient">Κοινότητα</span></h2>
+
+          <div class="home__threads" id="latest-threads">
+            <!-- Skeletons όσο φορτώνουν τα δεδομένα· αντικαθίστανται από JS. -->
+            <div class="gsr__skeleton" style="height: 64px"></div>
+            <div class="gsr__skeleton" style="height: 64px"></div>
+            <div class="gsr__skeleton" style="height: 64px"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== CTA strip ===== -->
+      <section class="gsr__section" style="text-align: center" id="cta-strip">
+        <div class="gsr__container">
+          <h2>Έτοιμος να μπεις στην <span class="gsr__text-gradient">πίστα</span>;</h2>
+          <a href="auth.html" class="gsr__btn gsr__btn--primary">ΕΓΓΡΑΦΗ ΔΩΡΕΑΝ</a>
+        </div>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script type="module">
+      import { mountShell } from "./js/partials.js";
+      import { mountParticles } from "./js/backgrounds.js";
+      import { onAuthChange } from "./js/auth.js";
+      import { supabase } from "./js/supabase-client.js";
+
+      mountShell(document.body.dataset.page);
+
+      // Reactive particle background πίσω από το hero.
+      mountParticles(document.getElementById("hero-canvas"), { reactive: true });
+
+      // Auth-aware UI: αλλαγή του βασικού CTA και απόκρυψη του κάτω strip για συνδεδεμένους.
+      onAuthChange(({ user }) => {
+        const heroCta = document.getElementById("hero-cta");
+        if (user) {
+          heroCta.textContent = "ΤΟ ΠΡΟΦΙΛ ΜΟΥ";
+          heroCta.href = "members.html";
+        } else {
+          heroCta.textContent = "ΓΙΝΕ ΜΕΛΟΣ";
+          heroCta.href = "auth.html";
+        }
+        document.getElementById("cta-strip").hidden = Boolean(user);
+      });
+
+      // Τελευταία threads από το Supabase, με graceful fallback αν κάτι πάει στραβά.
+      const threadsEl = document.getElementById("latest-threads");
+
+      function fallbackCard() {
+        threadsEl.innerHTML = `
+          <div class="gsr__card" style="text-align: center">
+            <p>Το forum ξεκινά σύντομα — γίνε από τους πρώτους!</p>
+            <a href="forum.html" class="gsr__btn gsr__btn--outline">Πήγαινε στο Forum</a>
+          </div>
+        `;
+      }
+
+      async function loadLatestThreads() {
+        try {
+          const { data, error } = await supabase
+            .from("forum_threads")
+            .select("id,title,updated_at,category_id")
+            .order("updated_at", { ascending: false })
+            .limit(5);
+
+          if (error || !data || data.length === 0) {
+            fallbackCard();
+            return;
+          }
+
+          threadsEl.innerHTML = "";
+          for (const thread of data) {
+            const row = document.createElement("a");
+            row.className = "gsr__card home__thread";
+            row.href = `forum-thread.html?id=${encodeURIComponent(thread.id)}`;
+
+            const title = document.createElement("span");
+            title.className = "home__thread-title";
+            title.textContent = thread.title; // textContent = ασφαλές έναντι HTML injection
+
+            const date = document.createElement("span");
+            date.className = "home__thread-date";
+            date.textContent = thread.updated_at
+              ? new Date(thread.updated_at).toLocaleDateString("el-GR")
+              : "";
+
+            row.append(title, date);
+            threadsEl.appendChild(row);
+          }
+        } catch {
+          // Supabase μη ρυθμισμένο ή σφάλμα δικτύου — δείξε το fallback.
+          fallbackCard();
+        }
+      }
+
+      loadLatestThreads();
+    </script>
+  </body>
+</html>

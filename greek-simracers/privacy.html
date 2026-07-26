@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="el">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="assets/logo.png" />
+    <title>Πολιτική Απορρήτου - Greek Simracers</title>
+    <meta
+      name="description"
+      content="Η πολιτική απορρήτου των Greek Simracers: ποια δεδομένα συλλέγουμε, πώς τα χρησιμοποιούμε και ποια είναι τα δικαιώματά σου βάσει GDPR."
+    />
+
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+
+    <!-- Supabase JS (vendored, χωρίς CDN) — ορίζει το window.supabase -->
+    <script src="js/vendor/supabase.umd.js" defer></script>
+
+    <!-- Τα tokens.css/base.css δεν κάνουν @import τις γραμματοσειρές, οπότε φορτώνονται εδώ. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Page-specific styles: στενή, ευανάγνωστη στήλη για νομικό κείμενο. -->
+    <style>
+      .legal__container {
+        max-width: 48rem;
+      }
+
+      /* Quick-nav pills που οδηγούν στις ενότητες (anchor links). */
+      .legal__nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 2.5rem;
+      }
+
+      .legal__nav a {
+        padding: 0.4rem 0.9rem;
+        border-radius: 999px;
+        border: 1px solid hsl(var(--border));
+        color: hsl(var(--muted-foreground));
+        font-size: 0.82rem;
+        font-weight: 600;
+        transition: color 0.15s ease, border-color 0.15s ease;
+      }
+
+      .legal__nav a:hover {
+        border-color: hsl(var(--accent));
+        color: hsl(var(--accent));
+      }
+
+      .legal__section {
+        margin-bottom: 2rem;
+        /* Ώστε τα anchors να μην κρύβονται κάτω από το sticky navbar. */
+        scroll-margin-top: 5.5rem;
+      }
+
+      .legal__section h2 {
+        font-size: 1.15rem;
+        margin-bottom: 0.6rem;
+      }
+
+      .legal__section p,
+      .legal__section li {
+        color: hsl(var(--muted-foreground));
+      }
+
+      .legal__section a {
+        color: hsl(var(--accent));
+      }
+    </style>
+  </head>
+  <body data-page="privacy">
+    <div id="site-header"></div>
+
+    <main>
+      <section class="gsr__section">
+        <div class="gsr__container legal__container">
+          <h1>Πολιτική Απορρήτου</h1>
+
+          <!-- Γρήγορη πλοήγηση στις βασικές ενότητες. -->
+          <nav class="legal__nav" aria-label="Γρήγορη πλοήγηση">
+            <a href="#data">Δεδομένα</a>
+            <a href="#use">Χρήση</a>
+            <a href="#cookies">Cookies</a>
+            <a href="#gdpr">GDPR</a>
+            <a href="#rights">Δικαιώματα</a>
+            <a href="#contact">Επικοινωνία</a>
+          </nav>
+
+          <div class="legal__section" id="intro">
+            <h2>Εισαγωγή</h2>
+            <p>
+              Στην Greek Simracers σεβόμαστε την ιδιωτικότητά σου. Η παρούσα πολιτική εξηγεί ποια προσωπικά δεδομένα
+              συλλέγουμε όταν χρησιμοποιείς την πλατφόρμα μας, για ποιον σκοπό τα επεξεργαζόμαστε και ποια
+              δικαιώματα έχεις. Ισχύει για όλες τις υπηρεσίες μας: forum, άρθρα, championships και προφίλ μελών.
+            </p>
+          </div>
+
+          <div class="legal__section" id="data">
+            <h2>Δεδομένα που Συλλέγουμε</h2>
+            <p>Συλλέγουμε μόνο τα δεδομένα που χρειάζονται για τη λειτουργία της κοινότητας:</p>
+            <ul>
+              <li><strong>Στοιχεία λογαριασμού:</strong> διεύθυνση email και όνομα/username κατά την εγγραφή.</li>
+              <li>
+                <strong>Προφίλ οδηγού:</strong> προαιρετικές πληροφορίες όπως avatar, bio, τοποθεσία, αγαπημένο sim
+                και setup — τις συμπληρώνεις εσύ και εμφανίζονται δημόσια στη σελίδα των μελών.
+              </li>
+              <li>
+                <strong>Δεδομένα χρήσης:</strong> τεχνικές πληροφορίες όπως χρόνος τελευταίας σύνδεσης, που μας
+                βοηθούν να βελτιώνουμε την πλατφόρμα.
+              </li>
+            </ul>
+          </div>
+
+          <div class="legal__section" id="use">
+            <h2>Χρήση Δεδομένων</h2>
+            <p>
+              Χρησιμοποιούμε τα δεδομένα σου αποκλειστικά για τη λειτουργία της πλατφόρμας: δημιουργία και διαχείριση
+              του λογαριασμού σου, εμφάνιση του δημόσιου προφίλ σου, διοργάνωση αγώνων και επικοινωνία μαζί σου όταν
+              το ζητήσεις. Δεν πουλάμε ούτε ενοικιάζουμε προσωπικά δεδομένα σε τρίτους και δεν στέλνουμε διαφημιστικά
+              μηνύματα χωρίς τη συγκατάθεσή σου.
+            </p>
+          </div>
+
+          <div class="legal__section" id="cookies">
+            <h2>Cookies</h2>
+            <p>
+              Χρησιμοποιούμε μόνο τεχνικά απαραίτητα cookies και τοπική αποθήκευση (local storage): για τη διατήρηση
+              της σύνδεσής σου (session) και για την προτίμηση θέματος (σκούρο/ανοιχτό). Δεν χρησιμοποιούμε cookies
+              διαφήμισης ή παρακολούθησης τρίτων. Μπορείς να διαγράψεις τα cookies από τις ρυθμίσεις του browser
+              σου, αν και αυτό θα σε αποσυνδέσει από την πλατφόρμα.
+            </p>
+          </div>
+
+          <div class="legal__section" id="gdpr">
+            <h2>GDPR</h2>
+            <p>
+              Επεξεργαζόμαστε τα δεδομένα σου σύμφωνα με τον Γενικό Κανονισμό Προστασίας Δεδομένων (ΕΕ) 2016/679
+              (GDPR). Νομική βάση της επεξεργασίας είναι η εκτέλεση της μεταξύ μας σύμβασης (παροχή των υπηρεσιών
+              της κοινότητας) και, όπου απαιτείται, η συγκατάθεσή σου. Εάν θεωρείς ότι τα δικαιώματά σου
+              παραβιάζονται, έχεις δικαίωμα καταγγελίας στην Αρχή Προστασίας Δεδομένων Προσωπικού Χαρακτήρα
+              (<a href="https://www.dpa.gr" target="_blank" rel="noopener">www.dpa.gr</a>).
+            </p>
+          </div>
+
+          <div class="legal__section" id="rights">
+            <h2>Δικαιώματά σας</h2>
+            <p>Βάσει του GDPR έχεις τα ακόλουθα δικαιώματα, τα οποία μπορείς να ασκήσεις ανά πάσα στιγμή:</p>
+            <ul>
+              <li><strong>Πρόσβαση:</strong> να μάθεις ποια δεδομένα σου τηρούμε και να λάβεις αντίγραφο.</li>
+              <li><strong>Διόρθωση:</strong> να διορθώσεις ανακριβή ή ελλιπή στοιχεία του προφίλ σου.</li>
+              <li><strong>Διαγραφή:</strong> να ζητήσεις την οριστική διαγραφή του λογαριασμού και των δεδομένων σου.</li>
+              <li><strong>Φορητότητα:</strong> να λάβεις τα δεδομένα σου σε δομημένη, μηχαναγνώσιμη μορφή.</li>
+            </ul>
+          </div>
+
+          <div class="legal__section" id="security">
+            <h2>Ασφάλεια Δεδομένων</h2>
+            <p>
+              Εφαρμόζουμε κατάλληλα τεχνικά και οργανωτικά μέτρα για την προστασία των δεδομένων σου: κρυπτογραφημένη
+              μετάδοση (HTTPS), ασφαλή αποθήκευση κωδικών και περιορισμένη πρόσβαση των διαχειριστών μόνο σε ό,τι
+              είναι απαραίτητο. Παρότι κανένα σύστημα δεν είναι απολύτως απαραβίαστο, δεσμευόμαστε να σε ενημερώσουμε
+              άμεσα σε περίπτωση περιστατικού που αφορά τα δεδομένα σου.
+            </p>
+          </div>
+
+          <div class="legal__section" id="contact">
+            <h2>Επικοινωνία για Απόρρητο</h2>
+            <p>
+              Για οποιοδήποτε αίτημα ή ερώτηση σχετικά με τα προσωπικά σου δεδομένα, γράψε μας στο
+              <a href="mailto:privacy@greeksimracers.gr">privacy@greeksimracers.gr</a>. Θα απαντήσουμε το
+              συντομότερο δυνατό και πάντως εντός των προθεσμιών που ορίζει ο νόμος.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script type="module">
+      import { mountShell } from "./js/partials.js";
+      mountShell(document.body.dataset.page);
+    </script>
+  </body>
+</html>

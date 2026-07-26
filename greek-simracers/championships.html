@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="el">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="assets/logo.png" />
+    <title>Championships - Greek Simracers</title>
+    <meta
+      name="description"
+      content="Τα championships της κοινότητας Greek Simracers: ενεργά, ερχόμενα και ολοκληρωμένα πρωταθλήματα σε όλα τα δημοφιλή sims."
+    />
+
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+
+    <!-- Supabase JS (vendored, χωρίς CDN) — ορίζει το window.supabase -->
+    <script src="js/vendor/supabase.umd.js" defer></script>
+
+    <!-- Τα tokens.css/base.css δεν κάνουν @import τις γραμματοσειρές, οπότε φορτώνονται εδώ. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Page-specific styles: ό,τι δεν καλύπτεται από τα shared components. -->
+    <style>
+      /* Σειρά από filter pills πάνω από το grid. */
+      .champs__filters {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.6rem;
+        margin-bottom: 2.5rem;
+      }
+
+      .champs__pill {
+        padding: 0.45rem 1.1rem;
+        border-radius: 999px;
+        border: 1px solid hsl(var(--border));
+        background: transparent;
+        color: hsl(var(--muted-foreground));
+        font-weight: 600;
+        font-size: 0.85rem;
+        cursor: pointer;
+        transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+      }
+
+      .champs__pill:hover {
+        border-color: hsl(var(--accent));
+        color: hsl(var(--accent));
+      }
+
+      .champs__pill--active {
+        background: var(--gradient-greek);
+        border-color: transparent;
+        color: hsl(var(--primary-foreground));
+      }
+
+      /* Κάρτα championship. */
+      .champs__card {
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        overflow: hidden;
+        transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      .champs__card:hover {
+        transform: translateY(-3px);
+        border-color: hsl(var(--accent) / 0.6);
+        box-shadow: var(--shadow-glow);
+      }
+
+      .champs__image {
+        height: 160px;
+        width: 100%;
+        object-fit: cover;
+      }
+
+      /* Placeholder όταν λείπει το image_url. */
+      .champs__image--placeholder {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        background: var(--gradient-greek);
+      }
+
+      .champs__body {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        padding: 1.25rem 1.5rem 1.5rem;
+      }
+
+      .champs__badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .champs__title {
+        font-size: 1.1rem;
+        margin-bottom: 0.4rem;
+      }
+
+      /* Περιγραφή κομμένη στις 3 γραμμές. */
+      .champs__desc {
+        color: hsl(var(--muted-foreground));
+        font-size: 0.92rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        margin-bottom: 1rem;
+      }
+
+      .champs__progress-label {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        color: hsl(var(--muted-foreground));
+        margin-bottom: 0.35rem;
+      }
+
+      .champs__progress {
+        height: 8px;
+        border-radius: 999px;
+        background: hsl(var(--muted));
+        overflow: hidden;
+        margin-bottom: 1rem;
+      }
+
+      .champs__progress-fill {
+        height: 100%;
+        border-radius: 999px;
+        background: var(--gradient-greek);
+      }
+
+      /* Meta γραμμή στο κάτω μέρος της κάρτας (συμμετέχοντες + ημερομηνία). */
+      .champs__meta {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: auto;
+        font-size: 0.85rem;
+        color: hsl(var(--muted-foreground));
+      }
+
+      /* Στατιστικά strip κάτω από το grid. */
+      .champs__stats {
+        display: flex;
+        justify-content: center;
+        gap: 3rem;
+        flex-wrap: wrap;
+        margin-top: 3.5rem;
+      }
+    </style>
+  </head>
+  <body data-page="championships">
+    <div id="site-header"></div>
+
+    <main>
+      <section class="gsr__section">
+        <div class="gsr__container">
+          <h1 class="gsr-hero__title" style="text-align: center">
+            <span class="gsr__text-gradient">Championships</span>
+          </h1>
+          <p class="gsr-hero__subtitle" style="text-align: center">
+            Πρωταθλήματα και διοργανώσεις της κοινότητας — βρες το επόμενο grid που θα μπεις.
+          </p>
+
+          <!-- Filter pills: client-side φιλτράρισμα με βάση το status. -->
+          <div class="champs__filters" role="group" aria-label="Φίλτρα κατάστασης">
+            <button type="button" class="champs__pill champs__pill--active" data-filter="all">Όλα</button>
+            <button type="button" class="champs__pill" data-filter="active">Ενεργά</button>
+            <button type="button" class="champs__pill" data-filter="upcoming">Ερχόμενα</button>
+            <button type="button" class="champs__pill" data-filter="completed">Ολοκληρωμένα</button>
+          </div>
+
+          <!-- Skeletons όσο φορτώνουν τα δεδομένα· αντικαθίστανται από JS. -->
+          <div class="gsr__grid gsr__grid--3" id="champs-grid">
+            <div class="gsr__skeleton" style="height: 340px"></div>
+            <div class="gsr__skeleton" style="height: 340px"></div>
+            <div class="gsr__skeleton" style="height: 340px"></div>
+          </div>
+
+          <!-- Συνολικά στατιστικά· γεμίζουν από JS όταν έρθουν τα δεδομένα. -->
+          <div class="champs__stats" id="champs-stats" hidden>
+            <div class="gsr-hero__stat"><strong id="stat-total">0</strong><span>Championships</span></div>
+            <div class="gsr-hero__stat"><strong id="stat-participants">0</strong><span>Συμμετέχοντες</span></div>
+            <div class="gsr-hero__stat"><strong id="stat-active">0</strong><span>Ενεργά τώρα</span></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script type="module">
+      import { mountShell } from "./js/partials.js";
+      import { supabase } from "./js/supabase-client.js";
+
+      mountShell(document.body.dataset.page);
+
+      const grid = document.getElementById("champs-grid");
+      const statsStrip = document.getElementById("champs-stats");
+      const pills = Array.from(document.querySelectorAll(".champs__pill"));
+
+      // Ετικέτες/στυλ badge ανά status. Άγνωστα status πέφτουν στο default badge.
+      const STATUS_META = {
+        active: { label: "Ενεργό", badge: "gsr__badge gsr__badge--accent" },
+        upcoming: { label: "Ερχόμενο", badge: "gsr__badge gsr__badge--outline" },
+        completed: { label: "Ολοκληρωμένο", badge: "gsr__badge" },
+      };
+
+      let championships = []; // κρατάμε όλα τα δεδομένα και φιλτράρουμε client-side
+      let activeFilter = "all";
+
+      function showEmptyState(message) {
+        grid.innerHTML = "";
+        const card = document.createElement("div");
+        card.className = "gsr__card";
+        card.style.cssText = "grid-column: 1 / -1; text-align: center";
+        const p = document.createElement("p");
+        p.style.marginBottom = "0";
+        p.textContent = message;
+        card.appendChild(p);
+        grid.appendChild(card);
+      }
+
+      function championshipCard(champ) {
+        const card = document.createElement("article");
+        card.className = "gsr__card champs__card";
+
+        // Εικόνα ή gradient placeholder με τρόπαιο.
+        if (champ.image_url) {
+          const img = document.createElement("img");
+          img.className = "champs__image";
+          img.src = champ.image_url;
+          img.alt = champ.title || "";
+          img.loading = "lazy";
+          card.appendChild(img);
+        } else {
+          const ph = document.createElement("div");
+          ph.className = "champs__image champs__image--placeholder";
+          ph.setAttribute("aria-hidden", "true");
+          ph.textContent = "🏆";
+          card.appendChild(ph);
+        }
+
+        const body = document.createElement("div");
+        body.className = "champs__body";
+
+        // Badges: status + κατηγορία.
+        const badges = document.createElement("div");
+        badges.className = "champs__badges";
+        const meta = STATUS_META[champ.status] || { label: champ.status || "—", badge: "gsr__badge" };
+        const statusBadge = document.createElement("span");
+        statusBadge.className = meta.badge;
+        statusBadge.textContent = meta.label;
+        badges.appendChild(statusBadge);
+        if (champ.category) {
+          const catBadge = document.createElement("span");
+          catBadge.className = "gsr__badge";
+          catBadge.textContent = champ.category;
+          badges.appendChild(catBadge);
+        }
+        body.appendChild(badges);
+
+        const title = document.createElement("h3");
+        title.className = "champs__title";
+        title.textContent = champ.title || "";
+        body.appendChild(title);
+
+        if (champ.description) {
+          const desc = document.createElement("p");
+          desc.className = "champs__desc";
+          desc.textContent = champ.description; // textContent = ασφαλές έναντι HTML injection
+          body.appendChild(desc);
+        }
+
+        // Progress bar αγώνων: races_completed / races_total.
+        const done = Number(champ.races_completed) || 0;
+        const total = Number(champ.races_total) || 0;
+        const pct = total > 0 ? Math.min(100, Math.round((done / total) * 100)) : 0;
+
+        const label = document.createElement("div");
+        label.className = "champs__progress-label";
+        const labelText = document.createElement("span");
+        labelText.textContent = `Αγώνες: ${done}/${total}`;
+        const labelPct = document.createElement("span");
+        labelPct.textContent = `${pct}%`;
+        label.append(labelText, labelPct);
+        body.appendChild(label);
+
+        const bar = document.createElement("div");
+        bar.className = "champs__progress";
+        bar.setAttribute("role", "progressbar");
+        bar.setAttribute("aria-valuenow", String(done));
+        bar.setAttribute("aria-valuemin", "0");
+        bar.setAttribute("aria-valuemax", String(total));
+        const fill = document.createElement("div");
+        fill.className = "champs__progress-fill";
+        fill.style.width = `${pct}%`;
+        bar.appendChild(fill);
+        body.appendChild(bar);
+
+        // Συμμετέχοντες + ημερομηνία έναρξης.
+        const metaRow = document.createElement("div");
+        metaRow.className = "champs__meta";
+        const participants = document.createElement("span");
+        participants.textContent = `👥 ${Number(champ.participants) || 0} συμμετέχοντες`;
+        metaRow.appendChild(participants);
+        if (champ.start_date) {
+          const date = document.createElement("span");
+          date.textContent = `🗓️ ${new Date(champ.start_date).toLocaleDateString("el-GR")}`;
+          metaRow.appendChild(date);
+        }
+        body.appendChild(metaRow);
+
+        card.appendChild(body);
+        return card;
+      }
+
+      function render() {
+        const visible =
+          activeFilter === "all" ? championships : championships.filter((c) => c.status === activeFilter);
+
+        if (championships.length === 0) {
+          showEmptyState("Δεν υπάρχουν championships ακόμα — μείνε συντονισμένος!");
+          return;
+        }
+        if (visible.length === 0) {
+          showEmptyState("Κανένα championship σε αυτή την κατηγορία αυτή τη στιγμή.");
+          return;
+        }
+
+        grid.innerHTML = "";
+        visible.forEach((champ) => grid.appendChild(championshipCard(champ)));
+      }
+
+      function renderStats() {
+        const totalParticipants = championships.reduce((sum, c) => sum + (Number(c.participants) || 0), 0);
+        const activeCount = championships.filter((c) => c.status === "active").length;
+        document.getElementById("stat-total").textContent = String(championships.length);
+        document.getElementById("stat-participants").textContent = totalParticipants.toLocaleString("el-GR");
+        document.getElementById("stat-active").textContent = String(activeCount);
+        statsStrip.hidden = false;
+      }
+
+      // Εναλλαγή ενεργού pill + re-render.
+      pills.forEach((pill) => {
+        pill.addEventListener("click", () => {
+          activeFilter = pill.dataset.filter;
+          pills.forEach((p) => p.classList.toggle("champs__pill--active", p === pill));
+          render();
+        });
+      });
+
+      async function loadChampionships() {
+        try {
+          const { data, error } = await supabase
+            .from("championships")
+            .select(
+              "id,title,description,status,category,races_completed,races_total,participants,start_date,image_url,created_at",
+            )
+            .order("created_at", { ascending: false });
+
+          if (error) throw error;
+          championships = data || [];
+          render();
+          if (championships.length > 0) renderStats();
+        } catch {
+          // Supabase μη ρυθμισμένο ή σφάλμα δικτύου — graceful fallback.
+          championships = [];
+          showEmptyState("Δεν υπάρχουν championships ακόμα — μείνε συντονισμένος!");
+        }
+      }
+
+      loadChampionships();
+    </script>
+  </body>
+</html>
