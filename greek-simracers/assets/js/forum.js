@@ -261,7 +261,7 @@
     try {
       const { data, error } = await window.supabaseClient
         .from("forum_posts")
-        .select("thread_id, created_at, profiles(display_name)")
+        .select("thread_id, created_at, profiles!forum_posts_user_id_fkey(display_name)")
         .in("thread_id", threadIds)
         .order("created_at", { ascending: false });
       if (error) return {};
@@ -681,8 +681,9 @@
   // Post σε στυλ XenForo: αριστερά πάνελ συντάκτη, δεξιά το περιεχόμενο.
   function postBlockHtml(post, number, stats, react, ctx) {
     const mine = ctx.sessionUserId && post.user_id === ctx.sessionUserId;
-    const name = authorName(post);
     const s = stats || null;
+    // Το όνομα έρχεται από το embed· αν λείψει, το πάνελ στατιστικών το έχει ήδη.
+    const name = (post.profiles && post.profiles.display_name) || (s && s.display_name) || "Μέλος";
     const r = react || { count: 0, mine: false };
     const created = new Date(post.created_at);
     const createdTitle = Number.isNaN(created.getTime()) ? "" : created.toLocaleString("el-GR");
@@ -754,7 +755,7 @@
           .maybeSingle(),
         window.supabaseClient
           .from("forum_posts")
-          .select("*, profiles(display_name)", { count: "exact" })
+          .select("*, profiles!forum_posts_user_id_fkey(display_name)", { count: "exact" })
           .eq("thread_id", threadId)
           .order("created_at", { ascending: true })
           .range(from, to),
