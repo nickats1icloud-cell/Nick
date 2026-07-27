@@ -1077,6 +1077,15 @@
     predictions: loadPredictions,
     messages: loadMessages,
   };
+
+  // Επιπλέον ενότητες (π.χ. το Championship Hub) δηλώνονται από δικό τους
+  // αρχείο μέσω GSRAdmin.registerTab, ώστε το admin.js να μη φουσκώνει.
+  const extraWiring = [];
+
+  function registerTab(name, loader, wire) {
+    TAB_LOADERS[name] = loader;
+    if (wire) extraWiring.push(wire);
+  }
   const loadedTabs = new Set();
 
   function activateTab(name) {
@@ -1152,8 +1161,25 @@
     wireChampionshipsTab();
     wireProductsTab();
     wirePredictionsTab();
+    extraWiring.forEach((wire) => wire());
     activateTab('podcasts');
   }
+
+  // Κοινά εργαλεία για τις ενότητες που ζουν σε ξεχωριστά αρχεία.
+  window.GSRAdmin = {
+    sb,
+    escapeHtml,
+    formatDate,
+    formatDateTime,
+    showToast,
+    setStatus,
+    openDialog,
+    closeDialog,
+    renderLoadingState,
+    renderErrorState,
+    renderEmptyState,
+    registerTab,
+  };
 
   document.addEventListener('DOMContentLoaded', init);
 })();

@@ -371,3 +371,137 @@
     animation: none;
   }
 }
+
+/* ============ Championship Hub ============ */
+.hub-picker {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1.25rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-md);
+  background: hsl(var(--card));
+}
+
+.hub-picker__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.hub-picker .admin-form__hint {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+@media (max-width: 800px) {
+  .hub-picker {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hub-subtabs {
+  margin-bottom: 1.25rem;
+}
+
+/* Πλαίσιο ελέγχου με ετικέτα δίπλα, όχι από πάνω. */
+.field--check {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.field--check label {
+  margin: 0;
+  font-weight: 400;
+}
+
+.field--check input {
+  width: auto;
+  margin: 0;
+}
+
+/* ============ Πλέγμα αποτελεσμάτων ============ */
+.modal--wide .admin-form {
+  max-width: 56rem;
+}
+
+.results-grid {
+  display: grid;
+  gap: 0.35rem;
+  max-height: 55vh;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.results-grid__head,
+.results-grid__row {
+  display: grid;
+  grid-template-columns: minmax(8rem, 1.6fr) 4.5rem 5rem minmax(6rem, 1fr) 3rem 3rem 3rem;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.results-grid__head {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 0.4rem 0;
+  background: hsl(var(--card));
+  font-family: var(--font-display);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+  text-align: center;
+}
+
+.results-grid__head span:first-child {
+  text-align: left;
+}
+
+.results-grid__name {
+  font-size: 0.85rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.results-grid__row input[type="number"],
+.results-grid__row input[type="text"] {
+  width: 100%;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-sm);
+  background: hsl(var(--secondary) / 0.5);
+  color: hsl(var(--foreground));
+  font: inherit;
+  font-size: 0.85rem;
+}
+
+.results-grid__row input[type="checkbox"] {
+  justify-self: center;
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+/* Στο κινητό οι στήλες δεν χωράνε: κάθε οδηγός γίνεται κάρτα. */
+@media (max-width: 720px) {
+  .results-grid__head {
+    display: none;
+  }
+
+  .results-grid__row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding: 0.6rem;
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius-sm);
+  }
+
+  .results-grid__name {
+    grid-column: 1 / -1;
+    font-weight: 600;
+    white-space: normal;
+  }
+}
