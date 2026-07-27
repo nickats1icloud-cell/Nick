@@ -24,7 +24,7 @@
   --state-live: 0 84% 60%;
   --state-success: 142 71% 45%;
   --state-penalty: 45 93% 47%;
-  --state-info: 214 89% 52%;
+  --state-info: 214 89% 58%;
 }
 
 .hub-container {
@@ -152,7 +152,7 @@
   border-radius: 999px;
   border: 1px solid transparent;
   font-family: var(--font-display);
-  font-size: 0.66rem;
+  font-size: 0.7rem;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -291,7 +291,7 @@ a.hub-card:hover,
 .driver-card__number {
   font-family: var(--font-display);
   font-size: 0.8rem;
-  color: hsl(var(--primary-light));
+  color: hsl(var(--primary-text));
 }
 
 .driver-card__name {
@@ -318,7 +318,7 @@ a.hub-card:hover,
 }
 
 .driver-card__pos-label {
-  font-size: 0.66rem;
+  font-size: 0.7rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: hsl(var(--muted-foreground));
@@ -459,7 +459,7 @@ a.hub-card:hover,
   z-index: 2;
   background: hsl(var(--secondary));
   font-family: var(--font-display);
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -577,7 +577,7 @@ a.hub-card:hover,
   .data-table td::before {
     content: attr(data-label);
     font-family: var(--font-display);
-    font-size: 0.66rem;
+    font-size: 0.7rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: hsl(var(--muted-foreground));
@@ -825,7 +825,7 @@ a.hub-card:hover,
 
 .countdown__label {
   margin-top: 0.25rem;
-  font-size: 0.62rem;
+  font-size: 0.7rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: hsl(var(--muted-foreground));
@@ -835,4 +835,29 @@ a.hub-card:hover,
   font-family: var(--font-display);
   font-size: 1.1rem;
   color: hsl(var(--state-live));
+}
+
+/* ============ Εικονίδια διεπαφής ============ */
+/* Αντικαθιστούν τα emoji: ίδιο σχήμα σε κάθε συσκευή, χρώμα από τα tokens. */
+.ui-icon {
+  width: 1em;
+  height: 1em;
+  flex: none;
+  vertical-align: -0.125em;
+  margin-inline-end: 0.35em;
+  opacity: 0.85;
+}
+
+.hub-state__icon .ui-icon {
+  width: 1.35rem;
+  height: 1.35rem;
+  margin: 0;
+  opacity: 1;
+}
+
+.share-btn .ui-icon {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  opacity: 1;
 }

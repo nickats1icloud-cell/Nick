@@ -173,7 +173,7 @@
   $("#skeleton-demo").innerHTML = wrap("col-12", H.skeletonCards(2));
 
   $("#empty-demo").innerHTML = H.emptyState({
-    icon: "🏁",
+    icon: "flag",
     title: "Δεν υπάρχουν αγώνες",
     text: "Το καλεντάρι της σεζόν δεν έχει ανακοινωθεί ακόμη.",
     actionHref: "championships.html",

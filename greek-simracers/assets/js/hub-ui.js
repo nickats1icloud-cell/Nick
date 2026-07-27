@@ -29,6 +29,12 @@
     return Number.isFinite(n) ? n.toLocaleString("el-GR") : "—";
   }
 
+  // Εικονίδιο διεπαφής από το κοινό sprite. Αντικαθιστά τα emoji: το ίδιο
+  // σχήμα σε κάθε συσκευή, και παίρνει χρώμα από το CSS.
+  function icon(name) {
+    return `<svg class="ui-icon" aria-hidden="true" focusable="false"><use href="#gsr-ui-${name}"></use></svg>`;
+  }
+
   const STATE_LABELS = {
     live: "Live",
     upcoming: "Επόμενος",
@@ -78,8 +84,8 @@
       "</div>" +
       '<div class="hub-card__body">' +
       '<div class="hub-card__meta">' +
-      (driver.team ? `<span>🏢 ${esc(driver.team)}</span>` : "") +
-      (driver.car ? `<span>🏎️ ${esc(driver.car)}</span>` : "") +
+      (driver.team ? `<span>${icon("users")}${esc(driver.team)}</span>` : "") +
+      (driver.car ? `<span>${icon("car")}${esc(driver.car)}</span>` : "") +
       "</div></div>" +
       '<div class="hub-card__foot">' +
       '<span class="stat-card__label">Πόντοι</span>' +
@@ -128,15 +134,15 @@
       '<div class="hub-card__body">' +
       '<div class="hub-card__meta">' +
       stateBadge(race.state) +
-      (race.date ? `<span>📅 ${esc(race.date)}</span>` : "") +
+      (race.date ? `<span>${icon("calendar")}${esc(race.date)}</span>` : "") +
       "</div>" +
       `<h3 class="hub-card__title">${esc(race.name)}</h3>` +
       (race.track ? `<p class="hub-card__sub">${esc(race.track)}</p>` : "") +
       "</div>" +
       (race.winner || race.fastest_lap
         ? '<div class="hub-card__foot">' +
-          (race.winner ? `<span>🏆 ${esc(race.winner)}</span>` : "<span></span>") +
-          (race.fastest_lap ? `<span>⚡ ${esc(race.fastest_lap)}</span>` : "") +
+          (race.winner ? `<span>${icon("trophy")}${esc(race.winner)}</span>` : "<span></span>") +
+          (race.fastest_lap ? `<span>${icon("zap")}${esc(race.fastest_lap)}</span>` : "") +
           "</div>"
         : "") +
       "</article>"
@@ -152,8 +158,8 @@
       `<h3 class="hub-card__title">${esc(track.name)}</h3>` +
       `<p class="hub-card__sub">${esc(track.country || "")}</p>` +
       '<div class="hub-card__meta">' +
-      (track.length ? `<span>📏 ${esc(track.length)}</span>` : "") +
-      (track.corners ? `<span>↩️ ${esc(track.corners)} στροφές</span>` : "") +
+      (track.length ? `<span>${icon("ruler")}${esc(track.length)}</span>` : "") +
+      (track.corners ? `<span>${icon("corner")}${esc(track.corners)} στροφές</span>` : "") +
       "</div></div>" +
       (track.lap_record
         ? '<div class="hub-card__foot"><span class="stat-card__label">Ρεκόρ γύρου</span>' +
@@ -261,7 +267,7 @@
       : "";
     return (
       '<div class="hub-state">' +
-      `<span class="hub-state__icon" aria-hidden="true">${esc(opts.icon || "🏁")}</span>` +
+      `<span class="hub-state__icon">${icon(opts.icon || "flag")}</span>` +
       `<h3 class="hub-state__title">${esc(opts.title || "Δεν υπάρχουν δεδομένα")}</h3>` +
       `<p class="hub-state__text">${esc(opts.text || "")}</p>` +
       action +
@@ -274,7 +280,7 @@
     const retry = opts.onRetry === false ? "" : '<button type="button" class="btn btn-outline" data-hub-retry>Δοκίμασε ξανά</button>';
     return (
       '<div class="hub-state hub-state--error" role="alert">' +
-      `<span class="hub-state__icon" aria-hidden="true">${esc(opts.icon || "⚠️")}</span>` +
+      `<span class="hub-state__icon">${icon(opts.icon || "alert")}</span>` +
       `<h3 class="hub-state__title">${esc(opts.title || "Κάτι πήγε στραβά")}</h3>` +
       `<p class="hub-state__text">${esc(opts.text || "Δεν καταφέραμε να φορτώσουμε τα δεδομένα. Έλεγξε τη σύνδεσή σου.")}</p>` +
       retry +
@@ -421,6 +427,7 @@
 
   window.GSRHub = {
     esc,
+    icon,
     safeUrl,
     stateBadge,
     driverCard,

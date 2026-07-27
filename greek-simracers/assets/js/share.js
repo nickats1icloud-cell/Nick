@@ -54,9 +54,11 @@
     host.innerHTML =
       `<span class="share__label">${opts.label || "Κοινοποίηση"}</span>` +
       NETWORKS.map((n) => buttonHtml(n, url, title)).join("") +
-      '<button type="button" class="share-btn share-btn--copy" data-share-copy aria-label="Αντιγραφή συνδέσμου" title="Αντιγραφή συνδέσμου">🔗</button>' +
+      '<button type="button" class="share-btn share-btn--copy" data-share-copy aria-label="Αντιγραφή συνδέσμου" title="Αντιγραφή συνδέσμου">' +
+      '<svg class="ui-icon" aria-hidden="true" focusable="false"><use href="#gsr-ui-link"></use></svg></button>' +
       (navigator.share
-        ? '<button type="button" class="share-btn share-btn--native" data-share-native aria-label="Περισσότερες επιλογές" title="Περισσότερα">⋯</button>'
+        ? '<button type="button" class="share-btn share-btn--native" data-share-native aria-label="Περισσότερες επιλογές" title="Περισσότερα">' +
+          '<svg class="ui-icon" aria-hidden="true" focusable="false"><use href="#gsr-ui-share"></use></svg></button>'
         : "") +
       '<span class="share__status" role="status"></span>';
 

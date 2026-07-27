@@ -7,10 +7,11 @@
 
     python3 tools/sync-footer-socials.py
 
-Τα σχήματα των εικονιδίων ζουν σε ΕΝΑ αρχείο, το assets/icons.json. Εδώ
-γράφονται ως <symbol> μία φορά ανά σελίδα και κάθε σύνδεσμος τα δείχνει με
-<use>. Έτσι δεν επαναλαμβάνεται κανένα path — και τα εικονίδια φαίνονται
-κανονικά ακόμη και χωρίς JavaScript.
+Τα σχήματα των εικονιδίων ζουν σε ΕΝΑ αρχείο, το assets/icons.json — και τα
+λογότυπα των δικτύων και τα εικονίδια διεπαφής. Εδώ γράφονται ως <symbol> μία
+φορά ανά σελίδα και όποιος τα χρειάζεται τα δείχνει με <use>. Έτσι δεν
+επαναλαμβάνεται κανένα path — και φαίνονται κανονικά ακόμη και χωρίς
+JavaScript.
 
 Για να προστεθεί δίκτυο: μια εγγραφή στο NETWORKS (το εικονίδιο υπάρχει ήδη
 στο icons.json για Instagram, TikTok, Twitch και X) και ξανατρέξε το script.
@@ -22,7 +23,9 @@ import re
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-ICONS = json.loads((ROOT / "assets" / "icons.json").read_text(encoding="utf-8"))
+_ICONS = json.loads((ROOT / "assets" / "icons.json").read_text(encoding="utf-8"))
+BRAND_ICONS = _ICONS["brands"]   # γεμάτα σχήματα, λογότυπα δικτύων
+UI_ICONS = _ICONS["ui"]          # περιγράμματα Lucide, αντικαθιστούν τα emoji
 
 # Η offline.html είναι σκόπιμα λιτή: χωρίς μενού και χωρίς footer.
 SKIP = {"offline.html"}
@@ -70,10 +73,21 @@ def build_block(indent):
 
 
 def build_defs():
+    """Τα <symbol> μπαίνουν μία φορά ανά σελίδα.
+
+    Τα λογότυπα είναι γεμάτα σχήματα, τα εικονίδια διεπαφής περιγράμματα —
+    γι' αυτό γράφονται με διαφορετικά χαρακτηριστικά.
+    """
     symbols = "".join(
         f'<symbol id="gsr-icon-{icon}" viewBox="0 0 24 24">'
-        f'<path fill="currentColor" d="{ICONS[icon]}"/></symbol>'
+        f'<path fill="currentColor" d="{BRAND_ICONS[icon]}"/></symbol>'
         for _, icon, _ in NETWORKS
+    )
+    symbols += "".join(
+        f'<symbol id="gsr-ui-{name}" viewBox="0 0 24 24" fill="none" stroke="currentColor"'
+        f' stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+        f'<path d="{path}"/></symbol>'
+        for name, path in UI_ICONS.items()
     )
     return f'<svg class="icon-defs" aria-hidden="true" focusable="false">{symbols}</svg>\n'
 
