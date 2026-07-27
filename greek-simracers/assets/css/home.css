@@ -737,3 +737,62 @@
   margin-top: 2.5rem;
   justify-content: center;
 }
+
+/* ============ Λωρίδα επόμενου αγώνα ============ */
+/* Το πρώτο πράγμα που θέλει να δει ένας οδηγός: τι τρέχει και πότε. */
+.race-band {
+  padding-block: 0;
+}
+
+.race-band__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.5rem 1.75rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(120deg, hsl(var(--primary) / 0.14) 0%, transparent 55%),
+    hsl(var(--card));
+  position: relative;
+  overflow: hidden;
+}
+
+/* Λεπτή διαγώνια λωρίδα στην άκρη — νεύμα σε livery αγωνιστικού. */
+.race-band__inner::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 4px;
+  background: linear-gradient(180deg, hsl(var(--primary-light)), hsl(var(--primary)));
+}
+
+.race-band__title {
+  margin: 0.5rem 0 0.35rem;
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  line-height: 1.15;
+}
+
+.race-band__meta {
+  margin: 0 0 1rem;
+  font-size: 0.9rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.race-band__countdown {
+  display: flex;
+  gap: 0.75rem;
+}
+
+@media (max-width: 640px) {
+  .race-band__countdown {
+    width: 100%;
+  }
+
+  .race-band__countdown .countdown__unit {
+    flex: 1;
+  }
+}

@@ -269,7 +269,124 @@
     }
   }
 
+
+  /* ============ Επόμενος αγώνας ============
+     Το στοιχείο που κάθε πλατφόρμα πρωταθλημάτων βάζει πρώτο: τι τρέχει
+     τώρα ή τι έρχεται, με αντίστροφη μέτρηση. Τραβάει τον πρώτο αγώνα
+     όλων των σεζόν, όχι μιας συγκεκριμένης. */
+  async function loadNextRace() {
+    const section = document.getElementById("home-race-section");
+    const host = document.getElementById("home-race");
+    if (!section || !host || !window.GSRHub) return;
+
+    try {
+      const { data, error } = await supabaseClient
+        .from("hub_events")
+        .select("*, hub_tracks(name, country_flag), hub_seasons(name, championships(id, title))")
+        .in("status", ["live", "upcoming"])
+        .order("starts_at", { ascending: true })
+        .limit(1);
+
+      if (error || !data || !data.length) return;
+
+      const race = data[0];
+      const track = race.hub_tracks;
+      const champ = race.hub_seasons && race.hub_seasons.championships;
+      const esc = window.GSRHub.esc;
+      const href = champ ? `championship.html?id=${encodeURIComponent(champ.id)}` : "championships.html";
+
+      host.innerHTML =
+        '<div class="race-band__inner">' +
+        '<div class="race-band__info">' +
+        window.GSRHub.stateBadge(race.status === "live" ? "live" : "upcoming") +
+        `<h2 class="race-band__title">${esc(race.name)}</h2>` +
+        '<p class="race-band__meta">' +
+        (champ ? esc(champ.title) : "") +
+        (track ? ` · ${esc(track.country_flag || "")} ${esc(track.name)}` : "") +
+        "</p>" +
+        `<a class="btn btn-primary btn-sm" href="${href}">Βαθμολογία &amp; καλεντάρι</a>` +
+        "</div>" +
+        `<div class="race-band__countdown" data-countdown="${esc(race.starts_at || "")}"></div>` +
+        "</div>";
+
+      startCountdown(host.querySelector("[data-countdown]"));
+      section.hidden = false;
+      if (window.gsrMotion) window.gsrMotion.refresh();
+    } catch (err) {
+      /* το section μένει κρυφό */
+    }
+  }
+
+  function startCountdown(node) {
+    if (!node || !node.dataset.countdown) return;
+    const target = new Date(node.dataset.countdown).getTime();
+    if (Number.isNaN(target)) return;
+
+    const units = [["ημέρες", 86400000], ["ώρες", 3600000], ["λεπτά", 60000], ["δευτ.", 1000]];
+
+    function tick() {
+      let left = target - Date.now();
+      if (left <= 0) {
+        node.innerHTML = '<span class="countdown__live">Ξεκίνησε</span>';
+        clearInterval(timer);
+        return;
+      }
+      node.innerHTML = units
+        .map(([label, ms]) => {
+          const value = Math.floor(left / ms);
+          left -= value * ms;
+          return (
+            '<span class="countdown__unit">' +
+            `<span class="countdown__value">${String(value).padStart(2, "0")}</span>` +
+            `<span class="countdown__label">${label}</span></span>`
+          );
+        })
+        .join("");
+    }
+
+    tick();
+    const timer = setInterval(tick, 1000);
+  }
+
+  /* ============ Κορυφαίοι οδηγοί ============
+     Η ενεργή σεζόν με μια ματιά — το «showcase μελών» που ζητά το μοτίβο
+     της κοινότητας, με τα δικά μας δεδομένα αγώνων. */
+  async function loadLeaderboard() {
+    const host = document.getElementById("home-leaderboard");
+    if (!host || !window.GSRHub) return;
+
+    try {
+      const seasons = await supabaseClient
+        .from("hub_seasons")
+        .select("id")
+        .eq("is_active", true)
+        .limit(1);
+
+      const season = seasons.data && seasons.data[0];
+      if (!season) return;
+
+      const { data, error } = await supabaseClient
+        .from("hub_driver_standings")
+        .select("display_name, points, position")
+        .eq("season_id", season.id)
+        .order("position")
+        .limit(5);
+
+      if (error || !data || !data.length) return;
+
+      host.innerHTML = window.GSRHub.rankingCard(
+        "Κορυφαίοι οδηγοί",
+        data.map((row) => ({ name: row.display_name, value: Number(row.points) }))
+      );
+      host.hidden = false;
+    } catch (err) {
+      /* το block μένει κρυφό */
+    }
+  }
+
   loadStats();
+  loadNextRace();
+  loadLeaderboard();
   loadThreads();
   loadPrediction();
   loadChampionship();
