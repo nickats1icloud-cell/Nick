@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="el" class="theme-dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Μέλη · Greek SimRacers</title>
+    <meta name="description" content="Ευρετήριο μελών της κοινότητας Greek SimRacers." />
+    <meta name="theme-color" content="#12141a" />
+    <meta property="og:title" content="Μέλη · Greek SimRacers" />
+    <meta property="og:description" content="Ευρετήριο μελών της κοινότητας Greek SimRacers." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="assets/logo.png" />
+    <link rel="icon" href="assets/logo.png" />
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/shell.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+    <script>
+      // Εφαρμογή θέματος πριν το πρώτο paint — αποφεύγει το «άσπρο φλας».
+      (function () {
+        var saved = localStorage.getItem("hub-theme");
+        var light = saved ? saved === "light" : matchMedia("(prefers-color-scheme: light)").matches;
+        document.documentElement.classList.add(light ? "theme-light" : "theme-dark");
+        document.documentElement.style.colorScheme = light ? "light" : "dark";
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="hub-page">
+      <main class="hub-page__main">
+        <header class="hub-head">
+          <div class="u-shell hub-head__inner">
+            <span class="hub-eyebrow">Κοινότητα</span>
+            <h1><span class="u-brand-text">Μέλη</span></h1>
+            <p>Όλοι οι εγκεκριμένοι οδηγοί της κοινότητας.</p>
+            <div class="u-row u-row--wrap" style="margin-top: 20px">
+              <input class="hub-input" id="mem-search" type="search" placeholder="Αναζήτηση μέλους…" style="max-width: 300px" />
+              <select class="hub-select" id="mem-sim" style="max-width: 220px"><option value="">Όλα τα sims</option></select>
+              <select class="hub-select" id="mem-setup" style="max-width: 200px"><option value="">Κάθε setup</option></select>
+              <select class="hub-select" id="mem-sort" style="max-width: 200px">
+                <option value="newest">Νεότερα μέλη</option>
+                <option value="oldest">Παλαιότερα μέλη</option>
+                <option value="name">Αλφαβητικά</option>
+                <option value="online">Online πρώτα</option>
+              </select>
+            </div>
+            <div class="hub-statline" id="mem-stats"></div>
+          </div>
+        </header>
+
+        <section class="u-shell" style="padding-block: 30px 60px">
+          <div class="u-grid u-grid--4" id="mem-list"></div>
+        </section>
+
+      </main>
+      <div data-shell-footer></div>
+    </div>
+
+    <!-- Το UMD bundle του Supabase φορτώνεται πριν τα modules (χωρίς npm/build). -->
+    <script src="js/vendor/supabase.umd.js"></script>
+    <script type="module" src="js/pages/members.js"></script>
+  </body>
+</html>

@@ -23,7 +23,7 @@ comments in this codebase.
   step in `.github/workflows/deploy.yml`. Preview locally with
   `python3 -m http.server` (ES modules don't run from `file://`).
 
-- **`simracing-hub/`** — a third, fully independent site: a static HTML5
+- **`gsr-new/`** — a third, fully independent site: a static HTML5
   rebuild of the "Greek SimRacing Hub" React/Vite/Tailwind/shadcn app. Same
   ground rules as `greek-simracers/` — plain HTML/CSS/ES modules, **no npm and
   no build step**, Supabase via the vendored `js/vendor/supabase.umd.js`. It is
@@ -31,10 +31,12 @@ comments in this codebase.
   badges, teams, support tickets, games hub, admin panel). One module per page
   in `js/pages/`, shared plumbing in `js/{auth,shell,ui,markdown,fx}.js`,
   Supabase keys in `js/config.js`, 4 stylesheets in `css/`. CSS classes use the
-  `hub-*` (components) / `u-*` (utilities) prefixes and an ember-orange palette
-  — deliberately different from `greek-simracers/`'s `gsr-*` / Greek-blue. All
+  `hub-*` (components) / `u-*` (utilities) prefixes; colours come only from the
+  `--brand` / `--accent` custom properties in `css/tokens.css`, so a palette
+  change touches that one file. All
   DB-sourced strings must go through `esc()` from `js/ui.js`. See its own
-  README.md.
+  README.md. It deploys to `/Nick/gsr-new/` via a copy step in
+  `.github/workflows/deploy.yml`.
 
 ## Commands
 

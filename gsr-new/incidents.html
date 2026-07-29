@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="el" class="theme-dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Incident Reports · Greek SimRacers</title>
+    <meta name="description" content="Αναφορές περιστατικών αγώνα προς τους αγωνοδίκες." />
+    <meta name="theme-color" content="#12141a" />
+    <meta property="og:title" content="Incident Reports · Greek SimRacers" />
+    <meta property="og:description" content="Αναφορές περιστατικών αγώνα προς τους αγωνοδίκες." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="assets/logo.png" />
+    <link rel="icon" href="assets/logo.png" />
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/shell.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+    <script>
+      // Εφαρμογή θέματος πριν το πρώτο paint — αποφεύγει το «άσπρο φλας».
+      (function () {
+        var saved = localStorage.getItem("hub-theme");
+        var light = saved ? saved === "light" : matchMedia("(prefers-color-scheme: light)").matches;
+        document.documentElement.classList.add(light ? "theme-light" : "theme-dark");
+        document.documentElement.style.colorScheme = light ? "light" : "dark";
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="hub-page">
+      <main class="hub-page__main">
+        <header class="hub-head">
+          <div class="u-shell hub-head__inner">
+            <span class="hub-eyebrow">Racing</span>
+            <h1>Incident <span class="u-brand-text">Reports</span></h1>
+            <p>Ανέφερε ένα περιστατικό αγώνα. Οι αγωνοδίκες θα το εξετάσουν.</p>
+            <div class="u-row u-row--wrap" style="margin-top: 20px">
+              <button class="hub-btn hub-btn--primary" id="inc-new" type="button">+ Νέα αναφορά</button>
+            </div>
+          </div>
+        </header>
+
+        <section class="u-shell" style="padding-block: 30px 60px">
+          <div class="u-stack" style="--gap: 12px" id="inc-list"></div>
+        </section>
+
+      </main>
+      <div data-shell-footer></div>
+    </div>
+
+    <!-- Το UMD bundle του Supabase φορτώνεται πριν τα modules (χωρίς npm/build). -->
+    <script src="js/vendor/supabase.umd.js"></script>
+    <script type="module" src="js/pages/incidents.js"></script>
+  </body>
+</html>

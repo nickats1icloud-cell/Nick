@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="el" class="theme-dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ομάδες · Greek SimRacers</title>
+    <meta name="description" content="Racing teams της ελληνικής κοινότητας sim racing." />
+    <meta name="theme-color" content="#12141a" />
+    <meta property="og:title" content="Ομάδες · Greek SimRacers" />
+    <meta property="og:description" content="Racing teams της ελληνικής κοινότητας sim racing." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="assets/logo.png" />
+    <link rel="icon" href="assets/logo.png" />
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/shell.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+    <script>
+      // Εφαρμογή θέματος πριν το πρώτο paint — αποφεύγει το «άσπρο φλας».
+      (function () {
+        var saved = localStorage.getItem("hub-theme");
+        var light = saved ? saved === "light" : matchMedia("(prefers-color-scheme: light)").matches;
+        document.documentElement.classList.add(light ? "theme-light" : "theme-dark");
+        document.documentElement.style.colorScheme = light ? "light" : "dark";
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="hub-page">
+      <main class="hub-page__main">
+        <header class="hub-head">
+          <div class="u-shell hub-head__inner">
+            <span class="hub-eyebrow">Κοινότητα</span>
+            <h1>Racing <span class="u-brand-text">Teams</span></h1>
+            <p>Βρες ομάδα, δες το roster ή φτιάξε τη δική σου.</p>
+            <div class="u-row u-row--wrap" style="margin-top: 20px">
+              <input class="hub-input" id="team-search" type="search" placeholder="Αναζήτηση ομάδας…" style="max-width: 300px" />
+              <button class="hub-btn hub-btn--primary" id="team-new" type="button" hidden>+ Νέα ομάδα</button>
+            </div>
+          </div>
+        </header>
+
+        <section class="u-shell" style="padding-block: 30px 60px">
+          <div class="u-grid u-grid--3" id="team-list"></div>
+        </section>
+
+      </main>
+      <div data-shell-footer></div>
+    </div>
+
+    <!-- Το UMD bundle του Supabase φορτώνεται πριν τα modules (χωρίς npm/build). -->
+    <script src="js/vendor/supabase.umd.js"></script>
+    <script type="module" src="js/pages/teams.js"></script>
+  </body>
+</html>

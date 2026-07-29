@@ -7,6 +7,7 @@ on:
         claude/website-setup-0k2c7k,
         claude/custom-car-dashboard-5v69i8,
         claude/greek-sim-racers-rebuild-fjomf8,
+        claude/html5-website-conversion-ss1gxn,
       ]
   workflow_dispatch:
 
@@ -43,6 +44,10 @@ jobs:
       # Το Greek Simracers site είναι σκέτα static αρχεία (χωρίς build) —
       # αντιγράφεται ως έχει και σερβίρεται από /Nick/greek-simracers/.
       - run: cp -r greek-simracers dist/greek-simracers
+
+      # Το ίδιο και για το gsr-new (στατικό HTML5 rebuild του SimRacing Hub) —
+      # σερβίρεται από /Nick/gsr-new/.
+      - run: cp -r gsr-new dist/gsr-new
 
       - uses: actions/configure-pages@v5
         with:

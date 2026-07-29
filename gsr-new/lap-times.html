@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="el" class="theme-dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lap Times · Greek SimRacers</title>
+    <meta name="description" content="Χρόνοι γύρου της κοινότητας ανά πίστα, sim και αυτοκίνητο." />
+    <meta name="theme-color" content="#12141a" />
+    <meta property="og:title" content="Lap Times · Greek SimRacers" />
+    <meta property="og:description" content="Χρόνοι γύρου της κοινότητας ανά πίστα, sim και αυτοκίνητο." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="assets/logo.png" />
+    <link rel="icon" href="assets/logo.png" />
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/shell.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+    <script>
+      // Εφαρμογή θέματος πριν το πρώτο paint — αποφεύγει το «άσπρο φλας».
+      (function () {
+        var saved = localStorage.getItem("hub-theme");
+        var light = saved ? saved === "light" : matchMedia("(prefers-color-scheme: light)").matches;
+        document.documentElement.classList.add(light ? "theme-light" : "theme-dark");
+        document.documentElement.style.colorScheme = light ? "light" : "dark";
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="hub-page">
+      <main class="hub-page__main">
+        <header class="hub-head">
+          <div class="u-shell hub-head__inner">
+            <span class="hub-eyebrow">Racing</span>
+            <h1><span class="u-brand-text">Lap Times</span></h1>
+            <p>Οι γρηγορότεροι χρόνοι της κοινότητας. Ανέβασε τον δικό σου.</p>
+            <div class="u-row u-row--wrap" style="margin-top: 20px">
+              <select class="hub-select" id="lap-sim" style="max-width: 220px"><option value="">Όλα τα sims</option></select>
+              <select class="hub-select" id="lap-track" style="max-width: 240px"><option value="">Όλες οι πίστες</option></select>
+              <input class="hub-input" id="lap-search" type="search" placeholder="Αναζήτηση αυτοκινήτου…" style="max-width: 240px" />
+              <button class="hub-btn hub-btn--primary" id="lap-new" type="button">+ Νέος χρόνος</button>
+            </div>
+          </div>
+        </header>
+
+        <section class="u-shell" style="padding-block: 30px 60px">
+          <div id="lap-list"></div>
+        </section>
+
+      </main>
+      <div data-shell-footer></div>
+    </div>
+
+    <!-- Το UMD bundle του Supabase φορτώνεται πριν τα modules (χωρίς npm/build). -->
+    <script src="js/vendor/supabase.umd.js"></script>
+    <script type="module" src="js/pages/lap-times.js"></script>
+  </body>
+</html>

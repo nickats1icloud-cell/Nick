@@ -1,0 +1,101 @@
+/* ==========================================================================
+   Design tokens — "Pit Lane Blue"
+   --------------------------------------------------------------------------
+   Κύριο χρώμα: ηλεκτρικό azure μπλε. Δευτερεύον: κυανό (cyan) για δεύτερης
+   σειράς στοιχεία. Βάση: ψυχρό γραφίτης — όχι το navy του αρχικού React
+   project, ώστε το μπλε να «καίει» πάνω του αντί να χάνεται.
+
+   Τα ονόματα είναι σκόπιμα ουδέτερα (`--brand`, `--accent`): μια μελλοντική
+   αλλαγή παλέτας αγγίζει ΜΟΝΟ αυτό το αρχείο. Dark είναι το προεπιλεγμένο
+   θέμα· η κλάση `.theme-light` στο <html> γυρίζει σε ανοιχτό.
+
+   Όλα τα χρώματα δηλώνονται ως HSL components (χωρίς `hsl()`) ώστε να
+   μπορούν να συνδυαστούν με alpha: `hsl(var(--ink) / 0.4)`.
+   ========================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Rubik:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap");
+
+:root {
+  /* --- Surfaces --- */
+  --canvas: 220 12% 8%;         /* σελίδα */
+  --canvas-deep: 222 15% 5%;    /* hero / intro */
+  --surface: 220 11% 12%;       /* κάρτες */
+  --surface-2: 220 10% 16%;     /* inputs, chips */
+  --surface-3: 220 10% 21%;     /* hover */
+  --line: 220 9% 24%;           /* περιγράμματα */
+  --line-soft: 220 9% 18%;
+
+  /* --- Κείμενο --- */
+  --ink: 210 16% 95%;
+  --ink-dim: 218 9% 64%;
+  --ink-faint: 218 9% 46%;
+
+  /* --- Brand --- */
+  --brand: 214 100% 58%;        /* κύριο — ηλεκτρικό μπλε */
+  --brand-deep: 224 92% 46%;
+  --brand-glow: 202 100% 68%;
+  --accent: 187 92% 52%;        /* δευτερεύον — κυανό */
+  --accent-deep: 194 84% 38%;
+
+  /* --- Σημασιολογικά --- */
+  --ok: 145 62% 45%;
+  --warn: 42 96% 55%;
+  --bad: 358 72% 55%;
+  --on-brand: 214 60% 98%;      /* κείμενο πάνω σε brand/accent */
+
+  /* --- Γεωμετρία --- */
+  --r-xs: 3px;
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 16px;
+  --r-pill: 999px;
+  --edge: 14px;                 /* μέγεθος λοξής γωνίας */
+  --shell: 1240px;              /* max πλάτος περιεχομένου */
+  --nav-h: 62px;
+
+  /* --- Τυπογραφία --- */
+  --font-display: "Chakra Petch", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Rubik", -apple-system, "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  /* --- Effects --- */
+  --lift-1: 0 1px 2px hsl(0 0% 0% / 0.4);
+  --lift-2: 0 10px 30px -12px hsl(0 0% 0% / 0.7);
+  --lift-3: 0 24px 60px -20px hsl(0 0% 0% / 0.8);
+  --glow-brand: 0 0 0 1px hsl(var(--brand) / 0.35), 0 12px 40px -14px hsl(var(--brand) / 0.55);
+  --glow-accent: 0 0 0 1px hsl(var(--accent) / 0.3), 0 12px 40px -16px hsl(var(--accent) / 0.4);
+  --stripe: repeating-linear-gradient(
+    135deg,
+    hsl(var(--brand) / 0.14) 0 8px,
+    transparent 8px 16px
+  );
+  --grad-brand: linear-gradient(100deg, hsl(var(--brand-deep)), hsl(var(--brand)) 55%, hsl(var(--brand-glow)));
+  --grad-accent: linear-gradient(100deg, hsl(var(--accent-deep)), hsl(var(--accent)));
+  --speed: 180ms cubic-bezier(0.32, 0.72, 0.35, 1);
+}
+
+.theme-light {
+  --canvas: 214 30% 97%;
+  --canvas-deep: 214 26% 93%;
+  --surface: 0 0% 100%;
+  --surface-2: 214 24% 95%;
+  --surface-3: 214 20% 91%;
+  --line: 214 16% 85%;
+  --line-soft: 214 16% 90%;
+
+  --ink: 220 28% 13%;
+  --ink-dim: 218 12% 38%;
+  --ink-faint: 218 12% 54%;
+
+  --brand: 219 92% 50%;
+  --brand-deep: 226 84% 42%;
+  --brand-glow: 203 94% 56%;
+  --accent: 192 88% 38%;
+  --accent-deep: 197 82% 29%;
+
+  --on-brand: 0 0% 100%;
+
+  --lift-1: 0 1px 2px hsl(218 30% 40% / 0.12);
+  --lift-2: 0 10px 26px -14px hsl(218 30% 30% / 0.3);
+  --lift-3: 0 22px 50px -22px hsl(218 30% 30% / 0.34);
+}

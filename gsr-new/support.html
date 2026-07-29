@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="el" class="theme-dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Support · Greek SimRacers</title>
+    <meta name="description" content="Άνοιξε ticket υποστήριξης και μίλα με την ομάδα." />
+    <meta name="theme-color" content="#12141a" />
+    <meta property="og:title" content="Support · Greek SimRacers" />
+    <meta property="og:description" content="Άνοιξε ticket υποστήριξης και μίλα με την ομάδα." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="assets/logo.png" />
+    <link rel="icon" href="assets/logo.png" />
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/shell.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+    <script>
+      // Εφαρμογή θέματος πριν το πρώτο paint — αποφεύγει το «άσπρο φλας».
+      (function () {
+        var saved = localStorage.getItem("hub-theme");
+        var light = saved ? saved === "light" : matchMedia("(prefers-color-scheme: light)").matches;
+        document.documentElement.classList.add(light ? "theme-light" : "theme-dark");
+        document.documentElement.style.colorScheme = light ? "light" : "dark";
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="hub-page">
+      <main class="hub-page__main">
+        <header class="hub-head">
+          <div class="u-shell hub-head__inner">
+            <span class="hub-eyebrow">Βοήθεια</span>
+            <h1><span class="u-brand-text">Support</span></h1>
+            <p>Άνοιξε ticket και μίλα απευθείας με την ομάδα διαχείρισης.</p>
+            <div class="u-row u-row--wrap" style="margin-top: 20px">
+              <button class="hub-btn hub-btn--primary" id="sup-new" type="button">+ Νέο ticket</button>
+            </div>
+          </div>
+        </header>
+
+        <section class="u-shell" style="padding-block: 30px 60px">
+          <div class="chat">
+            <div>
+              <h2 class="u-dim" style="font-size: 0.8rem; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 12px">Τα tickets μου</h2>
+              <div class="chat__list" id="sup-list"></div>
+            </div>
+            <div id="sup-thread"></div>
+          </div>
+        </section>
+
+      </main>
+      <div data-shell-footer></div>
+    </div>
+
+    <!-- Το UMD bundle του Supabase φορτώνεται πριν τα modules (χωρίς npm/build). -->
+    <script src="js/vendor/supabase.umd.js"></script>
+    <script type="module" src="js/pages/support.js"></script>
+  </body>
+</html>
