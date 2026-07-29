@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="el" class="theme-dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Επικοινωνία · Greek SimRacers</title>
+    <meta name="description" content="Επικοινώνησε με την ομάδα του Greek SimRacers." />
+    <meta name="theme-color" content="#0f1113" />
+    <meta property="og:title" content="Επικοινωνία · Greek SimRacers" />
+    <meta property="og:description" content="Επικοινώνησε με την ομάδα του Greek SimRacers." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="assets/logo.png" />
+    <link rel="icon" href="assets/logo.png" />
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/shell.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+    <script>
+      // Εφαρμογή θέματος πριν το πρώτο paint — αποφεύγει το «άσπρο φλας».
+      (function () {
+        var saved = localStorage.getItem("hub-theme");
+        var light = saved ? saved === "light" : matchMedia("(prefers-color-scheme: light)").matches;
+        document.documentElement.classList.add(light ? "theme-light" : "theme-dark");
+        document.documentElement.style.colorScheme = light ? "light" : "dark";
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="hub-page">
+      <main class="hub-page__main">
+        <header class="hub-head">
+          <div class="u-shell hub-head__inner">
+            <span class="hub-eyebrow">Επικοινωνία</span>
+            <h1><span class="u-heat-text">Επικοινωνήστε</span> μαζί μας</h1>
+            <p>Έχεις ερωτήσεις, προτάσεις ή θέλεις να συνεργαστείς; Είμαστε εδώ.</p>
+
+          </div>
+        </header>
+
+        <section class="u-shell" style="padding-block: 34px 60px">
+          <div class="u-grid" style="grid-template-columns: minmax(260px, 1fr) minmax(0, 2fr)">
+            <div class="u-stack" style="--gap: 12px" id="contact-info"></div>
+
+            <div class="hub-card">
+              <h2 style="font-size: 1.15rem; margin-bottom: 18px">Φόρμα επικοινωνίας</h2>
+              <form id="contact-form" class="u-stack" style="--gap: 14px">
+                <div class="u-grid u-grid--2" style="gap: 14px">
+                  <label class="hub-field"><span>Όνομα *</span><input class="hub-input" name="name" maxlength="100" required /></label>
+                  <label class="hub-field"><span>Email *</span><input class="hub-input" type="email" name="email" maxlength="255" required /></label>
+                </div>
+                <label class="hub-field"><span>Θέμα</span><input class="hub-input" name="subject" maxlength="200" /></label>
+                <label class="hub-field"><span>Μήνυμα *</span>
+                  <textarea class="hub-textarea" name="message" rows="7" maxlength="2000" required></textarea>
+                </label>
+                <p class="u-tiny u-faint" style="text-align: right"><span id="contact-count">0</span>/2000</p>
+
+                <div class="hub-card" style="padding: 14px; background: hsl(var(--surface-2))">
+                  <p class="u-tiny u-dim" style="letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px">Συχνές ερωτήσεις</p>
+                  <div class="hub-chips" id="contact-faq">
+                    <button class="hub-chip" type="button">Εγγραφή στο Forum</button>
+                    <button class="hub-chip" type="button">Πρόβλημα σύνδεσης</button>
+                    <button class="hub-chip" type="button">Κανονισμοί αγώνων</button>
+                    <button class="hub-chip" type="button">Συνεργασία</button>
+                  </div>
+                </div>
+
+                <div class="u-row" style="justify-content: flex-end">
+                  <button class="hub-btn hub-btn--primary" type="submit">Αποστολή μηνύματος</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </section>
+
+      </main>
+      <div data-shell-footer></div>
+    </div>
+
+    <!-- Το UMD bundle του Supabase φορτώνεται πριν τα modules (χωρίς npm/build). -->
+    <script src="js/vendor/supabase.umd.js"></script>
+    <script type="module" src="js/pages/contact.js"></script>
+  </body>
+</html>

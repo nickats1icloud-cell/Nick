@@ -1,0 +1,1 @@
+ALTER TABLE public.lap_times ADD COLUMN IF NOT EXISTS video_url text;

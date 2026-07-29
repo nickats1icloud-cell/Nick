@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="el" class="theme-dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Greek SimRacers · Racing is our Passion</title>
+    <meta name="description" content="Η #1 Ελληνική πλατφόρμα SimRacing — αγώνες, forum, podcasts και κοινότητα." />
+    <meta name="theme-color" content="#0f1113" />
+    <meta property="og:title" content="Greek SimRacers · Racing is our Passion" />
+    <meta property="og:description" content="Η #1 Ελληνική πλατφόρμα SimRacing — αγώνες, forum, podcasts και κοινότητα." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="assets/logo.png" />
+    <link rel="icon" href="assets/logo.png" />
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/shell.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+    <script>
+      // Εφαρμογή θέματος πριν το πρώτο paint — αποφεύγει το «άσπρο φλας».
+      (function () {
+        var saved = localStorage.getItem("hub-theme");
+        var light = saved ? saved === "light" : matchMedia("(prefers-color-scheme: light)").matches;
+        document.documentElement.classList.add(light ? "theme-light" : "theme-dark");
+        document.documentElement.style.colorScheme = light ? "light" : "dark";
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="intro">
+      <canvas class="hub-canvas" id="intro-canvas" aria-hidden="true"></canvas>
+      <div class="intro__veil" aria-hidden="true"></div>
+
+      <span class="intro__bracket intro__bracket--tl" aria-hidden="true"></span>
+      <span class="intro__bracket intro__bracket--tr" aria-hidden="true"></span>
+      <span class="intro__bracket intro__bracket--bl" aria-hidden="true"></span>
+      <span class="intro__bracket intro__bracket--br" aria-hidden="true"></span>
+
+      <button type="button" class="intro__skip" id="intro-skip">Skip →</button>
+
+      <div class="intro__content">
+        <p class="intro__kicker" id="intro-kicker"></p>
+
+        <div style="position: relative">
+          <span class="intro__halo" aria-hidden="true"></span>
+          <img class="intro__logo" src="assets/logo.png" alt="Greek SimRacers" />
+        </div>
+
+        <h1 class="intro__title">Greek SimRacers</h1>
+
+        <div class="intro__rule" aria-hidden="true"></div>
+        <p class="intro__sub" id="intro-sub"></p>
+
+        <div class="intro__cta" id="intro-cta">
+          <a class="hub-btn hub-btn--primary intro__enter" href="home.html" id="intro-enter">Enter</a>
+          <p class="u-tiny u-faint" style="letter-spacing: 0.3em; text-transform: uppercase">
+            Η #1 πλατφόρμα για Έλληνες SimRacers
+          </p>
+        </div>
+      </div>
+
+      <div class="intro__progress">
+        <div class="intro__progress-meta">
+          <span id="intro-phase">Initializing</span>
+          <span id="intro-pct">0%</span>
+        </div>
+        <div class="intro__track"><div class="intro__fill" id="intro-fill"></div></div>
+      </div>
+    </div>
+
+    <!-- Το UMD bundle του Supabase φορτώνεται πριν τα modules (χωρίς npm/build). -->
+    <script src="js/vendor/supabase.umd.js"></script>
+    <script type="module" src="js/pages/intro.js"></script>
+  </body>
+</html>

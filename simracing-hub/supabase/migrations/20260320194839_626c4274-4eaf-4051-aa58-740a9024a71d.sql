@@ -1,0 +1,1 @@
+ALTER TABLE public.reaction_scores ADD CONSTRAINT reaction_time_range CHECK (reaction_time >= 50 AND reaction_time <= 5000);

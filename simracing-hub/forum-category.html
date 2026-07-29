@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="el" class="theme-dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Κατηγορία · Greek SimRacers</title>
+    <meta name="description" content="Συζητήσεις κατηγορίας στο forum του Greek SimRacers." />
+    <meta name="theme-color" content="#0f1113" />
+    <meta property="og:title" content="Κατηγορία · Greek SimRacers" />
+    <meta property="og:description" content="Συζητήσεις κατηγορίας στο forum του Greek SimRacers." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="assets/logo.png" />
+    <link rel="icon" href="assets/logo.png" />
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/shell.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+    <script>
+      // Εφαρμογή θέματος πριν το πρώτο paint — αποφεύγει το «άσπρο φλας».
+      (function () {
+        var saved = localStorage.getItem("hub-theme");
+        var light = saved ? saved === "light" : matchMedia("(prefers-color-scheme: light)").matches;
+        document.documentElement.classList.add(light ? "theme-light" : "theme-dark");
+        document.documentElement.style.colorScheme = light ? "light" : "dark";
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="hub-page">
+      <main class="hub-page__main">
+        <header class="hub-head">
+          <div class="u-shell hub-head__inner">
+            <a class="u-small u-dim" href="forum.html">← Πίσω στο forum</a>
+            <h1 id="cat-title">…</h1>
+            <p id="cat-desc"></p>
+            <div class="u-row u-row--wrap" style="margin-top: 18px">
+              <button class="hub-btn hub-btn--primary" id="cat-new" type="button">+ Νέα συζήτηση</button>
+            </div>
+          </div>
+        </header>
+
+        <section class="u-shell" style="padding-block: 26px 60px">
+          <div class="u-stack" style="--gap: 10px" id="cat-threads"></div>
+        </section>
+
+      </main>
+      <div data-shell-footer></div>
+    </div>
+
+    <!-- Το UMD bundle του Supabase φορτώνεται πριν τα modules (χωρίς npm/build). -->
+    <script src="js/vendor/supabase.umd.js"></script>
+    <script type="module" src="js/pages/forum-category.js"></script>
+  </body>
+</html>

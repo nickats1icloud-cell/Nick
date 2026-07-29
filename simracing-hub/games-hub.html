@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="el" class="theme-dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Games Hub · Greek SimRacers</title>
+    <meta name="description" content="Reaction Time challenge, leaderboard και mini-games." />
+    <meta name="theme-color" content="#0f1113" />
+    <meta property="og:title" content="Games Hub · Greek SimRacers" />
+    <meta property="og:description" content="Reaction Time challenge, leaderboard και mini-games." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="assets/logo.png" />
+    <link rel="icon" href="assets/logo.png" />
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/shell.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+    <script>
+      // Εφαρμογή θέματος πριν το πρώτο paint — αποφεύγει το «άσπρο φλας».
+      (function () {
+        var saved = localStorage.getItem("hub-theme");
+        var light = saved ? saved === "light" : matchMedia("(prefers-color-scheme: light)").matches;
+        document.documentElement.classList.add(light ? "theme-light" : "theme-dark");
+        document.documentElement.style.colorScheme = light ? "light" : "dark";
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="hub-page">
+      <main class="hub-page__main">
+        <header class="hub-head">
+          <div class="u-shell hub-head__inner">
+            <span class="hub-eyebrow">Παιχνίδια</span>
+            <h1>Games <span class="u-heat-text">Hub</span></h1>
+            <p>Δοκίμασε τα αντανακλαστικά σου στα φώτα εκκίνησης της F1.</p>
+
+          </div>
+        </header>
+
+        <section class="u-shell" style="padding-block: 30px 60px">
+          <div class="hub-tabs" style="max-width: 440px; margin-bottom: 24px">
+            <button class="hub-tabs__btn is-active" data-tab="reaction" type="button">⚡ Reaction Time</button>
+            <button class="hub-tabs__btn" data-tab="fantasy" type="button">🏆 Fantasy League</button>
+          </div>
+
+          <div id="tab-reaction" class="u-grid" style="grid-template-columns: minmax(0, 1.6fr) minmax(260px, 1fr)">
+            <div>
+              <div class="u-between" style="margin-bottom: 14px">
+                <h2 style="font-size: 1.1rem">F1 Reaction Time Challenge</h2>
+                <button class="hub-btn hub-btn--sm hub-btn--ghost" id="game-sound" type="button" aria-pressed="false">🔇 Ήχος</button>
+              </div>
+              <p class="u-small u-dim" style="margin-bottom: 16px">
+                Πάτησε «Έναρξη», περίμενε να ανάψουν και τα 5 φώτα και μόλις σβήσουν κάνε κλικ. Πρόωρο κλικ = false start.
+              </p>
+
+              <div class="lights" id="game-board" role="button" tabindex="0" aria-label="Πίστα αντίδρασης">
+                <div class="lights__rig" id="game-lights">
+                  <div class="lights__pod"><span class="lights__bulb"></span><span class="lights__bulb"></span></div>
+                  <div class="lights__pod"><span class="lights__bulb"></span><span class="lights__bulb"></span></div>
+                  <div class="lights__pod"><span class="lights__bulb"></span><span class="lights__bulb"></span></div>
+                  <div class="lights__pod"><span class="lights__bulb"></span><span class="lights__bulb"></span></div>
+                  <div class="lights__pod"><span class="lights__bulb"></span><span class="lights__bulb"></span></div>
+                </div>
+                <p class="lights__msg" id="game-msg">Έτοιμος;</p>
+                <p class="lights__result" id="game-result"></p>
+              </div>
+
+              <div class="u-row" style="justify-content: center; margin-top: 18px">
+                <button class="hub-btn hub-btn--primary hub-btn--lg" id="game-start" type="button">Έναρξη</button>
+              </div>
+            </div>
+
+            <aside>
+              <div class="hub-card">
+                <h3 style="font-size: 0.95rem; margin-bottom: 12px">🏆 Leaderboard</h3>
+                <div id="game-best" class="hub-card" style="padding: 10px 12px; margin-bottom: 12px; display: none"></div>
+                <div id="game-board-list"></div>
+              </div>
+            </aside>
+          </div>
+
+          <div id="tab-fantasy" hidden>
+            <div class="hub-empty">
+              <div class="hub-empty__icon">🏆</div>
+              <h2 style="font-size: 1.3rem">Fantasy League</h2>
+              <p style="max-width: 42ch; margin: 10px auto 16px">
+                Φτιάξε την ομάδα σου, διάλεξε οδηγούς μέσα στο budget και μάζεψε πόντους.
+              </p>
+              <span class="hub-badge hub-badge--ember">Έρχεται σύντομα</span>
+            </div>
+          </div>
+        </section>
+
+      </main>
+      <div data-shell-footer></div>
+    </div>
+
+    <!-- Το UMD bundle του Supabase φορτώνεται πριν τα modules (χωρίς npm/build). -->
+    <script src="js/vendor/supabase.umd.js"></script>
+    <script type="module" src="js/pages/games-hub.js"></script>
+  </body>
+</html>

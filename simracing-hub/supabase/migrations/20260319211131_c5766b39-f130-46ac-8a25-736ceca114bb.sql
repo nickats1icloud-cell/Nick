@@ -1,0 +1,1 @@
+REVOKE UPDATE (is_approved) ON public.profiles FROM authenticated, anon;

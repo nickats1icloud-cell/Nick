@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="el" class="theme-dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin · Greek SimRacers</title>
+    <meta name="description" content="Πίνακας διαχείρισης της πλατφόρμας." />
+    <meta name="theme-color" content="#0f1113" />
+    <meta property="og:title" content="Admin · Greek SimRacers" />
+    <meta property="og:description" content="Πίνακας διαχείρισης της πλατφόρμας." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="assets/logo.png" />
+    <link rel="icon" href="assets/logo.png" />
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/shell.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+    <script>
+      // Εφαρμογή θέματος πριν το πρώτο paint — αποφεύγει το «άσπρο φλας».
+      (function () {
+        var saved = localStorage.getItem("hub-theme");
+        var light = saved ? saved === "light" : matchMedia("(prefers-color-scheme: light)").matches;
+        document.documentElement.classList.add(light ? "theme-light" : "theme-dark");
+        document.documentElement.style.colorScheme = light ? "light" : "dark";
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="hub-page">
+      <main class="hub-page__main">
+        <header class="hub-head">
+          <div class="u-shell hub-head__inner">
+            <span class="hub-eyebrow">Διαχείριση</span>
+            <h1>Admin <span class="u-heat-text">Panel</span></h1>
+            <p>Χρήστες, περιεχόμενο, αγώνες, κατάστημα και ρυθμίσεις.</p>
+
+          </div>
+        </header>
+
+        <section class="u-shell" style="padding-block: 26px 60px">
+          <div class="admin">
+            <nav class="admin__side" id="admin-nav" aria-label="Ενότητες διαχείρισης"></nav>
+            <div class="admin__panel" id="admin-panel"></div>
+          </div>
+        </section>
+
+      </main>
+      <div data-shell-footer></div>
+    </div>
+
+    <!-- Το UMD bundle του Supabase φορτώνεται πριν τα modules (χωρίς npm/build). -->
+    <script src="js/vendor/supabase.umd.js"></script>
+    <script type="module" src="js/pages/admin.js"></script>
+  </body>
+</html>

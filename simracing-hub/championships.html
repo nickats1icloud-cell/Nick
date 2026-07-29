@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="el" class="theme-dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Πρωταθλήματα · Greek SimRacers</title>
+    <meta name="description" content="Ενεργά, ερχόμενα και ολοκληρωμένα πρωταθλήματα sim racing." />
+    <meta name="theme-color" content="#0f1113" />
+    <meta property="og:title" content="Πρωταθλήματα · Greek SimRacers" />
+    <meta property="og:description" content="Ενεργά, ερχόμενα και ολοκληρωμένα πρωταθλήματα sim racing." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="assets/logo.png" />
+    <link rel="icon" href="assets/logo.png" />
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/shell.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+    <script>
+      // Εφαρμογή θέματος πριν το πρώτο paint — αποφεύγει το «άσπρο φλας».
+      (function () {
+        var saved = localStorage.getItem("hub-theme");
+        var light = saved ? saved === "light" : matchMedia("(prefers-color-scheme: light)").matches;
+        document.documentElement.classList.add(light ? "theme-light" : "theme-dark");
+        document.documentElement.style.colorScheme = light ? "light" : "dark";
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="hub-page">
+      <main class="hub-page__main">
+        <header class="hub-head">
+          <div class="u-shell hub-head__inner">
+            <span class="hub-eyebrow">Racing</span>
+            <h1><span class="u-heat-text">Πρωταθλήματα</span></h1>
+            <p>Όλα τα πρωταθλήματα της κοινότητας, με πρόοδο αγώνων και συμμετοχές.</p>
+            <div class="hub-chips" id="champ-filters" style="margin-top: 20px">
+              <button class="hub-chip is-active" data-filter="all" type="button">Όλα</button>
+              <button class="hub-chip" data-filter="active" type="button">Ενεργά</button>
+              <button class="hub-chip" data-filter="upcoming" type="button">Ερχόμενα</button>
+              <button class="hub-chip" data-filter="completed" type="button">Ολοκληρωμένα</button>
+            </div>
+          </div>
+        </header>
+
+        <section class="u-shell" style="padding-block: 30px 60px">
+          <div class="u-stack" style="--gap: 14px" id="champ-list"></div>
+        </section>
+
+      </main>
+      <div data-shell-footer></div>
+    </div>
+
+    <!-- Το UMD bundle του Supabase φορτώνεται πριν τα modules (χωρίς npm/build). -->
+    <script src="js/vendor/supabase.umd.js"></script>
+    <script type="module" src="js/pages/championships.js"></script>
+  </body>
+</html>
