@@ -11,23 +11,29 @@ after the Honda Civic EK's LCD cluster. The README, in-code comments, and UI
 copy are in Greek — match that language when writing user-facing strings or
 comments in this codebase.
 
-## Sub-projects
+The repository holds **two independent sites** that share nothing but the
+deploy workflow: the React app at the root, and the static
+`greek-simracers/` site (see below). Keep them separate — no shared
+components, styles, or dependencies.
 
-- **`greek-simracers/`** — a second, fully independent site (greeksimracers.gr
-  rebuild): plain static HTML/CSS/JS with **no build step and no npm** — do
-  not add bundlers or frameworks there. Dynamic features (auth, forum,
-  articles, championships, contact form) use Supabase via the vendored
-  `js/vendor/supabase.umd.js` bundle; config lives in `js/config.js`; the DB
-  schema is `supabase/migrations/001_wave1_schema.sql`. See its own README.md
-  for conventions. It deploys as-is to `/Nick/greek-simracers/` via a copy
-  step in `.github/workflows/deploy.yml`. Preview locally with
-  `python3 -m http.server` (ES modules don't run from `file://`).
+## Repo layout
+
+```
+.
+├── index.html, vite.config.js, eslint.config.js, package.json
+├── src/                   # the React app (see Architecture)
+├── public/
+├── greek-simracers/       # independent static site (no npm, no build)
+├── .github/workflows/deploy.yml
+├── .claude/skills/ui-ux-pro-max/   # vendored UI/UX design-reference skill
+└── .mcp.json              # project MCP servers
+```
 
 ## Commands
 
 ```bash
-npm install        # install dependencies
-npm run dev        # dev server with hot reload, http://localhost:5173
+npm install         # install dependencies
+npm run dev         # dev server with hot reload, http://localhost:5173
 npm run build       # production build to dist/
 npm run preview     # preview the production build
 npm run lint        # ESLint over the whole project
@@ -35,17 +41,36 @@ npm run lint        # ESLint over the whole project
 
 There is no test suite configured (no test runner/script in `package.json`).
 There is no `typecheck` script either — this is a plain JS/JSX project, not
-TypeScript.
+TypeScript. `npm run lint` is the only automated check available; run it
+after editing anything under `src/`.
+
+**Known lint state:** `npm run lint` exits non-zero on a clean checkout with
+36 errors, *all* of them inside the vendored, minified
+`greek-simracers/js/vendor/supabase.umd.js` (`no-unused-vars`, `no-undef`
+for `Deno`/`Buffer`, `no-empty`, …). `eslint.config.js` only ignores `dist`,
+so the bundle gets linted. Judge your own changes by whether the reported
+files are yours — nothing outside that vendor file should appear. Adding
+`greek-simracers/js/vendor` to the config's `ignores` would make the run
+green.
 
 ## Deployment
 
 `.github/workflows/deploy.yml` builds and deploys to GitHub Pages on push to
-`claude/website-setup-0k2c7k` or `claude/custom-car-dashboard-5v69i8` (or via
-manual `workflow_dispatch`). The app is served from `/Nick/` (see `base` in
-`vite.config.js`), and `router basename` in `src/main.jsx` is set from
-`import.meta.env.BASE_URL` to match. The build step copies `dist/index.html`
-to `dist/404.html` so client-side routes (e.g. `/Nick/about` on a hard
-reload) resolve correctly on Pages, which has no server-side rewrite support.
+`claude/website-setup-0k2c7k`, `claude/custom-car-dashboard-5v69i8`, or
+`claude/greek-sim-racers-rebuild-fjomf8` (or via manual `workflow_dispatch`).
+If work lands on a different branch and should go live, add that branch to
+the workflow's `on.push.branches` list.
+
+The workflow does three things beyond a plain build:
+
+- The app is served from `/Nick/` (see `base` in `vite.config.js`), and
+  `router basename` in `src/main.jsx` is set from `import.meta.env.BASE_URL`
+  to match.
+- It copies `dist/index.html` to `dist/404.html` so client-side routes (e.g.
+  `/Nick/about` on a hard reload) resolve on Pages, which has no server-side
+  rewrite support.
+- It copies `greek-simracers/` verbatim into `dist/greek-simracers`, served
+  at `/Nick/greek-simracers/`.
 
 ## Architecture
 
@@ -69,9 +94,11 @@ reload) resolve correctly on Pages, which has no server-side rewrite support.
   exposes imperative setters (`setThrottle`, `setBrake`, `toggleLeft`,
   `toggleIgnition`, `resetTrip`, `refuel`, etc.) consumed by
   `src/pages/Dashboard.jsx`. It is not a real physics model — tuning
-  constants (gear ratios, redline, drag coefficients) live as named
-  constants at the top of the file and are deliberately approximate, tuned
-  for a convincing feel rather than accuracy.
+  constants (`REDLINE_RPM`, `MAX_RPM`, `MAX_SPEED`, `MAX_BOOST`,
+  `GEAR_RATIOS`, shift points, `IDLE_RPM`) live at the top of the file and
+  are deliberately approximate, tuned for a convincing feel rather than
+  accuracy. The exported constants are also imported by the gauge markup, so
+  changing a limit updates both the physics and the dials.
 - **Dashboard UI (`src/pages/Dashboard.jsx`)**: consumes `useVehicleSim`,
   wires up keyboard controls (arrow keys/WASD for throttle/brake, A/D for
   turn signals, H for high beam, P for handbrake) via `window` key
@@ -92,13 +119,77 @@ reload) resolve correctly on Pages, which has no server-side rewrite support.
   `:root`. Dashboard-specific styles use a `dash__*` BEM-like naming
   convention (e.g. `dash__cluster`, `dash__pod`, `dash__gear`).
 
+## Sub-project: `greek-simracers/`
+
+A second, fully independent site (greeksimracers.gr rebuild): plain static
+HTML/CSS/JS with **no build step and no npm** — do not add bundlers,
+frameworks, or npm dependencies there. It has its own `README.md` with the
+full page inventory and Supabase setup steps; read it before making changes.
+
+Conventions that matter when editing it:
+
+- **One HTML file per page** (`home.html`, `forum-thread.html`,
+  `championships.html`, …), each loading its own ES module. Detail pages
+  read their record id from the query string (`?id=…`). `index.html` is an
+  intro/splash that redirects to `home.html` after the first visit.
+- **Shared chrome via `js/partials.js`** — navbar and footer are injected as
+  template strings (plus theme toggle and mobile menu), not duplicated in
+  each HTML file. Add nav links to its `NAV_LINKS` array.
+- **`js/auth.js` is a singleton module**, standing in for a React
+  context/provider: ES module caching means every page importing it shares
+  one session, with `onAuthChange` subscribers and a "last seen" heartbeat.
+  It also enforces the **approval gate** — new signups have
+  `is_approved = false` and are signed straight back out, which is the usual
+  answer to "login doesn't work for a new account".
+- **Supabase from the browser** via the vendored `js/vendor/supabase.umd.js`
+  bundle (loaded with `<script defer>` in each page's `<head>`, sets
+  `window.supabase`) — no CDN dependency. `js/supabase-client.js` wraps it
+  and deliberately falls back to placeholder URL/key when `js/config.js` is
+  unfilled, so an unconfigured checkout still renders every page with
+  queries failing quietly instead of taking down the module graph.
+- **Config, not secrets**: `js/config.js` holds `SUPABASE_URL`,
+  `SUPABASE_ANON_KEY`, and `SOCIAL_LINKS`. The anon key is meant to be
+  public; access control lives in the RLS policies, so never rely on
+  client-side checks for authorization.
+- **Database schema** is a single annotated file,
+  `supabase/migrations/001_wave1_schema.sql` — tables for roles, profiles,
+  articles (+ comments/likes/categories), forum categories/threads/posts,
+  championships, site settings, and contact submissions, each with RLS
+  policies, plus triggers (`handle_new_user`, `touch_thread_on_post`) and
+  RPCs (`has_role`, `increment_article_views`, `increment_thread_views`).
+  Extend the schema by appending a new numbered migration rather than
+  editing this one in place once it has been applied.
+- **CSS** is split into `css/tokens.css` (dark + light design tokens),
+  `css/base.css` (reset, typography, buttons, cards, forms, toasts), and
+  `css/components.css` (navbar, footer, hero, grids). All classes are
+  namespaced `gsr__*` / `gsr-<block>__*`.
+- **Rendering user content** goes through `js/markdown.js`, which escapes
+  HTML before rendering; keep using it rather than assigning raw
+  `innerHTML` from database values.
+- **Preview locally** with a static server (ES modules don't run from
+  `file://`): `cd greek-simracers && python3 -m http.server 8000`.
+
+## Tooling in this repo
+
+- `.mcp.json` declares the **21st** MCP server (`https://21st.dev/api/mcp`),
+  which reads its key from the `MCP_21ST_API_KEY` environment variable — the
+  key is never committed.
+- `.claude/skills/ui-ux-pro-max/` is a vendored design-reference skill (CSV
+  datasets + Python search scripts). It is reference data for design work,
+  not application code — don't import from it or bundle it into either site.
+
 ## Conventions
 
 - Functional components with hooks only; no class components.
 - Components are plain `.jsx` files exporting a single default function
   matching the filename.
+- No semicolons and single quotes in `src/` (the React app); the
+  `greek-simracers/` JS uses semicolons and double quotes. Match whichever
+  file you're in.
 - ESLint config (`eslint.config.js`) disables `react/prop-types` (no
   PropTypes or TS types are used for props) and turns off
   `jsx-no-target-blank`. `react-hooks` recommended rules are enabled, so obey
   the exhaustive-deps rule for `useEffect`/hooks unless there's a documented
-  reason not to.
+  reason not to. `dist` is ignored; the lint run covers `greek-simracers/`
+  too, so its hand-written browser JS must stay lint-clean as well (see
+  "Known lint state" above for the vendored-bundle errors).
