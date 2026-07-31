@@ -23,6 +23,17 @@ comments in this codebase.
   step in `.github/workflows/deploy.yml`. Preview locally with
   `python3 -m http.server` (ES modules don't run from `file://`).
 
+- **`simracers-ai/`** — a third independent site: an AI assistant that answers
+  questions about the Greek SimRacers podcast episodes, the championship
+  rules, the community site, and sim racing in general. Same conventions as
+  `greek-simracers/` (plain static HTML/CSS/JS, **no build step, no npm**).
+  The Claude API key must never reach the browser — a Supabase Edge Function
+  (`supabase/functions/ask/`) holds it and proxies to the Claude API with
+  streaming. Source material lives as markdown in `knowledge/` and is loaded
+  into Postgres by `scripts/ingest.mjs` (Node, zero dependencies); each
+  question retrieves only the relevant chunks via the `search_kb` SQL
+  function rather than sending whole transcripts. See its own README.md.
+
 ## Commands
 
 ```bash

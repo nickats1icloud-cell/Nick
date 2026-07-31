@@ -1,0 +1,439 @@
+/*
+ * Greek SimRacers AI — στυλ.
+ * Ίδια design tokens με το greeksimracers.gr (μπλε/λευκό της ελληνικής
+ * σημαίας, Orbitron για τίτλους) ώστε τα δύο sites να μοιάζουν αδέρφια.
+ * Σκούρο θέμα μόνο — ταιριάζει στην αισθητική του night racing.
+ */
+
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Inter:wght@400;500;600&display=swap");
+
+:root {
+  --background: 210 40% 6%;
+  --foreground: 210 20% 95%;
+  --card: 210 35% 9%;
+  --muted: 210 25% 14%;
+  --muted-foreground: 210 15% 65%;
+  --border: 210 25% 16%;
+  --accent: 214 89% 52%;
+  --accent-foreground: 210 20% 98%;
+
+  --radius: 0.75rem;
+  --font-display: "Orbitron", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --container-max: 820px;
+
+  --gradient-greek: linear-gradient(135deg, hsl(214 89% 38%), hsl(214 89% 62%));
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Header ---------- */
+
+.hdr {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: hsl(var(--background) / 0.85);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.hdr__inner {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.hdr__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.hdr__mark {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  background: var(--gradient-greek);
+  box-shadow: 0 0 20px hsl(var(--accent) / 0.4);
+  flex-shrink: 0;
+}
+
+.hdr__brand strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+}
+
+.hdr__brand em {
+  display: block;
+  font-style: normal;
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.hdr__reset {
+  font: inherit;
+  font-size: 0.85rem;
+  color: hsl(var(--muted-foreground));
+  background: transparent;
+  border: 1px solid hsl(var(--border));
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.hdr__reset:hover {
+  color: hsl(var(--foreground));
+  border-color: hsl(var(--accent));
+}
+
+/* ---------- Περιοχή συζήτησης ---------- */
+
+.chat {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem 1.25rem 0;
+}
+
+.welcome {
+  max-width: var(--container-max);
+  margin: 2.5rem auto 0;
+  text-align: center;
+}
+
+.welcome h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 5vw, 2.3rem);
+  margin: 0 0 0.75rem;
+  background: var(--gradient-greek);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.welcome p {
+  color: hsl(var(--muted-foreground));
+  max-width: 46ch;
+  margin: 0 auto 2rem;
+}
+
+.suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: center;
+}
+
+.chip {
+  font: inherit;
+  font-size: 0.875rem;
+  color: hsl(var(--foreground));
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 999px;
+  padding: 0.55rem 1rem;
+  cursor: pointer;
+  transition: border-color 0.15s, transform 0.15s;
+}
+
+.chip:hover {
+  border-color: hsl(var(--accent));
+  transform: translateY(-1px);
+}
+
+.messages {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.msg {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.msg__who {
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+}
+
+.msg__body {
+  border-radius: var(--radius);
+  padding: 0.9rem 1.1rem;
+  overflow-wrap: anywhere;
+}
+
+.msg--user {
+  align-items: flex-end;
+}
+
+.msg--user .msg__body {
+  background: hsl(var(--accent) / 0.16);
+  border: 1px solid hsl(var(--accent) / 0.35);
+  max-width: 85%;
+}
+
+.msg--bot .msg__body {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+}
+
+/* Markdown μέσα στις απαντήσεις */
+.msg__body > :first-child {
+  margin-top: 0;
+}
+.msg__body > :last-child {
+  margin-bottom: 0;
+}
+.msg__body h2,
+.msg__body h3 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  margin: 1.2em 0 0.4em;
+}
+.msg__body ul,
+.msg__body ol {
+  padding-left: 1.3rem;
+  margin: 0.5em 0;
+}
+.msg__body li {
+  margin-bottom: 0.3em;
+}
+.msg__body code {
+  background: hsl(var(--muted));
+  padding: 0.1em 0.4em;
+  border-radius: 0.25rem;
+  font-size: 0.9em;
+}
+.msg__body pre {
+  background: hsl(var(--muted));
+  padding: 0.9rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+}
+.msg__body pre code {
+  background: none;
+  padding: 0;
+}
+.msg__body blockquote {
+  border-left: 3px solid hsl(var(--accent));
+  margin: 0.6em 0;
+  padding-left: 0.9rem;
+  color: hsl(var(--muted-foreground));
+}
+.msg__body a {
+  color: hsl(214 89% 68%);
+}
+
+/* Δείκτης "γράφει…" */
+.typing {
+  display: inline-flex;
+  gap: 0.25rem;
+  align-items: center;
+  height: 1.2em;
+}
+
+.typing span {
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 50%;
+  background: hsl(var(--muted-foreground));
+  animation: blink 1.3s infinite ease-in-out;
+}
+
+.typing span:nth-child(2) {
+  animation-delay: 0.18s;
+}
+.typing span:nth-child(3) {
+  animation-delay: 0.36s;
+}
+
+@keyframes blink {
+  0%,
+  70%,
+  100% {
+    opacity: 0.25;
+  }
+  35% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .typing span {
+    animation: none;
+    opacity: 0.6;
+  }
+  .chip:hover {
+    transform: none;
+  }
+}
+
+/* Πηγές κάτω από την απάντηση */
+.sources {
+  margin-top: 0.6rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.sources__label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: hsl(var(--muted-foreground));
+}
+
+.source {
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+  background: hsl(var(--muted));
+  border: 1px solid hsl(var(--border));
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+  text-decoration: none;
+}
+
+a.source:hover {
+  color: hsl(var(--foreground));
+  border-color: hsl(var(--accent));
+}
+
+.msg--error .msg__body {
+  border-color: hsl(0 72% 51% / 0.5);
+  background: hsl(0 72% 51% / 0.1);
+}
+
+/* ---------- Πεδίο εισαγωγής ---------- */
+
+.composer {
+  position: sticky;
+  bottom: 0;
+  background: linear-gradient(
+    180deg,
+    hsl(var(--background) / 0),
+    hsl(var(--background)) 25%
+  );
+  padding: 1rem 1.25rem 0.75rem;
+}
+
+.composer__inner {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-end;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  padding: 0.5rem 0.5rem 0.5rem 0.9rem;
+  transition: border-color 0.15s;
+}
+
+.composer__inner:focus-within {
+  border-color: hsl(var(--accent));
+}
+
+.composer__input {
+  flex: 1;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  resize: none;
+  max-height: 9rem;
+  padding: 0.45rem 0;
+  outline: none;
+}
+
+.composer__input::placeholder {
+  color: hsl(var(--muted-foreground));
+}
+
+.composer__send {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 0;
+  border-radius: 0.6rem;
+  background: var(--gradient-greek);
+  color: hsl(var(--accent-foreground));
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.composer__send:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.composer__note {
+  max-width: var(--container-max);
+  margin: 0.5rem auto 0;
+  font-size: 0.72rem;
+  text-align: center;
+  color: hsl(var(--muted-foreground));
+}
+
+@media (max-width: 640px) {
+  .chat {
+    padding-inline: 1rem;
+  }
+  .composer {
+    padding-inline: 1rem;
+  }
+  .msg--user .msg__body {
+    max-width: 100%;
+  }
+}

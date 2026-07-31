@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="el">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Greek SimRacers AI — Ρώτα ό,τι θες</title>
+    <meta
+      name="description"
+      content="Ο AI βοηθός των Greek SimRacers. Ρώτα για τα επεισόδια του podcast, τους κανονισμούς των πρωταθλημάτων ή για setup και τεχνική οδήγησης."
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header class="hdr">
+      <div class="hdr__inner">
+        <a class="hdr__brand" href="./">
+          <span class="hdr__mark" aria-hidden="true"></span>
+          <span>
+            <strong>Greek SimRacers</strong>
+            <em>AI βοηθός</em>
+          </span>
+        </a>
+        <button
+          type="button"
+          class="hdr__reset"
+          id="reset-btn"
+          title="Ξεκίνα νέα συζήτηση"
+        >
+          Νέα συζήτηση
+        </button>
+      </div>
+    </header>
+
+    <main class="chat" id="chat">
+      <!-- Οθόνη υποδοχής. Κρύβεται μόλις σταλεί το πρώτο μήνυμα. -->
+      <section class="welcome" id="welcome">
+        <h1>Τι θέλεις να μάθεις;</h1>
+        <p>
+          Ξέρω τι ειπώθηκε στα επεισόδια του <strong>Greek SimRacers Podcast</strong>,
+          τους κανονισμούς των πρωταθλημάτων, και αρκετά από sim racing γενικά.
+        </p>
+
+        <div class="suggestions" id="suggestions">
+          <button type="button" class="chip" data-prompt="Σε ποιο επεισόδιο του podcast μιλήσατε για setup και τι είπατε;">
+            Σε ποιο επεισόδιο μιλήσατε για setup;
+          </button>
+          <button type="button" class="chip" data-prompt="Ποιες είναι οι ποινές στους κανονισμούς του πρωταθλήματος LMU;">
+            Ποινές στο πρωτάθλημα LMU
+          </button>
+          <button type="button" class="chip" data-prompt="Το αυτοκίνητο έχει understeer στις αργές στροφές. Τι να αλλάξω στο setup;">
+            Έχω understeer — τι αλλάζω;
+          </button>
+          <button type="button" class="chip" data-prompt="Πώς ρυθμίζω σωστά το force feedback στο τιμόνι μου για να νιώθω το grip;">
+            Ρύθμιση force feedback
+          </button>
+        </div>
+      </section>
+
+      <div class="messages" id="messages" role="log" aria-live="polite"></div>
+    </main>
+
+    <form class="composer" id="composer" autocomplete="off">
+      <div class="composer__inner">
+        <label class="sr-only" for="input">Η ερώτησή σου</label>
+        <textarea
+          id="input"
+          class="composer__input"
+          rows="1"
+          maxlength="2000"
+          placeholder="Ρώτα κάτι… (Enter για αποστολή, Shift+Enter για νέα γραμμή)"
+        ></textarea>
+        <button type="submit" class="composer__send" id="send-btn" title="Στείλε">
+          <svg viewBox="0 0 24 24" aria-hidden="true" width="20" height="20">
+            <path
+              fill="currentColor"
+              d="M3.4 20.4 21 12 3.4 3.6 3.4 10.2 15.6 12 3.4 13.8z"
+            />
+          </svg>
+          <span class="sr-only">Στείλε</span>
+        </button>
+      </div>
+      <p class="composer__note">
+        Ο βοηθός μπορεί να κάνει λάθη. Για επίσημα θέματα κανονισμών, έλεγξε το
+        κείμενο των κανονισμών.
+      </p>
+    </form>
+
+    <script type="module" src="js/chat.js"></script>
+  </body>
+</html>
