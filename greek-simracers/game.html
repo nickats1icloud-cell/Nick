@@ -1,0 +1,1136 @@
+<!doctype html>
+<html lang="el">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="assets/logo.png" />
+    <title>GSR Time Attack - Greek Simracers</title>
+    <meta
+      name="description"
+      content="Το παιχνίδι της κοινότητας Greek Simracers: time attack και αγώνες σε ελληνικές πίστες, με ghost του καλύτερου γύρου και πίνακα χρόνων."
+    />
+
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+
+    <!-- Supabase JS (vendored, χωρίς CDN) — ορίζει το window.supabase -->
+    <script src="js/vendor/supabase.umd.js" defer></script>
+
+    <!-- Τα tokens.css/base.css δεν κάνουν @import τις γραμματοσειρές, οπότε φορτώνονται εδώ. -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Page-specific styles: όλο το παιχνίδι ζει μέσα στο .game__stage. -->
+    <style>
+      /* Τα overlays/HUD κρύβονται με το `hidden` attribute· χωρίς αυτόν τον
+         κανόνα το `display: flex` των κλάσεων παρακάτω το ακυρώνει και τα
+         κρυμμένα panels συνεχίζουν να δέχονται κλικ. */
+      .game__stage [hidden] {
+        display: none !important;
+      }
+
+      /* ===== Σκηνή & καμβάς ===== */
+      .game__stage {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        max-height: 78vh;
+        border: 1px solid hsl(var(--border));
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        background: #0d1a12;
+        touch-action: none;
+        user-select: none;
+      }
+
+      @media (max-width: 720px) {
+        .game__stage {
+          aspect-ratio: 4 / 5;
+        }
+      }
+
+      .game__canvas {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      /* ===== HUD ===== */
+      .game__hud {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        font-family: var(--font-display);
+        color: #f2f5f9;
+        text-shadow: 0 2px 6px rgb(0 0 0 / 0.7);
+      }
+
+      .game__hud-panel {
+        position: absolute;
+        background: rgb(8 12 18 / 0.62);
+        border: 1px solid rgb(255 255 255 / 0.1);
+        border-radius: var(--radius);
+        padding: 0.6rem 0.85rem;
+        backdrop-filter: blur(4px);
+      }
+
+      .game__hud-times {
+        top: 0.75rem;
+        left: 0.75rem;
+        min-width: 11rem;
+      }
+
+      .game__hud-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 1.25rem;
+        font-size: 0.78rem;
+        line-height: 1.7;
+      }
+
+      .game__hud-row span:first-child {
+        color: hsl(210 15% 72%);
+        font-family: var(--font-body);
+        letter-spacing: 0.02em;
+      }
+
+      .game__hud-row strong {
+        font-variant-numeric: tabular-nums;
+        letter-spacing: 0.01em;
+      }
+
+      .game__hud-current {
+        font-size: 1.35rem;
+        font-weight: 900;
+        letter-spacing: 0.02em;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .game__delta--up {
+        color: #4ade80;
+      }
+
+      .game__delta--down {
+        color: #f87171;
+      }
+
+      .game__hud-speed {
+        right: 0.75rem;
+        bottom: 0.75rem;
+        text-align: right;
+        min-width: 8.5rem;
+      }
+
+      .game__speed-value {
+        font-size: 2.6rem;
+        font-weight: 900;
+        line-height: 1;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .game__speed-unit {
+        font-size: 0.75rem;
+        color: hsl(210 15% 72%);
+        font-family: var(--font-body);
+      }
+
+      .game__gear {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: hsl(var(--greek-blue-light));
+      }
+
+      .game__rpm {
+        height: 6px;
+        border-radius: 999px;
+        background: rgb(255 255 255 / 0.14);
+        overflow: hidden;
+        margin-top: 0.4rem;
+      }
+
+      .game__rpm-fill {
+        height: 100%;
+        width: 0%;
+        background: linear-gradient(90deg, hsl(var(--greek-blue-light)), #f2c14e 78%, #e04141 92%);
+        transition: width 0.05s linear;
+      }
+
+      .game__hud-lap {
+        top: 0.75rem;
+        right: 0.75rem;
+        text-align: right;
+      }
+
+      .game__lap-count {
+        font-size: 1.2rem;
+        font-weight: 700;
+      }
+
+      .game__position {
+        font-size: 1.6rem;
+        font-weight: 900;
+      }
+
+      .game__minimap {
+        position: absolute;
+        right: 0.75rem;
+        top: 6.5rem;
+        width: 132px;
+        height: 96px;
+        background: rgb(8 12 18 / 0.55);
+        border: 1px solid rgb(255 255 255 / 0.1);
+        border-radius: var(--radius);
+      }
+
+      /* Κεντρικά μηνύματα: φώτα εκκίνησης, GO!, άκυρος γύρος. */
+      .game__center {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        text-align: center;
+      }
+
+      .game__lights {
+        display: flex;
+        gap: 0.6rem;
+      }
+
+      .game__light {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: rgb(255 255 255 / 0.08);
+        border: 2px solid rgb(0 0 0 / 0.5);
+      }
+
+      .game__light--on {
+        background: #e11d1d;
+        box-shadow: 0 0 18px #e11d1dcc;
+      }
+
+      .game__flash {
+        font-size: clamp(2rem, 7vw, 4rem);
+        font-weight: 900;
+        letter-spacing: 0.08em;
+      }
+
+      .game__toastline {
+        position: absolute;
+        left: 50%;
+        top: 1rem;
+        transform: translateX(-50%);
+        font-size: 0.95rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        padding: 0.35rem 0.9rem;
+        border-radius: 999px;
+        background: rgb(8 12 18 / 0.72);
+        border: 1px solid rgb(255 255 255 / 0.12);
+      }
+
+      .game__toastline--warn {
+        color: #fbbf24;
+        border-color: #fbbf2455;
+      }
+
+      .game__toastline--good {
+        color: #4ade80;
+        border-color: #4ade8055;
+      }
+
+      /* ===== Overlays (μενού, pause, αποτελέσματα) ===== */
+      .game__overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 1rem;
+        background: rgb(6 10 16 / 0.86);
+        backdrop-filter: blur(6px);
+        overflow-y: auto;
+      }
+
+      .game__overlay-card {
+        width: min(760px, 100%);
+        background: var(--gradient-card);
+        border: 1px solid hsl(var(--border));
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+      }
+
+      .game__overlay-card h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.35rem;
+      }
+
+      .game__overlay-lead {
+        color: hsl(var(--muted-foreground));
+        font-size: 0.9rem;
+        margin-bottom: 1.25rem;
+      }
+
+      .game__options {
+        display: grid;
+        gap: 1rem;
+        margin-bottom: 1.25rem;
+      }
+
+      .game__option-label {
+        font-family: var(--font-body);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: hsl(var(--muted-foreground));
+        margin-bottom: 0.5rem;
+        display: block;
+      }
+
+      .game__choices {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .game__choice {
+        flex: 1 1 12rem;
+        text-align: left;
+        padding: 0.7rem 0.9rem;
+        border-radius: var(--radius);
+        border: 1px solid hsl(var(--border));
+        background: hsl(var(--secondary));
+        color: hsl(var(--foreground));
+        cursor: pointer;
+        transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.15s ease;
+      }
+
+      .game__choice:hover {
+        border-color: hsl(var(--accent) / 0.7);
+        transform: translateY(-2px);
+      }
+
+      .game__choice--active {
+        border-color: transparent;
+        background: var(--gradient-greek);
+        color: hsl(var(--primary-foreground));
+      }
+
+      .game__choice strong {
+        display: block;
+        font-size: 0.95rem;
+      }
+
+      .game__choice small {
+        display: block;
+        font-size: 0.75rem;
+        opacity: 0.8;
+        margin-top: 0.15rem;
+      }
+
+      .game__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+      }
+
+      /* ===== Αποτελέσματα ===== */
+      .game__results {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 1.25rem;
+        font-size: 0.9rem;
+      }
+
+      .game__results th,
+      .game__results td {
+        text-align: left;
+        padding: 0.45rem 0.6rem;
+        border-bottom: 1px solid hsl(var(--border));
+      }
+
+      .game__results th {
+        font-family: var(--font-body);
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: hsl(var(--muted-foreground));
+      }
+
+      .game__results tr[data-player="true"] {
+        background: hsl(var(--accent) / 0.14);
+      }
+
+      .game__results td:last-child,
+      .game__results th:last-child {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* ===== On-screen χειριστήρια (κινητά) ===== */
+      .game__pad {
+        position: absolute;
+        inset: auto 0 0 0;
+        display: none;
+        justify-content: space-between;
+        padding: 0.9rem;
+        pointer-events: none;
+      }
+
+      .game__pad-group {
+        display: flex;
+        gap: 0.6rem;
+        pointer-events: auto;
+      }
+
+      .game__pad-btn {
+        width: 68px;
+        height: 68px;
+        border-radius: 50%;
+        border: 1px solid rgb(255 255 255 / 0.22);
+        background: rgb(10 16 24 / 0.55);
+        color: #f2f5f9;
+        font-size: 1.4rem;
+        font-weight: 700;
+        display: grid;
+        place-items: center;
+        touch-action: none;
+      }
+
+      .game__pad-btn--on {
+        background: hsl(var(--accent) / 0.8);
+      }
+
+      /* Τα touch controls εμφανίζονται μόνο σε συσκευές αφής. */
+      @media (hover: none) and (pointer: coarse) {
+        .game__pad {
+          display: flex;
+        }
+      }
+
+      /* Σε μικρές οθόνες το HUD μαζεύεται, αλλιώς σκεπάζει την πίστα και
+         πέφτει πάνω στα κουμπιά αφής. */
+      @media (max-width: 720px) {
+        .game__hud-panel {
+          padding: 0.4rem 0.6rem;
+        }
+
+        .game__hud-times {
+          min-width: 8.5rem;
+        }
+
+        .game__hud-current {
+          font-size: 1.05rem;
+        }
+
+        .game__hud-row {
+          font-size: 0.68rem;
+          line-height: 1.5;
+          gap: 0.6rem;
+        }
+
+        .game__minimap {
+          width: 92px;
+          height: 68px;
+          top: 5.5rem;
+        }
+
+        .game__hud-speed {
+          bottom: 6rem;
+          min-width: 6rem;
+        }
+
+        .game__speed-value {
+          font-size: 1.8rem;
+        }
+
+        .game__gear {
+          font-size: 1.1rem;
+        }
+
+        .game__lap-count {
+          font-size: 0.95rem;
+        }
+
+        .game__position {
+          font-size: 1.2rem;
+        }
+
+        .game__light {
+          width: 22px;
+          height: 22px;
+        }
+
+        .game__pad-btn {
+          width: 60px;
+          height: 60px;
+        }
+      }
+
+      /* ===== Πίνακες χρόνων κάτω από τη σκηνή ===== */
+      .game__board-row {
+        display: grid;
+        grid-template-columns: 2rem 1fr auto;
+        gap: 0.75rem;
+        align-items: center;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid hsl(var(--border));
+        font-size: 0.9rem;
+      }
+
+      .game__board-row:last-child {
+        border-bottom: 0;
+      }
+
+      .game__board-pos {
+        font-family: var(--font-display);
+        font-weight: 700;
+        color: hsl(var(--muted-foreground));
+      }
+
+      .game__board-time {
+        font-variant-numeric: tabular-nums;
+        font-weight: 600;
+      }
+
+      .game__keys {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem 1.25rem;
+        font-size: 0.85rem;
+        color: hsl(var(--muted-foreground));
+      }
+
+      .game__key {
+        display: inline-block;
+        padding: 0.1rem 0.45rem;
+        border: 1px solid hsl(var(--border));
+        border-radius: var(--radius-sm);
+        font-family: var(--font-display);
+        font-size: 0.75rem;
+        color: hsl(var(--foreground));
+        margin-right: 0.35rem;
+      }
+    </style>
+  </head>
+  <body data-page="game">
+    <div id="site-header"></div>
+
+    <main>
+      <section class="gsr__section">
+        <div class="gsr__container">
+          <h1 class="gsr-hero__title" style="text-align: center; font-size: clamp(2rem, 5vw, 3rem)">
+            GSR <span class="gsr__text-gradient">Time Attack</span>
+          </h1>
+          <p class="gsr-hero__subtitle" style="text-align: center">
+            Το παιχνίδι της κοινότητας. Τρεις ελληνικές πίστες, ghost του καλύτερου γύρου σου και
+            αγώνες με αντιπάλους — κατευθείαν στον browser.
+          </p>
+
+          <!-- ===== Σκηνή παιχνιδιού ===== -->
+          <div class="game__stage" id="stage">
+            <canvas class="game__canvas" id="game-canvas"></canvas>
+
+            <!-- HUD -->
+            <div class="game__hud" id="hud" hidden>
+              <div class="game__hud-panel game__hud-times">
+                <div class="game__hud-current" id="hud-current">0:00.000</div>
+                <div class="game__hud-row"><span>Καλύτερος</span><strong id="hud-best">--:--.---</strong></div>
+                <div class="game__hud-row">
+                  <span>Προηγούμενος</span><strong id="hud-last">--:--.---</strong>
+                </div>
+                <div class="game__hud-row"><span>Delta</span><strong id="hud-delta">—</strong></div>
+              </div>
+
+              <div class="game__hud-panel game__hud-lap">
+                <div class="game__lap-count" id="hud-lap">Γύρος 1</div>
+                <div class="game__position" id="hud-position" hidden>P1</div>
+              </div>
+
+              <canvas class="game__minimap" id="minimap" width="264" height="192"></canvas>
+
+              <div class="game__hud-panel game__hud-speed">
+                <div class="game__speed-value" id="hud-speed">0</div>
+                <div class="game__speed-unit">km/h</div>
+                <div class="game__gear" id="hud-gear">1</div>
+                <div class="game__rpm"><div class="game__rpm-fill" id="hud-rpm"></div></div>
+              </div>
+
+              <div class="game__toastline" id="hud-toast" hidden></div>
+
+              <div class="game__center" id="hud-center" hidden>
+                <div class="game__lights" id="hud-lights"></div>
+                <div class="game__flash" id="hud-flash"></div>
+              </div>
+
+              <!-- Χειριστήρια αφής -->
+              <div class="game__pad">
+                <div class="game__pad-group">
+                  <button type="button" class="game__pad-btn" id="pad-left" aria-label="Αριστερά">◀</button>
+                  <button type="button" class="game__pad-btn" id="pad-right" aria-label="Δεξιά">▶</button>
+                </div>
+                <div class="game__pad-group">
+                  <button type="button" class="game__pad-btn" id="pad-brake" aria-label="Φρένο">✋</button>
+                  <button type="button" class="game__pad-btn" id="pad-throttle" aria-label="Γκάζι">⛽</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ===== Μενού έναρξης ===== -->
+            <div class="game__overlay" id="menu">
+              <div class="game__overlay-card">
+                <h2>Διάλεξε πίστα &amp; αμάξι</h2>
+                <p class="game__overlay-lead">
+                  Time Attack για κυνήγι χρόνου με ghost, ή Αγώνας με αντιπάλους. Οι χρόνοι σου
+                  αποθηκεύονται τοπικά — αν είσαι συνδεδεμένος, μπαίνουν και στον πίνακα της κοινότητας.
+                </p>
+
+                <div class="game__options">
+                  <div>
+                    <span class="game__option-label">Πίστα</span>
+                    <div class="game__choices" id="choice-track"></div>
+                  </div>
+                  <div>
+                    <span class="game__option-label">Αμάξι</span>
+                    <div class="game__choices" id="choice-car"></div>
+                  </div>
+                  <div>
+                    <span class="game__option-label">Λειτουργία</span>
+                    <div class="game__choices" id="choice-mode"></div>
+                  </div>
+                  <div id="difficulty-block" hidden>
+                    <span class="game__option-label">Δυσκολία αντιπάλων</span>
+                    <div class="game__choices" id="choice-difficulty"></div>
+                  </div>
+                  <div>
+                    <label class="game__option-label" for="driver-name">Όνομα οδηγού</label>
+                    <input
+                      class="gsr__input"
+                      id="driver-name"
+                      maxlength="24"
+                      placeholder="π.χ. Νίκος #42"
+                      autocomplete="off"
+                    />
+                  </div>
+                </div>
+
+                <div class="game__actions">
+                  <button type="button" class="gsr__btn gsr__btn--primary" id="btn-start">
+                    ΣΤΗ ΓΡΑΜΜΗ ΕΚΚΙΝΗΣΗΣ
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ===== Pause ===== -->
+            <div class="game__overlay" id="pause" hidden>
+              <div class="game__overlay-card" style="max-width: 420px">
+                <h2>Παύση</h2>
+                <p class="game__overlay-lead">Ο χρόνος σταμάτησε. Πάρε ανάσα.</p>
+                <div class="game__actions">
+                  <button type="button" class="gsr__btn gsr__btn--primary" id="btn-resume">Συνέχεια</button>
+                  <button type="button" class="gsr__btn gsr__btn--outline" id="btn-restart-pause">
+                    Επανεκκίνηση
+                  </button>
+                  <button type="button" class="gsr__btn gsr__btn--outline" id="btn-finish-pause">
+                    Τέλος συνεδρίας
+                  </button>
+                  <button type="button" class="gsr__btn gsr__btn--ghost" id="btn-menu-pause">Μενού</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- ===== Αποτελέσματα ===== -->
+            <div class="game__overlay" id="results" hidden>
+              <div class="game__overlay-card">
+                <h2 id="results-title">Τερματισμός</h2>
+                <p class="game__overlay-lead" id="results-lead"></p>
+                <div id="results-body"></div>
+                <div class="game__actions">
+                  <button type="button" class="gsr__btn gsr__btn--primary" id="btn-again">Ξανά</button>
+                  <button type="button" class="gsr__btn gsr__btn--outline" id="btn-menu-results">
+                    Αλλαγή πίστας
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ===== Κάτω από τη σκηνή: χειριστήρια + πίνακες ===== -->
+          <div class="gsr__grid gsr__grid--3" style="margin-top: 2rem">
+            <div class="gsr__card">
+              <h3 style="font-size: 1rem; margin-bottom: 0.75rem">Χειριστήρια</h3>
+              <div class="game__keys">
+                <span><span class="game__key">↑ / W</span>Γκάζι</span>
+                <span><span class="game__key">↓ / S</span>Φρένο</span>
+                <span><span class="game__key">← →</span>Τιμόνι</span>
+                <span><span class="game__key">Space</span>Χειρόφρενο</span>
+                <span><span class="game__key">R</span>Επαναφορά</span>
+                <span><span class="game__key">E</span>Γραμμή οδήγησης</span>
+                <span><span class="game__key">Esc</span>Παύση</span>
+              </div>
+              <p style="font-size: 0.82rem; color: hsl(var(--muted-foreground)); margin: 0.9rem 0 0">
+                Συνδεδεμένο gamepad ή τιμονιέρα αναγνωρίζεται αυτόματα. Σε κινητό εμφανίζονται κουμπιά
+                αφής πάνω στην πίστα.
+              </p>
+            </div>
+
+            <div class="gsr__card">
+              <h3 style="font-size: 1rem; margin-bottom: 0.75rem">
+                Οι χρόνοι σου — <span id="board-track-local">—</span>
+              </h3>
+              <div id="board-local">
+                <p style="font-size: 0.88rem; color: hsl(var(--muted-foreground)); margin: 0">
+                  Δεν έχεις κάνει ακόμα έγκυρο γύρο εδώ.
+                </p>
+              </div>
+            </div>
+
+            <div class="gsr__card">
+              <h3 style="font-size: 1rem; margin-bottom: 0.75rem">
+                Κοινότητα — <span id="board-track-remote">—</span>
+              </h3>
+              <div id="board-remote">
+                <p style="font-size: 0.88rem; color: hsl(var(--muted-foreground)); margin: 0">Φόρτωση…</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="site-footer"></div>
+
+    <script type="module">
+      import { mountShell } from "./js/partials.js";
+      import { onAuthChange } from "./js/auth.js";
+      import { toast } from "./js/toast.js";
+      import { TRACKS, trackById } from "./js/game/tracks.js";
+      import { CARS, carById } from "./js/game/car.js";
+      import { DIFFICULTIES } from "./js/game/ai.js";
+      import { Game, MODES } from "./js/game/engine.js";
+      import {
+        formatTime,
+        formatDelta,
+        localTimes,
+        localBest,
+        saveLocal,
+        savedDriverName,
+        rememberDriverName,
+        fetchRemote,
+        submitRemote,
+      } from "./js/game/leaderboard.js";
+
+      mountShell(document.body.dataset.page);
+
+      const el = (id) => document.getElementById(id);
+
+      // ===== Ρυθμίσεις συνεδρίας =====
+      const settings = {
+        trackId: TRACKS[0].id,
+        carId: CARS[0].id,
+        mode: "timeattack",
+        difficulty: "pro",
+        driverName: savedDriverName(),
+      };
+
+      el("driver-name").value = settings.driverName;
+      // Αν ο χρήστης είναι συνδεδεμένος και δεν έχει γράψει όνομα, παίρνουμε το προφίλ του.
+      onAuthChange(({ user }) => {
+        if (!user || el("driver-name").value) return;
+        const name = user.user_metadata?.display_name || user.user_metadata?.full_name || "";
+        if (name) {
+          el("driver-name").value = name;
+          settings.driverName = name;
+        }
+      });
+
+      // ===== Δόμηση των επιλογών του μενού =====
+      function renderChoices(container, items, currentId, onPick) {
+        container.innerHTML = "";
+        for (const item of items) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = `game__choice${item.id === currentId ? " game__choice--active" : ""}`;
+          const strong = document.createElement("strong");
+          strong.textContent = item.title;
+          const small = document.createElement("small");
+          small.textContent = item.subtitle;
+          btn.append(strong, small);
+          btn.addEventListener("click", () => onPick(item.id));
+          container.appendChild(btn);
+        }
+      }
+
+      function renderMenu() {
+        renderChoices(
+          el("choice-track"),
+          TRACKS.map((t) => ({
+            id: t.id,
+            title: `${t.emoji} ${t.name}`,
+            subtitle: `${t.difficulty} · ${t.subtitle}`,
+          })),
+          settings.trackId,
+          (id) => {
+            settings.trackId = id;
+            renderMenu();
+            refreshBoards();
+          },
+        );
+
+        renderChoices(
+          el("choice-car"),
+          CARS.map((c) => ({ id: c.id, title: c.name, subtitle: c.blurb })),
+          settings.carId,
+          (id) => {
+            settings.carId = id;
+            renderMenu();
+          },
+        );
+
+        renderChoices(
+          el("choice-mode"),
+          [
+            {
+              id: "timeattack",
+              title: "Time Attack",
+              subtitle: "Μόνος με το ρολόι, με ghost του καλύτερου γύρου",
+            },
+            {
+              id: "race",
+              title: "Αγώνας",
+              subtitle: `${MODES.race.aiCount} αντίπαλοι, ${trackById(settings.trackId).raceLaps} γύροι`,
+            },
+          ],
+          settings.mode,
+          (id) => {
+            settings.mode = id;
+            el("difficulty-block").hidden = id !== "race";
+            renderMenu();
+          },
+        );
+
+        renderChoices(
+          el("choice-difficulty"),
+          DIFFICULTIES.map((d) => ({
+            id: d.id,
+            title: d.label,
+            subtitle: `Ρυθμός ${Math.round(d.pace * 100)}%`,
+          })),
+          settings.difficulty,
+          (id) => {
+            settings.difficulty = id;
+            renderMenu();
+          },
+        );
+      }
+
+      renderMenu();
+
+      // ===== Πίνακες χρόνων =====
+      function boardRows(container, rows, emptyText) {
+        container.innerHTML = "";
+        if (!rows.length) {
+          const p = document.createElement("p");
+          p.style.cssText = "font-size:0.88rem;color:hsl(var(--muted-foreground));margin:0";
+          p.textContent = emptyText;
+          container.appendChild(p);
+          return;
+        }
+        rows.forEach((row, i) => {
+          const line = document.createElement("div");
+          line.className = "game__board-row";
+          const pos = document.createElement("span");
+          pos.className = "game__board-pos";
+          pos.textContent = `${i + 1}.`;
+          const name = document.createElement("span");
+          name.textContent = row.name;
+          const time = document.createElement("span");
+          time.className = "game__board-time";
+          time.textContent = formatTime(row.lapMs);
+          line.append(pos, name, time);
+          container.appendChild(line);
+        });
+      }
+
+      async function refreshBoards() {
+        const track = trackById(settings.trackId);
+        el("board-track-local").textContent = track.name;
+        el("board-track-remote").textContent = track.name;
+
+        boardRows(
+          el("board-local"),
+          localTimes(track.id)
+            .slice(0, 5)
+            .map((t) => ({ name: `${t.driverName || "Οδηγός"} · ${carById(t.carId).name}`, lapMs: t.lapMs })),
+          "Δεν έχεις κάνει ακόμα έγκυρο γύρο εδώ.",
+        );
+
+        const remote = await fetchRemote(track.id, 8);
+        if (!remote.available) {
+          boardRows(el("board-remote"), [], "Ο κοινός πίνακας δεν είναι διαθέσιμος αυτή τη στιγμή.");
+          return;
+        }
+        boardRows(
+          el("board-remote"),
+          remote.rows.map((r) => ({
+            name: `${r.driver_name} · ${carById(r.car_id).name}`,
+            lapMs: r.lap_ms,
+          })),
+          "Κανένας χρόνος ακόμα — γίνε ο πρώτος!",
+        );
+      }
+
+      refreshBoards();
+
+      // ===== HUD =====
+      const hud = {
+        root: el("hud"),
+        current: el("hud-current"),
+        best: el("hud-best"),
+        last: el("hud-last"),
+        delta: el("hud-delta"),
+        lap: el("hud-lap"),
+        position: el("hud-position"),
+        speed: el("hud-speed"),
+        gear: el("hud-gear"),
+        rpm: el("hud-rpm"),
+        center: el("hud-center"),
+        lights: el("hud-lights"),
+        flash: el("hud-flash"),
+        toast: el("hud-toast"),
+      };
+
+      // Τα 5 φώτα εκκίνησης φτιάχνονται μία φορά.
+      for (let i = 0; i < 5; i++) {
+        const light = document.createElement("div");
+        light.className = "game__light";
+        hud.lights.appendChild(light);
+      }
+      const lightEls = Array.from(hud.lights.children);
+
+      let toastTimer = 0;
+      function flashMessage(text, variant = "") {
+        hud.toast.textContent = text;
+        hud.toast.className = `game__toastline${variant ? ` game__toastline--${variant}` : ""}`;
+        hud.toast.hidden = false;
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          hud.toast.hidden = true;
+        }, 2600);
+      }
+
+      function updateHud(state) {
+        hud.current.textContent = formatTime(state.lapMs);
+        hud.current.style.color = state.valid ? "" : "#f87171";
+        hud.best.textContent = formatTime(state.bestLap);
+        hud.last.textContent = formatTime(state.lastLap);
+        hud.delta.textContent = state.delta === null ? "—" : formatDelta(state.delta);
+        hud.delta.className = state.delta === null ? "" : state.delta < 0 ? "game__delta--up" : "game__delta--down";
+
+        hud.lap.textContent =
+          state.totalLaps === Infinity ? `Γύρος ${state.lap}` : `Γύρος ${state.lap}/${state.totalLaps}`;
+        hud.position.hidden = state.position === null;
+        if (state.position !== null) hud.position.textContent = `P${state.position}/${state.fieldSize}`;
+
+        hud.speed.textContent = String(Math.round(state.speed));
+        hud.gear.textContent = String(state.gear);
+        hud.rpm.style.width = `${Math.round(state.rpm * 100)}%`;
+
+        // Φώτα εκκίνησης / μήνυμα παύσης στο κέντρο.
+        const showCenter = state.phase === "countdown";
+        hud.center.hidden = !showCenter;
+        if (showCenter) {
+          lightEls.forEach((light, i) => light.classList.toggle("game__light--on", i < state.lights));
+          hud.flash.textContent = "";
+        }
+      }
+
+      // ===== Παιχνίδι =====
+      const game = new Game({
+        canvas: el("game-canvas"),
+        minimap: el("minimap"),
+        onHud: updateHud,
+        onEvent: handleEvent,
+      });
+
+      // Βοηθητικό για debugging από την κονσόλα (π.χ. game.entries, game.track).
+      window.gsrGame = game;
+
+      ["left", "right", "throttle", "brake"].forEach((action) => {
+        game.input.bindButton(el(`pad-${action}`), action);
+      });
+
+      function handleEvent(event) {
+        switch (event.type) {
+          case "go":
+            flashMessage("GO!", "good");
+            break;
+          case "invalid":
+            flashMessage("ΑΚΥΡΟΣ ΓΥΡΟΣ — εκτός πίστας", "warn");
+            break;
+          case "respawn":
+            flashMessage("Επαναφορά στην πίστα", "warn");
+            break;
+          case "assist-line":
+            flashMessage(event.on ? "Γραμμή οδήγησης: ON" : "Γραμμή οδήγησης: OFF");
+            break;
+          case "sector":
+            flashMessage(`S${event.index} ${formatTime(event.split)}`);
+            break;
+          case "lap":
+            handleLap(event);
+            break;
+          case "pause":
+            el("pause").hidden = !event.paused;
+            break;
+          case "finish":
+            showResults(event.results);
+            break;
+        }
+      }
+
+      function handleLap(event) {
+        if (!event.valid) {
+          flashMessage(`Γύρος ${event.lap}: άκυρος`, "warn");
+          return;
+        }
+        if (event.isBest) {
+          flashMessage(`Νέος καλύτερος γύρος! ${formatTime(event.lapMs)}`, "good");
+          recordTime(event.lapMs);
+        } else {
+          flashMessage(`Γύρος ${event.lap}: ${formatTime(event.lapMs)}`);
+        }
+      }
+
+      // Η προτροπή για σύνδεση εμφανίζεται μία φορά ανά επίσκεψη, όχι σε κάθε γύρο.
+      let warnedAboutSubmit = false;
+
+      /** Αποθηκεύει τοπικά τον χρόνο και τον ανεβάζει στον κοινό πίνακα αν γίνεται. */
+      async function recordTime(lapMs) {
+        const entry = {
+          trackId: settings.trackId,
+          carId: settings.carId,
+          driverName: settings.driverName || "Ανώνυμος",
+          lapMs,
+        };
+        saveLocal(entry);
+        refreshBoards();
+
+        const result = await submitRemote(entry);
+        if (result.ok) {
+          refreshBoards();
+        } else if (result.reason === "not-signed-in" && !warnedAboutSubmit) {
+          warnedAboutSubmit = true;
+          toast("Συνδέσου για να μπει ο χρόνος σου στον πίνακα της κοινότητας.");
+        }
+      }
+
+      function showResults(results) {
+        const track = trackById(results.trackId);
+        el("results-title").textContent =
+          results.mode === "race" ? `Τερματισμός — P${results.position}` : "Τέλος συνεδρίας";
+        el("results-lead").textContent = `${track.name} · ${carById(results.carId).name} · καλύτερος γύρος ${formatTime(results.bestLap)}`;
+
+        const body = el("results-body");
+        body.innerHTML = "";
+
+        if (results.mode === "race") {
+          const table = document.createElement("table");
+          table.className = "game__results";
+          table.innerHTML =
+            "<thead><tr><th>#</th><th>Οδηγός</th><th>Γύροι</th><th>Καλύτερος γύρος</th></tr></thead>";
+          const tbody = document.createElement("tbody");
+          for (const row of results.rows) {
+            const tr = document.createElement("tr");
+            tr.dataset.player = String(row.isPlayer);
+            const cells = [
+              String(row.position),
+              row.name,
+              String(row.laps),
+              row.bestLap ? formatTime(row.bestLap) : "—",
+            ];
+            for (const value of cells) {
+              const td = document.createElement("td");
+              td.textContent = value;
+              tr.appendChild(td);
+            }
+            tbody.appendChild(tr);
+          }
+          table.appendChild(tbody);
+          body.appendChild(table);
+        }
+
+        const best = localBest(results.trackId);
+        if (best) {
+          const p = document.createElement("p");
+          p.style.cssText = "font-size:0.88rem;color:hsl(var(--muted-foreground))";
+          p.textContent = `Ρεκόρ πίστας (τοπικά): ${formatTime(best.lapMs)} — ${best.driverName}`;
+          body.appendChild(p);
+        }
+
+        el("results").hidden = false;
+      }
+
+      // ===== Κουμπιά =====
+      function startGame() {
+        settings.driverName = el("driver-name").value.trim().slice(0, 24);
+        if (settings.driverName) rememberDriverName(settings.driverName);
+
+        el("menu").hidden = true;
+        el("results").hidden = true;
+        el("pause").hidden = true;
+        hud.root.hidden = false;
+        game.locked = false;
+
+        game.start({
+          trackId: settings.trackId,
+          carId: settings.carId,
+          mode: settings.mode,
+          difficulty: settings.difficulty,
+          driverName: settings.driverName || "Εσύ",
+          keepGhost: false,
+        });
+      }
+
+      function openMenu() {
+        game.locked = true;
+        game.setPaused(true);
+        el("pause").hidden = true;
+        el("results").hidden = true;
+        el("menu").hidden = false;
+        renderMenu();
+        refreshBoards();
+      }
+
+      el("btn-start").addEventListener("click", startGame);
+      el("btn-resume").addEventListener("click", () => game.setPaused(false));
+      el("btn-restart-pause").addEventListener("click", () => {
+        el("pause").hidden = true;
+        game.restart();
+      });
+      // Στο Time Attack δεν υπάρχει καρέ τερματισμού — το κλείνει ο ίδιος ο παίκτης.
+      el("btn-finish-pause").addEventListener("click", () => {
+        el("pause").hidden = true;
+        game.setPaused(false);
+        game.finishRace();
+      });
+      el("btn-menu-pause").addEventListener("click", openMenu);
+      el("btn-menu-results").addEventListener("click", openMenu);
+      el("btn-again").addEventListener("click", () => {
+        el("results").hidden = true;
+        game.restart();
+      });
+
+      window.addEventListener("beforeunload", () => game.destroy());
+    </script>
+  </body>
+</html>

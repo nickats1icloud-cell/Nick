@@ -6,6 +6,7 @@ const NAV_LINKS = [
   { href: "articles.html", label: "Άρθρα", page: "articles" },
   { href: "forum.html", label: "Forum", page: "forum" },
   { href: "championships.html", label: "Αγώνες", page: "championships" },
+  { href: "game.html", label: "Παιχνίδι", page: "game" },
   { href: "members.html", label: "Μέλη", page: "members" },
   { href: "contact.html", label: "Επικοινωνία", page: "contact" },
 ];
@@ -58,6 +59,7 @@ function footerHtml() {
           <a href="home.html">Αρχική</a>
           <a href="articles.html">Άρθρα</a>
           <a href="forum.html">Forum</a>
+          <a href="game.html">Παιχνίδι</a>
         </div>
         <div>
           <h4>Κοινότητα</h4>

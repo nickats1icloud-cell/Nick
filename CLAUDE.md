@@ -18,8 +18,12 @@ comments in this codebase.
   not add bundlers or frameworks there. Dynamic features (auth, forum,
   articles, championships, contact form) use Supabase via the vendored
   `js/vendor/supabase.umd.js` bundle; config lives in `js/config.js`; the DB
-  schema is `supabase/migrations/001_wave1_schema.sql`. See its own README.md
-  for conventions. It deploys as-is to `/Nick/greek-simracers/` via a copy
+  schema is `supabase/migrations/` (`001_wave1_schema.sql` + `002_game_lap_times.sql`).
+  It also hosts **GSR Time Attack** (`game.html` + `js/game/`), a canvas
+  top-down racing game: `tracks.js` (spline geometry), `car.js` (arcade drift
+  physics), `ai.js`, `input.js`, `render.js`, `ghost.js`, `leaderboard.js` and
+  `engine.js` (fixed-timestep loop, lap/sector timing, standings). See its own
+  README.md for conventions. It deploys as-is to `/Nick/greek-simracers/` via a copy
   step in `.github/workflows/deploy.yml`. Preview locally with
   `python3 -m http.server` (ES modules don't run from `file://`).
 
