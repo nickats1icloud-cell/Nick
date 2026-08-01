@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="el">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Ακρόαση & εγγραφή — Greek SimRacers Podcast</title>
+    <meta
+      name="description"
+      content="Πού να ακούσεις το Greek SimRacers Podcast: Spotify, Apple Podcasts, YouTube, RSS — και το εβδομαδιαίο newsletter."
+    />
+    <meta name="theme-color" content="#07070e" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23f97316'/><rect x='38' y='18' width='24' height='42' rx='12' fill='%23170a02'/><path d='M28 50a22 22 0 0 0 44 0' stroke='%23170a02' stroke-width='8' fill='none' stroke-linecap='round'/><path d='M50 72v12' stroke='%23170a02' stroke-width='8' stroke-linecap='round'/></svg>" />
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+    <script>
+      try {
+        const stored = JSON.parse(localStorage.getItem("gsrp:theme"));
+        const light = stored
+          ? stored === "light"
+          : matchMedia("(prefers-color-scheme: light)").matches;
+        if (light) document.documentElement.classList.add("light");
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Μετάβαση στο περιεχόμενο</a>
+
+    <main id="main">
+      <section class="page-head">
+        <div class="container">
+          <span class="eyebrow">Ακρόαση</span>
+          <h1>Άκου το όπως σε βολεύει</h1>
+          <p class="lead">
+            Το podcast είναι δωρεάν και θα μείνει δωρεάν. Διάλεξε πλατφόρμα,
+            πάρε το RSS, ή άκουσέ το κατευθείαν εδώ με chapters και
+            απομαγνητοφώνηση.
+          </p>
+        </div>
+      </section>
+
+      <section class="section section--tight">
+        <div class="container">
+          <div class="platforms" data-platforms></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Τρόποι να το στηρίξεις</span>
+              <h2>Χωρίς συνδρομή, με τη θέλησή σου</h2>
+              <p>
+                Δεν υπάρχει paywall. Αν θες να βοηθήσεις, τα παρακάτω μετράνε
+                περισσότερο από όσο φαντάζεσαι.
+              </p>
+            </div>
+          </div>
+
+          <div class="plan-grid">
+            <article class="card plan" data-reveal>
+              <h3>Άκου & μοιράσου</h3>
+              <p style="color: hsl(var(--muted-foreground)); font-size: 0.9rem">
+                Το πιο απλό και το πιο αποτελεσματικό.
+              </p>
+              <ul data-check-list>
+                <li>Στείλε ένα επεισόδιο σε έναν φίλο</li>
+                <li>Άφησε αξιολόγηση στην εφαρμογή σου</li>
+                <li>Πες μας τι θες να ακούσεις</li>
+              </ul>
+              <a class="btn" href="episodes.html" style="margin-top: auto">Επεισόδια</a>
+            </article>
+
+            <article class="card plan plan--featured" data-reveal>
+              <div class="row" style="justify-content: space-between">
+                <h3>Newsletter</h3>
+                <span class="badge badge--new">Δωρεάν</span>
+              </div>
+              <p style="color: hsl(var(--muted-foreground)); font-size: 0.9rem">
+                Κάθε Πέμπτη, μία σελίδα: τι είπαμε, τα links, τα timestamps.
+              </p>
+              <ul data-check-list>
+                <li>Σύνοψη επεισοδίου</li>
+                <li>Links & πηγές</li>
+                <li>Ένα setup tip της εβδομάδας</li>
+              </ul>
+              <form class="stack" data-newsletter novalidate style="margin-top: auto">
+                <label class="sr-only" for="sub-email">Email</label>
+                <input class="input" id="sub-email" type="email" placeholder="to@email.sou" required autocomplete="email" />
+                <p class="error" data-newsletter-error></p>
+                <button class="btn btn--primary" type="submit">Εγγραφή</button>
+              </form>
+            </article>
+
+            <article class="card plan" data-reveal>
+              <h3>Συνεργασία</h3>
+              <p style="color: hsl(var(--muted-foreground)); font-size: 0.9rem">
+                Για brands, πρωταθλήματα και events που έχουν νόημα για την κοινότητα.
+              </p>
+              <ul data-check-list>
+                <li>Αναφορά μέσα στο επεισόδιο</li>
+                <li>Παρουσίαση προϊόντος με ειλικρινή κριτική</li>
+                <li>Κάλυψη διοργάνωσης</li>
+              </ul>
+              <a class="btn" href="contact.html" style="margin-top: auto">Μίλα μας</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--tight">
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">RSS</span>
+              <h2>Για όποια εφαρμογή θες</h2>
+              <p>
+                Αντίγραψε τη διεύθυνση και πρόσθεσέ τη σε Pocket Casts, Overcast,
+                AntennaPod ή ό,τι άλλο χρησιμοποιείς.
+              </p>
+            </div>
+          </div>
+          <div class="card" style="padding: 1rem; display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap">
+            <code
+              data-rss
+              style="font-family: var(--font-mono); font-size: 0.85rem; overflow-x: auto; flex: 1; min-width: 220px"
+              >https://greeksimracers.gr/podcast/feed.xml</code
+            >
+            <button class="btn btn--sm" data-copy-rss>Αντιγραφή</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="js/subscribe.js"></script>
+  </body>
+</html>

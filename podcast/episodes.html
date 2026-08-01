@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="el">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Επεισόδια — Greek SimRacers Podcast</title>
+    <meta
+      name="description"
+      content="Όλα τα επεισόδια του Greek SimRacers Podcast: αναζήτηση, φίλτρα ανά θέμα και σεζόν, ταξινόμηση και αγαπημένα."
+    />
+    <meta name="theme-color" content="#07070e" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23f97316'/><rect x='38' y='18' width='24' height='42' rx='12' fill='%23170a02'/><path d='M28 50a22 22 0 0 0 44 0' stroke='%23170a02' stroke-width='8' fill='none' stroke-linecap='round'/><path d='M50 72v12' stroke='%23170a02' stroke-width='8' stroke-linecap='round'/></svg>" />
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+    <script>
+      try {
+        const stored = JSON.parse(localStorage.getItem("gsrp:theme"));
+        const light = stored
+          ? stored === "light"
+          : matchMedia("(prefers-color-scheme: light)").matches;
+        if (light) document.documentElement.classList.add("light");
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Μετάβαση στο περιεχόμενο</a>
+
+    <main id="main">
+      <section class="page-head">
+        <div class="container">
+          <span class="eyebrow">Αρχείο</span>
+          <h1>Επεισόδια</h1>
+          <p class="lead">
+            Ψάξε με λέξη-κλειδί, φιλτράρισε ανά θέμα ή σεζόν και συνέχισε από
+            εκεί που έμεινες. Όλα δουλεύουν και χωρίς λογαριασμό — αποθηκεύονται
+            τοπικά στον browser σου.
+          </p>
+        </div>
+      </section>
+
+      <div class="filters">
+        <div class="container stack" style="gap: 0.75rem">
+          <div class="filters__row">
+            <div class="search-box">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="7" /><path d="m20 20-3.2-3.2" />
+              </svg>
+              <label class="sr-only" for="q">Αναζήτηση επεισοδίων</label>
+              <input class="input" id="q" type="search" placeholder="Ψάξε τίτλο, θέμα ή καλεσμένο…" data-search autocomplete="off" />
+            </div>
+
+            <label class="sr-only" for="sort">Ταξινόμηση</label>
+            <select class="select" id="sort" data-sort style="width: auto">
+              <option value="new">Νεότερα πρώτα</option>
+              <option value="old">Παλαιότερα πρώτα</option>
+              <option value="long">Μεγαλύτερη διάρκεια</option>
+              <option value="short">Μικρότερη διάρκεια</option>
+              <option value="plays">Πιο δημοφιλή</option>
+            </select>
+
+            <button class="btn btn--sm" data-only-favorites aria-pressed="false">
+              Μόνο αγαπημένα
+            </button>
+            <button class="btn btn--sm btn--ghost" data-view="grid" aria-pressed="true">
+              Πλέγμα
+            </button>
+            <button class="btn btn--sm btn--ghost" data-view="list" aria-pressed="false">
+              Λίστα
+            </button>
+          </div>
+
+          <div class="filters__row filters__row--scroll" data-tag-bar></div>
+
+          <div class="filters__row" style="justify-content: space-between">
+            <span class="results-count" data-results-count></span>
+            <button class="btn btn--sm btn--ghost" data-reset hidden>Καθαρισμός φίλτρων</button>
+          </div>
+        </div>
+      </div>
+
+      <section class="section section--tight">
+        <div class="container">
+          <div class="ep-grid" data-results></div>
+          <div class="empty-state" data-empty hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+              <circle cx="11" cy="11" r="7" /><path d="m20 20-3.2-3.2" />
+            </svg>
+            <h3>Κανένα επεισόδιο δεν ταιριάζει</h3>
+            <p>Δοκίμασε λιγότερα φίλτρα ή άλλη λέξη-κλειδί.</p>
+          </div>
+          <div class="row" style="justify-content: center; margin-top: 2.5rem">
+            <button class="btn" data-more hidden>Φόρτωσε περισσότερα</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="js/episodes-page.js"></script>
+  </body>
+</html>

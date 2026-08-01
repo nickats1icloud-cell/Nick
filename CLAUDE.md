@@ -22,6 +22,15 @@ comments in this codebase.
   for conventions. It deploys as-is to `/Nick/greek-simracers/` via a copy
   step in `.github/workflows/deploy.yml`. Preview locally with
   `python3 -m http.server` (ES modules don't run from `file://`).
+- **`podcast/`** — a third independent site (Greek SimRacers Podcast): same
+  plain static HTML/CSS/JS-with-ES-modules convention as `greek-simracers/`,
+  **no build step, no npm, no framework** — and no Supabase either, it is
+  fully client-side. Content lives in `js/data/episodes.js` and
+  `js/data/site.js`; `js/player.js` is a singleton audio player shared by
+  every page (falls back to a clearly-labelled DEMO timeline when an episode
+  has no audio URL yet). See its own README.md. Deploys to `/Nick/podcast/`
+  via a copy step in `.github/workflows/deploy.yml`; preview with
+  `python3 -m http.server`.
 
 ## Commands
 

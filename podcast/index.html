@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="el">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Greek SimRacers Podcast — Το ελληνικό podcast του sim racing</title>
+    <meta
+      name="description"
+      content="Κάθε Πέμπτη: iRacing, ACC, rFactor 2, setups, racecraft και καλεσμένοι από την ελληνική sim racing σκηνή. Άκου online, με chapters και απομαγνητοφώνηση."
+    />
+    <meta name="theme-color" content="#07070e" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Greek SimRacers Podcast" />
+    <meta
+      property="og:description"
+      content="Το ελληνικό podcast του sim racing. Νέο επεισόδιο κάθε Πέμπτη στις 20:00."
+    />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23f97316'/><rect x='38' y='18' width='24' height='42' rx='12' fill='%23170a02'/><path d='M28 50a22 22 0 0 0 44 0' stroke='%23170a02' stroke-width='8' fill='none' stroke-linecap='round'/><path d='M50 72v12' stroke='%23170a02' stroke-width='8' stroke-linecap='round'/></svg>" />
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+    <script>
+      // Το θέμα εφαρμόζεται πριν το πρώτο paint ώστε να μην "αναβοσβήνει".
+      try {
+        const stored = JSON.parse(localStorage.getItem("gsrp:theme"));
+        const light = stored
+          ? stored === "light"
+          : matchMedia("(prefers-color-scheme: light)").matches;
+        if (light) document.documentElement.classList.add("light");
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Μετάβαση στο περιεχόμενο</a>
+
+    <main id="main">
+      <!-- ============ HERO ============ -->
+      <section class="hero">
+        <canvas class="hero__canvas" data-hero-canvas aria-hidden="true"></canvas>
+        <div class="hero__grid-lines" aria-hidden="true"></div>
+
+        <div class="container hero__inner">
+          <div>
+            <span class="eyebrow">Σεζόν 3 · Νέο επεισόδιο κάθε Πέμπτη</span>
+            <h1>
+              Το ελληνικό podcast<br />
+              του <span class="grad">sim racing</span>
+            </h1>
+            <p class="lead">
+              Setups που καταλαβαίνεις, racecraft χωρίς μπούρδες και καλεσμένοι
+              που πραγματικά οδηγούν. Από την κοινότητα των Greek SimRacers.
+            </p>
+
+            <div class="row hero__actions">
+              <button class="btn btn--primary" data-play-latest>
+                Άκου το τελευταίο επεισόδιο
+              </button>
+              <a class="btn" href="episodes.html">Όλα τα επεισόδια</a>
+            </div>
+
+            <div class="hero__stats" data-stats></div>
+          </div>
+
+          <!-- Featured επεισόδιο -->
+          <aside class="hero__feature" data-featured aria-label="Τελευταίο επεισόδιο"></aside>
+        </div>
+      </section>
+
+      <!-- ============ TICKER ============ -->
+      <div class="ticker" aria-hidden="true">
+        <div class="ticker__track" data-ticker></div>
+      </div>
+
+      <!-- ============ ΣΥΝΕΧΙΣΕ ΤΗΝ ΑΚΡΟΑΣΗ ============ -->
+      <section class="section section--tight" data-continue hidden>
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Συνέχισε από εκεί που έμεινες</span>
+              <h2>Ημιτελές</h2>
+            </div>
+          </div>
+          <div data-continue-body></div>
+        </div>
+      </section>
+
+      <!-- ============ ΕΠΕΙΣΟΔΙΑ ============ -->
+      <section class="section" id="episodes">
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Πρόσφατα</span>
+              <h2>Τελευταία επεισόδια</h2>
+              <p>
+                Διάλεξε θέμα ή άκου με τη σειρά — ο player θυμάται πού σταμάτησες
+                σε κάθε επεισόδιο.
+              </p>
+            </div>
+            <a class="btn btn--ghost" href="episodes.html">Δες όλα τα 62 →</a>
+          </div>
+
+          <div class="row" style="margin-bottom: 1.5rem" data-home-tags></div>
+          <div class="ep-grid" data-home-grid></div>
+        </div>
+      </section>
+
+      <!-- ============ ΠΛΑΤΦΟΡΜΕΣ ============ -->
+      <section class="section section--tight">
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Πού θα το βρεις</span>
+              <h2>Άκουσέ το όπου ακούς podcast</h2>
+            </div>
+          </div>
+          <div class="platforms" data-platforms></div>
+        </div>
+      </section>
+
+      <!-- ============ HOSTS ============ -->
+      <section class="section">
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Ποιοι μιλάνε</span>
+              <h2>Στο μικρόφωνο</h2>
+              <p>Τρεις άνθρωποι, τρεις εντελώς διαφορετικές απόψεις για το ίδιο κόρνερ.</p>
+            </div>
+            <a class="btn btn--ghost" href="about.html">Η ιστορία της εκπομπής →</a>
+          </div>
+          <div class="hosts" data-hosts></div>
+        </div>
+      </section>
+
+      <!-- ============ TESTIMONIALS ============ -->
+      <section class="section section--tight">
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Η κοινότητα</span>
+              <h2>Τι λένε οι ακροατές</h2>
+            </div>
+          </div>
+          <div class="quotes" data-quotes></div>
+        </div>
+      </section>
+
+      <!-- ============ CTA ============ -->
+      <section class="section">
+        <div class="container">
+          <div class="cta" data-reveal>
+            <span class="eyebrow" style="justify-content: center">Newsletter</span>
+            <h2>Το επεισόδιο στο inbox σου</h2>
+            <p class="lead" style="margin-inline: auto">
+              Κάθε Πέμπτη ένα email: τι συζητήσαμε, τα links και τα timestamps.
+              Χωρίς spam, μία κίνηση για διαγραφή.
+            </p>
+            <form class="cta__form" data-newsletter novalidate>
+              <label class="sr-only" for="nl-email">Email</label>
+              <input
+                class="input"
+                id="nl-email"
+                type="email"
+                name="email"
+                placeholder="to@email.sou"
+                required
+                autocomplete="email"
+              />
+              <button class="btn btn--primary" type="submit">Εγγραφή</button>
+            </form>
+            <p class="error" data-newsletter-error style="min-height: 1.2em; margin-top: .5rem"></p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="js/home.js"></script>
+  </body>
+</html>

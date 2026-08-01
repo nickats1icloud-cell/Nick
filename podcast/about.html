@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="el">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Η εκπομπή — Greek SimRacers Podcast</title>
+    <meta
+      name="description"
+      content="Ποιοι είμαστε, πώς ξεκίνησε το Greek SimRacers Podcast, πώς φτιάχνεται κάθε επεισόδιο και συχνές ερωτήσεις."
+    />
+    <meta name="theme-color" content="#07070e" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23f97316'/><rect x='38' y='18' width='24' height='42' rx='12' fill='%23170a02'/><path d='M28 50a22 22 0 0 0 44 0' stroke='%23170a02' stroke-width='8' fill='none' stroke-linecap='round'/><path d='M50 72v12' stroke='%23170a02' stroke-width='8' stroke-linecap='round'/></svg>" />
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+    <script>
+      try {
+        const stored = JSON.parse(localStorage.getItem("gsrp:theme"));
+        const light = stored
+          ? stored === "light"
+          : matchMedia("(prefers-color-scheme: light)").matches;
+        if (light) document.documentElement.classList.add("light");
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Μετάβαση στο περιεχόμενο</a>
+
+    <main id="main">
+      <section class="page-head">
+        <div class="container">
+          <span class="eyebrow">Η εκπομπή</span>
+          <h1>Τρεις άνθρωποι,<br />ένα μικρόφωνο, πολλά λάθη</h1>
+          <p class="lead">
+            Ξεκινήσαμε το 2023 σε ένα σαλόνι στη Νέα Σμύρνη, με δύο μικρόφωνα
+            δανεικά και ένα ερώτημα: γιατί δεν υπάρχει ελληνικό podcast για sim
+            racing που να μιλάει σοβαρά, χωρίς να γίνεται ακαδημαϊκό;
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr))">
+          <div class="card" style="padding: 1.5rem" data-reveal>
+            <span class="eyebrow">Τι κάνουμε</span>
+            <h3 style="margin-top: 0.75rem">Πρακτικά, όχι θεωρητικά</h3>
+            <p style="color: hsl(var(--muted-foreground)); margin-top: 0.5rem">
+              Κάθε επεισόδιο πρέπει να σου δίνει κάτι που μπορείς να δοκιμάσεις
+              το ίδιο βράδυ: μία ρύθμιση, μία άσκηση, έναν τρόπο σκέψης.
+            </p>
+          </div>
+          <div class="card" style="padding: 1.5rem; --reveal-delay: 80ms" data-reveal>
+            <span class="eyebrow">Πώς το φτιάχνουμε</span>
+            <h3 style="margin-top: 0.75rem">Ηχογράφηση Τετάρτη, έκδοση Πέμπτη</h3>
+            <p style="color: hsl(var(--muted-foreground)); margin-top: 0.5rem">
+              Χωρίς σενάριο, με πλάνο. Κρατάμε τις παύσεις και τις διαφωνίες —
+              εκεί βγαίνει η πραγματική κουβέντα.
+            </p>
+          </div>
+          <div class="card" style="padding: 1.5rem" data-reveal>
+            <span class="eyebrow">Για ποιους</span>
+            <h3 style="margin-top: 0.75rem">Από rookies μέχρι aliens</h3>
+            <p style="color: hsl(var(--muted-foreground)); margin-top: 0.5rem">
+              Αν έχεις τιμόνι, αν σκέφτεσαι να πάρεις, ή αν απλά σου αρέσει ο
+              μηχανοκίνητος — υπάρχει επεισόδιο για σένα.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--tight">
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <span class="eyebrow">Στο μικρόφωνο</span>
+              <h2>Η ομάδα</h2>
+            </div>
+          </div>
+          <div class="hosts" data-hosts></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); align-items: start">
+          <div>
+            <span class="eyebrow">Η διαδρομή</span>
+            <h2 style="margin-block: 0.75rem 2rem">Πώς φτάσαμε εδώ</h2>
+            <div class="timeline">
+              <div class="timeline__item" data-reveal>
+                <div class="timeline__year">2023</div>
+                <h3>Επεισόδιο 1</h3>
+                <p style="color: hsl(var(--muted-foreground))">
+                  Δύο μικρόφωνα, μηδέν εμπειρία, 43 ακροάσεις τον πρώτο μήνα.
+                </p>
+              </div>
+              <div class="timeline__item" data-reveal>
+                <div class="timeline__year">2024</div>
+                <h3>Οι πρώτοι καλεσμένοι</h3>
+                <p style="color: hsl(var(--muted-foreground))">
+                  Έλληνες οδηγοί, διοργανωτές και stewards αρχίζουν να λένε «ναι».
+                </p>
+              </div>
+              <div class="timeline__item" data-reveal>
+                <div class="timeline__year">2025</div>
+                <h3>Video & chapters</h3>
+                <p style="color: hsl(var(--muted-foreground))">
+                  Περνάμε σε video εκδοχή και βάζουμε chapters σε κάθε επεισόδιο.
+                </p>
+              </div>
+              <div class="timeline__item" data-reveal>
+                <div class="timeline__year">2026</div>
+                <h3>Σεζόν 3</h3>
+                <p style="color: hsl(var(--muted-foreground))">
+                  Σταθερά πάνω από 8.000 ακροάσεις ανά επεισόδιο και δικό μας site.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <span class="eyebrow">Απορίες</span>
+            <h2 style="margin-block: 0.75rem 1rem">Συχνές ερωτήσεις</h2>
+            <div class="acc" data-faq></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="cta" data-reveal>
+            <h2>Θέλεις να έρθεις καλεσμένος;</h2>
+            <p class="lead" style="margin-inline: auto">
+              Οδηγείς, διοργανώνεις, φτιάχνεις hardware ή έχεις μια ιστορία που
+              αξίζει; Γράψε μας δυο γραμμές.
+            </p>
+            <div class="row" style="justify-content: center; margin-top: 1.5rem">
+              <a class="btn btn--primary" href="contact.html">Στείλε μήνυμα</a>
+              <a class="btn" href="episodes.html">Δες τα επεισόδια</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="js/about.js"></script>
+  </body>
+</html>

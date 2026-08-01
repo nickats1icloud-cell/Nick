@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="el">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Επικοινωνία — Greek SimRacers Podcast</title>
+    <meta
+      name="description"
+      content="Στείλε μήνυμα στο Greek SimRacers Podcast: πρόταση θέματος, αίτημα να έρθεις καλεσμένος ή συνεργασία."
+    />
+    <meta name="theme-color" content="#07070e" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23f97316'/><rect x='38' y='18' width='24' height='42' rx='12' fill='%23170a02'/><path d='M28 50a22 22 0 0 0 44 0' stroke='%23170a02' stroke-width='8' fill='none' stroke-linecap='round'/><path d='M50 72v12' stroke='%23170a02' stroke-width='8' stroke-linecap='round'/></svg>" />
+    <link rel="stylesheet" href="css/tokens.css" />
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/pages.css" />
+    <script>
+      try {
+        const stored = JSON.parse(localStorage.getItem("gsrp:theme"));
+        const light = stored
+          ? stored === "light"
+          : matchMedia("(prefers-color-scheme: light)").matches;
+        if (light) document.documentElement.classList.add("light");
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Μετάβαση στο περιεχόμενο</a>
+
+    <main id="main">
+      <section class="page-head">
+        <div class="container">
+          <span class="eyebrow">Επικοινωνία</span>
+          <h1>Πες μας</h1>
+          <p class="lead">
+            Θέμα που θες να ακούσεις, διόρθωση σε κάτι που είπαμε λάθος, ή
+            πρόταση συνεργασίας — όλα διαβάζονται.
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); align-items: start">
+          <form class="card form-card stack" data-contact novalidate>
+            <div class="stack" style="gap: 0.5rem">
+              <span class="eyebrow">Θέμα μηνύματος</span>
+              <div class="segmented" role="group" aria-label="Θέμα μηνύματος">
+                <button type="button" data-topic="idea" aria-pressed="true">Ιδέα</button>
+                <button type="button" data-topic="guest" aria-pressed="false">Καλεσμένος</button>
+                <button type="button" data-topic="partner" aria-pressed="false">Συνεργασία</button>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label for="name">Όνομα</label>
+                <input class="input" id="name" name="name" required autocomplete="name" />
+                <span class="error" data-error-for="name"></span>
+              </div>
+              <div class="field">
+                <label for="email">Email</label>
+                <input class="input" id="email" name="email" type="email" required autocomplete="email" />
+                <span class="error" data-error-for="email"></span>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="subject">Τίτλος</label>
+              <input class="input" id="subject" name="subject" required />
+              <span class="hint" data-subject-hint>Π.χ. «Επεισόδιο για setups σε rally»</span>
+              <span class="error" data-error-for="subject"></span>
+            </div>
+
+            <div class="field">
+              <label for="message">Μήνυμα</label>
+              <textarea class="textarea" id="message" name="message" required maxlength="1200"></textarea>
+              <div class="row" style="justify-content: space-between">
+                <span class="hint">Όσο πιο συγκεκριμένα, τόσο καλύτερα.</span>
+                <span class="hint"><span data-chars>0</span>/1200</span>
+              </div>
+              <span class="error" data-error-for="message"></span>
+            </div>
+
+            <div class="row" style="justify-content: space-between">
+              <button class="btn btn--primary" type="submit">Αποστολή</button>
+              <span class="hint" data-form-note></span>
+            </div>
+          </form>
+
+          <aside class="stack">
+            <div class="card side-card">
+              <h4>Απευθείας</h4>
+              <div class="footer__links">
+                <a href="mailto:podcast@greeksimracers.gr">podcast@greeksimracers.gr</a>
+                <a href="../greek-simracers/home.html">greeksimracers.gr</a>
+                <a href="../greek-simracers/forum.html">Forum της κοινότητας</a>
+              </div>
+            </div>
+            <div class="card side-card">
+              <h4>Πριν γράψεις</h4>
+              <p style="font-size: 0.88rem; color: hsl(var(--muted-foreground))">
+                Αν προτείνεις θέμα, δες πρώτα στα
+                <a href="episodes.html">επεισόδια</a> μήπως το έχουμε ήδη
+                καλύψει — και πες μας τι θα ήθελες να προσθέσουμε.
+              </p>
+            </div>
+            <div class="card side-card">
+              <h4>Χρόνος απάντησης</h4>
+              <p style="font-size: 0.88rem; color: hsl(var(--muted-foreground))">
+                Συνήθως μέσα σε 3-4 ημέρες. Τις εβδομάδες με endurance αγώνες,
+                λίγο αργότερα.
+              </p>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="js/contact.js"></script>
+  </body>
+</html>

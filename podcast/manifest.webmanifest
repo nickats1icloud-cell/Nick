@@ -1,0 +1,19 @@
+{
+  "name": "Greek SimRacers Podcast",
+  "short_name": "GSR Podcast",
+  "description": "Το ελληνικό podcast του sim racing — iRacing, ACC, setups και καλεσμένοι.",
+  "lang": "el",
+  "start_url": "index.html",
+  "scope": ".",
+  "display": "standalone",
+  "background_color": "#07070e",
+  "theme_color": "#07070e",
+  "icons": [
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
