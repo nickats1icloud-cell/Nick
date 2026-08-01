@@ -23,6 +23,41 @@
 
 Υπάρχουν και on-screen κουμπιά (γκάζι/φρένο/διακόπτες) για χρήση με ποντίκι ή αφή.
 
+## Εργαλεία Le Mans Ultimate
+
+Δύο εργαλεία για sim racers, φτιαγμένα να δουλεύουν **100% στον browser** —
+χωρίς server, χωρίς λογαριασμό, χωρίς να φεύγει κανένα αρχείο από τον
+υπολογιστή σου.
+
+### Stint Planner (`/stint-planner`)
+
+Προγραμματισμός βαρδιών για endurance αγώνες με driver swaps.
+
+- Ορίζεις διάρκεια αγώνα, μήκος stint και χρόνο pit stop.
+- Κάθε οδηγός δηλώνει το παράθυρο διαθεσιμότητάς του **στη δική του ζώνη ώρας**·
+  ο αλγόριθμος αναθέτει τα stints μόνο σε όποιον είναι ξύπνιος, μοιράζοντας
+  ισόποσα τον χρόνο οδήγησης.
+- Επισήμανση ακάλυπτων stints, χειροκίνητη αλλαγή οδηγού ανά stint, οπτική
+  γραμμή χρόνου και live countdown για το επόμενο swap.
+- Εξαγωγή: shareable link (το πλάνο κωδικοποιείται μέσα στο URL), αρχείο `.ics`
+  για το ημερολόγιο, και έτοιμο κείμενο για Discord.
+
+### League Control (`/league-control`)
+
+Διαχείριση πρωταθλήματος από τα αρχεία αποτελεσμάτων του παιχνιδιού.
+
+- Drag & drop των `.xml` από το `…\Le Mans Ultimate\UserData\Log\Results\`.
+- Βαθμολογία **ανά κλάση** (Hypercar / LMP2 / LMGT3 …), όπως στο WEC.
+- Ρυθμίσεις: σύστημα βαθμών (WEC / top-15 / απλό / custom), βαθμοί pole και
+  γρήγορου γύρου, ελάχιστο ποσοστό γύρων για κατάταξη, drop χειρότερων
+  αποτελεσμάτων, πολλαπλασιαστής ανά αγώνα (π.χ. ×2 για το Le Mans).
+- Ποινές βαθμών και αποκλεισμοί ανά οδηγό, με αυτόματη προαγωγή όσων ακολουθούν.
+- Εξαγωγή βαθμολογίας σε CSV και αποθήκευση/φόρτωση όλου του πρωταθλήματος σε
+  JSON.
+
+Ιδέες και έρευνα αγοράς για περισσότερα εργαλεία LMU:
+[`docs/le-mans-ultimate-app-ideas.md`](docs/le-mans-ultimate-app-ideas.md).
+
 ## Stack
 
 - [React 18](https://react.dev)
@@ -59,8 +94,10 @@ npm run dev
     ├── main.jsx          # Entry point + router
     ├── App.jsx           # Ορισμός routes
     ├── index.css         # Global styles + design tokens
-    ├── components/       # Layout, Navbar, Footer
-    └── pages/            # Home, About, NotFound
+    ├── components/       # Layout, Navbar, Footer, όργανα καντράν
+    ├── hooks/            # useVehicleSim — προσομοίωση οχήματος
+    ├── lib/              # Καθαρή λογική: stints, results XML, βαθμολογία
+    └── pages/            # Home, Dashboard, StintPlanner, LeagueControl, About
 ```
 
 ## Πώς να επεκταθεί

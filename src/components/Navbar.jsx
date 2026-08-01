@@ -13,6 +13,8 @@ export default function Navbar() {
             Home
           </NavLink>
           <NavLink to="/dashboard">Καντράν</NavLink>
+          <NavLink to="/stint-planner">Stints</NavLink>
+          <NavLink to="/league-control">League</NavLink>
           <NavLink to="/about">About</NavLink>
         </nav>
       </div>

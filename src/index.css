@@ -136,6 +136,10 @@ h3 {
   font-weight: 600;
   cursor: pointer;
   border: 1px solid transparent;
+  /* Χωρίς αυτά τα δύο, τα <button> κρατούν το γκρι φόντο του browser. */
+  background: transparent;
+  font-family: inherit;
+  font-size: inherit;
   transition: background 0.15s ease, color 0.15s ease;
 }
 .btn--primary {
@@ -489,4 +493,504 @@ h3 {
 .notfound h1 {
   font-size: 4rem;
   margin-bottom: 0;
+}
+
+/* ============================================================
+   Εργαλεία Le Mans Ultimate (Stint Planner & League Control)
+   ============================================================ */
+.tool__head {
+  margin-bottom: 2rem;
+}
+.tool__head h1 {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+}
+.tool__head p {
+  color: var(--text-muted);
+  max-width: 46rem;
+  margin: 0;
+}
+
+.tool__panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.tool__panel h2 {
+  font-size: 1.15rem;
+  margin-bottom: 1rem;
+}
+.tool__panel h3 {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin: 1.25rem 0 0.5rem;
+}
+.tool__panelhead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+.tool__panelhead h2 {
+  margin: 0;
+}
+
+.tool__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+input[type='text'],
+input[type='number'],
+input[type='time'],
+input[type='datetime-local'],
+select {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 0.55rem 0.65rem;
+  font: inherit;
+  font-size: 0.95rem;
+  width: 100%;
+  min-width: 0;
+}
+input:focus,
+select:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.check input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+
+.tool__row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+.tool__label {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+.chip {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-muted);
+  padding: 0.3rem 0.8rem;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.chip:hover {
+  color: var(--text);
+}
+.chip--on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.btn--sm {
+  padding: 0.4rem 0.9rem;
+  font-size: 0.85rem;
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tool__hint {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin: 0 0 1rem;
+}
+.tool__empty {
+  color: var(--text-muted);
+  font-style: italic;
+  margin: 0;
+}
+.tool__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+
+.tool__tablewrap {
+  overflow-x: auto;
+  margin: 0 -0.25rem;
+  padding: 0 0.25rem;
+}
+.tool__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+.tool__table th,
+.tool__table td {
+  text-align: left;
+  padding: 0.5rem 0.7rem;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.tool__table th {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 600;
+}
+.tool__table tbody tr:hover {
+  background: var(--surface-2);
+}
+.tool__table select,
+.tool__table input {
+  padding: 0.3rem 0.45rem;
+  font-size: 0.85rem;
+}
+.tool__table input[type='checkbox'] {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--accent);
+  padding: 0;
+}
+.tool__row--warn td {
+  background: rgba(255, 92, 124, 0.08);
+}
+.tool__row--muted td {
+  color: var(--text-muted);
+}
+
+.tool__toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: #fff;
+  padding: 0.7rem 1.2rem;
+  border-radius: var(--radius);
+  font-weight: 600;
+  z-index: 50;
+}
+
+/* --- Stint Planner --- */
+.stint__driver {
+  display: grid;
+  grid-template-columns: 12px minmax(120px, 1.4fr) minmax(140px, 1.6fr) auto auto auto auto;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0;
+}
+.stint__driver input[type='time'] {
+  width: auto;
+}
+.stint__swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  flex: none;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+.stint__dash {
+  color: var(--text-muted);
+}
+.stint__remove {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  flex: none;
+}
+.stint__remove:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.stint__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+.stint__stats div {
+  background: var(--surface-2);
+  border-radius: 8px;
+  padding: 0.75rem;
+  text-align: center;
+}
+.stint__stats strong {
+  display: block;
+  font-size: 1.4rem;
+  line-height: 1.2;
+}
+.stint__stats span {
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+.stint__warn strong,
+td.stint__warn {
+  color: #ff5c7c;
+}
+.stint__alert {
+  background: rgba(255, 92, 124, 0.12);
+  border: 1px solid rgba(255, 92, 124, 0.35);
+  border-radius: 8px;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.88rem;
+  margin: 0 0 1.25rem;
+}
+
+.stint__timeline {
+  display: flex;
+  gap: 2px;
+  height: 34px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+}
+.stint__seg {
+  flex-basis: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: rgba(0, 0, 0, 0.65);
+  min-width: 14px;
+}
+.stint__seg--warn {
+  box-shadow: inset 0 0 0 2px #ff5c7c;
+}
+
+.stint__live {
+  background: var(--surface-2);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+}
+.stint__live p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+.stint__pill {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 999px;
+  padding: 0.1rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  margin-right: 0.4rem;
+}
+.stint__tag {
+  display: inline-block;
+  margin-left: 0.4rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  padding: 0 0.35rem;
+}
+.stint__tag--warn {
+  color: #ff5c7c;
+  border-color: rgba(255, 92, 124, 0.5);
+}
+
+/* --- League Control --- */
+.league__drop {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 2rem 1.5rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.league__drop--over {
+  border-color: var(--accent);
+  background: var(--surface);
+}
+.league__drop p {
+  margin: 0 0 0.75rem;
+  color: var(--text-muted);
+}
+.league__drop small {
+  display: block;
+  margin-top: 0.9rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+.league__drop code {
+  background: var(--surface-2);
+  border-radius: 4px;
+  padding: 0.1rem 0.3rem;
+  font-size: 0.85em;
+}
+
+.league__errors {
+  background: rgba(255, 92, 124, 0.12);
+  border: 1px solid rgba(255, 92, 124, 0.35);
+  border-radius: var(--radius);
+  color: #ffb3c2;
+  font-size: 0.88rem;
+  list-style: none;
+  margin: 0 0 1.5rem;
+  padding: 0.9rem 1.1rem;
+}
+
+.league__event {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 0.6rem;
+}
+.league__eventhead {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+}
+.league__eventtitle {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  padding: 0;
+}
+.league__eventtitle small {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.league__mult {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+.league__mult input {
+  width: 60px;
+  padding: 0.3rem 0.4rem;
+}
+.league__eventbody {
+  border-top: 1px solid var(--border);
+  padding: 0.5rem 0.75rem 1rem;
+}
+.league__num {
+  width: 64px;
+}
+.league__note {
+  width: 130px;
+}
+.league__dropped {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+@media (max-width: 760px) {
+  /* Με πέντε links το menu δεν χωράει σε κινητό: μικραίνουμε τα κενά και
+     αφήνουμε τη μπάρα να κυλάει οριζόντια αντί για όλη τη σελίδα. */
+  .navbar__inner {
+    gap: 0.75rem;
+  }
+  .navbar__links {
+    gap: 1rem;
+    font-size: 0.9rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .navbar__links::-webkit-scrollbar {
+    display: none;
+  }
+  .navbar__links a {
+    white-space: nowrap;
+  }
+
+  /* Σε στενές οθόνες η γραμμή του οδηγού σπάει σε τρεις σειρές:
+     όνομα, ζώνη ώρας, παράθυρο διαθεσιμότητας. */
+  .stint__driver {
+    grid-template-columns: 12px 1fr 20px 1fr 30px;
+    grid-template-areas:
+      'swatch name name name remove'
+      'zone zone zone zone zone'
+      'from from dash to to';
+    row-gap: 0.45rem;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .stint__driver > :nth-child(1) {
+    grid-area: swatch;
+  }
+  .stint__driver > :nth-child(2) {
+    grid-area: name;
+  }
+  .stint__driver > :nth-child(3) {
+    grid-area: zone;
+  }
+  .stint__driver > :nth-child(4) {
+    grid-area: from;
+  }
+  .stint__driver > :nth-child(5) {
+    grid-area: dash;
+    text-align: center;
+  }
+  .stint__driver > :nth-child(6) {
+    grid-area: to;
+  }
+  .stint__driver > :nth-child(7) {
+    grid-area: remove;
+  }
+  .stint__driver input[type='time'] {
+    width: 100%;
+  }
+
+  .tool__panel {
+    padding: 1.1rem;
+  }
+  .tool__actions .btn {
+    flex: 1 1 auto;
+    text-align: center;
+  }
 }

@@ -14,6 +14,16 @@ const features = [
     title: 'Warning lights',
     body: 'Φλας, μεγάλη σκάλα, λάδι, μπαταρία, θερμοκρασία, check engine, ABS και άλλα.',
   },
+  {
+    title: 'Stint Planner',
+    body: 'Πλάνο βαρδιών για endurance αγώνες στο Le Mans Ultimate, με διαθεσιμότητα ανά ζώνη ώρας.',
+    to: '/stint-planner',
+  },
+  {
+    title: 'League Control',
+    body: 'Βαθμολογία πρωταθλήματος LMU από τα αρχεία αποτελεσμάτων, με ποινές και drop scores.',
+    to: '/league-control',
+  },
 ]
 
 export default function Home() {
@@ -50,7 +60,7 @@ export default function Home() {
       <section className="card-grid">
         {features.map((f) => (
           <article key={f.title} className="card">
-            <h3>{f.title}</h3>
+            <h3>{f.to ? <Link to={f.to}>{f.title}</Link> : f.title}</h3>
             <p>{f.body}</p>
           </article>
         ))}
