@@ -1,0 +1,536 @@
+/*
+  GSR Time Attack (game.html) — όλα ζουν μέσα στο .game-stage.
+  Χρησιμοποιεί τα ίδια tokens με το υπόλοιπο site· εδώ μπαίνει μόνο ό,τι
+  αφορά τον καμβά, το HUD και τα overlays του παιχνιδιού.
+*/
+
+/* Τα overlays/HUD κρύβονται με το `hidden` attribute· χωρίς αυτόν τον κανόνα
+   το `display: flex` παρακάτω το ακυρώνει και τα κρυμμένα panels συνεχίζουν
+   να δέχονται κλικ. */
+.game-stage [hidden] {
+  display: none !important;
+}
+
+/* ============ Σκηνή & καμβάς ============ */
+.game-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: 78vh;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: #0d1a12;
+  touch-action: none;
+  user-select: none;
+}
+
+@media (max-width: 720px) {
+  .game-stage {
+    aspect-ratio: 4 / 5;
+  }
+}
+
+.game-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ============ HUD ============ */
+.game-hud {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  font-family: var(--font-display);
+  color: #f2f5f9;
+  text-shadow: 0 2px 6px rgb(0 0 0 / 0.7);
+}
+
+.game-hud__panel {
+  position: absolute;
+  background: rgb(8 12 18 / 0.62);
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-radius: var(--radius-md);
+  padding: 0.6rem 0.85rem;
+  backdrop-filter: blur(4px);
+}
+
+.game-hud__times {
+  top: 0.75rem;
+  left: 0.75rem;
+  min-width: 11rem;
+}
+
+.game-hud__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.25rem;
+  font-size: 0.78rem;
+  line-height: 1.7;
+}
+
+.game-hud__row span:first-child {
+  color: hsl(210 15% 72%);
+  font-family: var(--font-body);
+  letter-spacing: 0.02em;
+}
+
+.game-hud__row strong {
+  font-variant-numeric: tabular-nums;
+}
+
+.game-hud__current {
+  font-size: 1.35rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.game-delta--up {
+  color: #4ade80;
+}
+
+.game-delta--down {
+  color: #f87171;
+}
+
+.game-hud__speed {
+  right: 0.75rem;
+  bottom: 0.75rem;
+  text-align: right;
+  min-width: 8.5rem;
+}
+
+.game-speed__value {
+  font-size: 2.6rem;
+  font-weight: 900;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.game-speed__unit {
+  font-size: 0.75rem;
+  color: hsl(210 15% 72%);
+  font-family: var(--font-body);
+}
+
+.game-gear {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: hsl(var(--primary-light));
+}
+
+.game-rpm {
+  height: 6px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.14);
+  overflow: hidden;
+  margin-top: 0.4rem;
+}
+
+.game-rpm__fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, hsl(var(--primary-light)), #f2c14e 78%, #e04141 92%);
+  transition: width 0.05s linear;
+}
+
+.game-hud__lap {
+  top: 0.75rem;
+  right: 0.75rem;
+  text-align: right;
+}
+
+.game-lap__count {
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.game-position {
+  font-size: 1.6rem;
+  font-weight: 900;
+}
+
+.game-minimap {
+  position: absolute;
+  right: 0.75rem;
+  top: 6.5rem;
+  width: 132px;
+  height: 96px;
+  background: rgb(8 12 18 / 0.55);
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-radius: var(--radius-md);
+}
+
+/* Κεντρικά μηνύματα: φώτα εκκίνησης. */
+.game-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.game-lights {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.game-light {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.08);
+  border: 2px solid rgb(0 0 0 / 0.5);
+}
+
+.game-light--on {
+  background: #e11d1d;
+  box-shadow: 0 0 18px #e11d1dcc;
+}
+
+.game-flash {
+  font-size: clamp(2rem, 7vw, 4rem);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.game-toastline {
+  position: absolute;
+  left: 50%;
+  top: 1rem;
+  transform: translateX(-50%);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  background: rgb(8 12 18 / 0.72);
+  border: 1px solid rgb(255 255 255 / 0.12);
+  white-space: nowrap;
+}
+
+.game-toastline--warn {
+  color: #fbbf24;
+  border-color: #fbbf2455;
+}
+
+.game-toastline--good {
+  color: #4ade80;
+  border-color: #4ade8055;
+}
+
+/* ============ Overlays (μενού, pause, αποτελέσματα) ============ */
+.game-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgb(6 10 16 / 0.86);
+  backdrop-filter: blur(6px);
+  overflow-y: auto;
+}
+
+.game-overlay__card {
+  width: min(760px, 100%);
+  background: var(--gradient-card);
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+}
+
+.game-overlay__card h2 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  margin: 0 0 0.35rem;
+}
+
+.game-overlay__lead {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.9rem;
+  margin-bottom: 1.25rem;
+}
+
+.game-options {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.game-option__label {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: hsl(var(--muted-foreground));
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.game-choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.game-choice {
+  flex: 1 1 12rem;
+  text-align: left;
+  padding: 0.7rem 0.9rem;
+  border-radius: var(--radius-md);
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--secondary));
+  color: hsl(var(--foreground));
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.game-choice:hover {
+  border-color: hsl(var(--primary) / 0.6);
+  transform: translateY(-2px);
+}
+
+.game-choice--active {
+  border-color: transparent;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+.game-choice strong {
+  display: block;
+  font-size: 0.95rem;
+}
+
+.game-choice small {
+  display: block;
+  font-size: 0.75rem;
+  opacity: 0.85;
+  margin-top: 0.15rem;
+}
+
+.game-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--background) / 0.6);
+  color: hsl(var(--foreground));
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+.game-input:focus {
+  outline: none;
+  border-color: hsl(var(--primary));
+}
+
+.game-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+/* ============ Αποτελέσματα ============ */
+.game-results {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.25rem;
+  font-size: 0.9rem;
+}
+
+.game-results th,
+.game-results td {
+  text-align: left;
+  padding: 0.45rem 0.6rem;
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+.game-results th {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: hsl(var(--muted-foreground));
+}
+
+.game-results tr[data-player="true"] {
+  background: hsl(var(--primary) / 0.14);
+}
+
+.game-results td:last-child,
+.game-results th:last-child {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============ Χειριστήρια αφής ============ */
+.game-pad {
+  position: absolute;
+  inset: auto 0 0 0;
+  display: none;
+  justify-content: space-between;
+  padding: 0.9rem;
+  pointer-events: none;
+}
+
+.game-pad__group {
+  display: flex;
+  gap: 0.6rem;
+  pointer-events: auto;
+}
+
+.game-pad__btn {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  border: 1px solid rgb(255 255 255 / 0.22);
+  background: rgb(10 16 24 / 0.55);
+  color: #f2f5f9;
+  font-size: 1.4rem;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  touch-action: none;
+}
+
+.game-pad__btn--on {
+  background: hsl(var(--primary) / 0.8);
+}
+
+/* Τα touch controls εμφανίζονται μόνο σε συσκευές αφής. */
+@media (hover: none) and (pointer: coarse) {
+  .game-pad {
+    display: flex;
+  }
+}
+
+/* Σε μικρές οθόνες το HUD μαζεύεται, αλλιώς σκεπάζει την πίστα και πέφτει
+   πάνω στα κουμπιά αφής. */
+@media (max-width: 720px) {
+  .game-hud__panel {
+    padding: 0.4rem 0.6rem;
+  }
+
+  .game-hud__times {
+    min-width: 8.5rem;
+  }
+
+  .game-hud__current {
+    font-size: 1.05rem;
+  }
+
+  .game-hud__row {
+    font-size: 0.68rem;
+    line-height: 1.5;
+    gap: 0.6rem;
+  }
+
+  .game-minimap {
+    width: 92px;
+    height: 68px;
+    top: 5.5rem;
+  }
+
+  .game-hud__speed {
+    bottom: 6rem;
+    min-width: 6rem;
+  }
+
+  .game-speed__value {
+    font-size: 1.8rem;
+  }
+
+  .game-gear {
+    font-size: 1.1rem;
+  }
+
+  .game-lap__count {
+    font-size: 0.95rem;
+  }
+
+  .game-position {
+    font-size: 1.2rem;
+  }
+
+  .game-light {
+    width: 22px;
+    height: 22px;
+  }
+
+  .game-pad__btn {
+    width: 60px;
+    height: 60px;
+  }
+
+  .game-toastline {
+    font-size: 0.8rem;
+  }
+}
+
+/* ============ Κάρτες κάτω από τη σκηνή ============ */
+.game-info {
+  padding: 1.5rem;
+}
+
+.game-info h3 {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  margin: 0 0 0.9rem;
+}
+
+.game-keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  font-size: 0.85rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.game-key {
+  display: inline-block;
+  padding: 0.1rem 0.45rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-sm);
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  color: hsl(var(--foreground));
+  margin-right: 0.35rem;
+}
+
+.game-board__row {
+  display: grid;
+  grid-template-columns: 2rem 1fr auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid hsl(var(--border));
+  font-size: 0.9rem;
+}
+
+.game-board__row:last-child {
+  border-bottom: 0;
+}
+
+.game-board__pos {
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: hsl(var(--muted-foreground));
+}
+
+.game-board__time {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.game-empty {
+  font-size: 0.88rem;
+  color: hsl(var(--muted-foreground));
+  margin: 0;
+}

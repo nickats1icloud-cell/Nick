@@ -9,7 +9,7 @@
 //
 // Ανεβάζοντας το CACHE_VERSION καθαρίζονται αυτόματα οι παλιές caches.
 
-const CACHE_VERSION = "gsr-v1";
+const CACHE_VERSION = "gsr-v2";
 const PRECACHE = [
   "./",
   "./index.html",
@@ -19,6 +19,8 @@ const PRECACHE = [
   "./assets/css/components.css",
   "./assets/css/motion.css",
   "./assets/css/hub.css",
+  "./game.html",
+  "./assets/css/game.css",
   "./assets/js/main.js",
   "./assets/images/gsr-logo.png",
   "./assets/images/icon-192.png",
