@@ -4,12 +4,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-"Nick" is a React + Vite single-page app centered on `/dashboard`: a fully
-functional digital car instrument cluster (analog tacho/speedo, secondary
-gauges, warning lights, and a client-side vehicle physics simulation) styled
-after the Honda Civic EK's LCD cluster. The README, in-code comments, and UI
-copy are in Greek — match that language when writing user-facing strings or
-comments in this codebase.
+"Nick" is a React + Vite single-page app with two features:
+
+- `/dashboard` — a fully functional digital car instrument cluster (analog
+  tacho/speedo, secondary gauges, warning lights, and a client-side vehicle
+  physics simulation) styled after the Honda Civic EK's LCD cluster.
+- `/podcast` — a coaching tool for a Greek-language sim racing podcast: it
+  parses the show's RSS feed and an episode transcript, scores both, and
+  produces concrete Greek-language presentation advice.
+
+The README, in-code comments, and UI copy are in Greek — match that language
+when writing user-facing strings or comments in this codebase.
 
 ## Sub-projects
 
@@ -87,10 +92,39 @@ reload) resolve correctly on Pages, which has no server-side rewrite support.
     oil pressure, and voltage.
   - `WarningLights.jsx` — renders the warning-light icon grid from the
     `warnings` object produced by `useVehicleSim`.
+- **Podcast coach (`src/pages/Podcast.jsx` + `src/lib/`)**: the second feature,
+  entirely client-side (no backend, no API keys, no npm additions). The page is
+  a thin controller over pure-function modules in `src/lib/`:
+  - `rssFeed.js` — fetches the RSS (direct, then a chain of public CORS
+    proxies; the UI also accepts pasted XML) and parses it with `DOMParser`
+    into `{ title, …, episodes[] }`.
+  - `transcript.js` — parses SRT / WebVTT / plain text (with optional inline
+    timestamps and `Όνομα:` speaker labels) into
+    `{ segments[], text, speakers, durationSec, hasTiming }`.
+  - `greekText.js` — Greek-specific text utilities: accent/final-sigma
+    normalization, tokenizing, sentence splitting (`;` is the Greek question
+    mark), approximate syllable counting, stopwords, n-gram repeats.
+  - `speechAnalysis.js` — the core: filler lexicon (hesitation sounds, crutch
+    words, connector tics, hedges), speaking rate, sentence length, questions,
+    speaker balance, monologues, pauses, English-vs-sim-racing-jargon, hook and
+    outro checks. Produces `scores` (0-100 per dimension, weighted `overall`)
+    and `tips[]` (severity + explanation + drill), all written in Greek.
+  - `feedAnalysis.js` — publishing cadence, duration consistency, title and
+    shownotes quality, metadata completeness, keyword extraction, plus feed
+    tips; `analyzeEpisodeMeta` does the same for a single episode.
+  - `score.js`, `report.js`, `storage.js`, `demoTranscript.js` — score→tone
+    mapping, Markdown export, `localStorage` helpers (feed URL, transcripts,
+    analysis history), and a sample transcript for the demo button.
+  Scoring bands and the filler lexicon are deliberately approximate heuristics
+  tuned for useful coaching, not linguistics research — adjust the named
+  constants at the top of each module rather than scattering magic numbers.
+  Presentational components live in `src/components/podcast/` and use a
+  `pod__*` BEM-like class convention.
 - **Styling**: no CSS framework — plain CSS in `src/index.css` with design
   tokens (colors, radius, max-width) defined as CSS custom properties in
   `:root`. Dashboard-specific styles use a `dash__*` BEM-like naming
-  convention (e.g. `dash__cluster`, `dash__pod`, `dash__gear`).
+  convention (e.g. `dash__cluster`, `dash__pod`, `dash__gear`); the podcast
+  page uses `pod__*` the same way.
 
 ## Conventions
 

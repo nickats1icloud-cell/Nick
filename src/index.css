@@ -490,3 +490,484 @@ h3 {
   font-size: 4rem;
   margin-bottom: 0;
 }
+
+/* ---------------------------------------------------------------- Podcast */
+.pod.container {
+  max-width: 1080px;
+}
+.pod__header {
+  margin-bottom: 2rem;
+}
+.pod__lead {
+  color: var(--text-muted);
+  max-width: 60ch;
+}
+.pod__panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.pod__panel h2 {
+  font-size: 1.25rem;
+}
+.pod__panel h3 {
+  font-size: 1rem;
+  margin: 1.5rem 0 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.pod__panel--muted {
+  background: transparent;
+}
+.pod__row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.pod__form {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+}
+.pod__input,
+.pod__textarea {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  padding: 0.7rem 0.9rem;
+  font: inherit;
+  width: 100%;
+}
+.pod__input {
+  flex: 1 1 22rem;
+  width: auto;
+}
+.pod__input--small {
+  flex: 0 0 8rem;
+  margin-left: 0.75rem;
+}
+.pod__textarea {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  resize: vertical;
+  margin-bottom: 0.75rem;
+}
+.pod__inline-field {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+.pod__link-btn {
+  background: none;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  font: inherit;
+  padding: 0;
+  text-decoration: underline;
+}
+.pod__error {
+  color: #ff8b7a;
+  background: rgba(255, 87, 60, 0.08);
+  border-left: 3px solid #ff5a3c;
+  padding: 0.6rem 0.9rem;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+.pod__ok {
+  color: #6ee7a8;
+}
+.pod__note {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+.pod__empty {
+  color: var(--text-muted);
+  font-style: italic;
+}
+.pod__paste {
+  margin-top: 1rem;
+}
+
+/* Δείκτες βαθμολογίας */
+.pod__dials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  align-items: flex-start;
+  margin: 1.25rem 0;
+}
+.pod__dial {
+  text-align: center;
+  --dial: var(--text-muted);
+}
+.pod__dial--good {
+  --dial: #4ade80;
+}
+.pod__dial--ok {
+  --dial: #a3e635;
+}
+.pod__dial--warn {
+  --dial: #fbbf24;
+}
+.pod__dial--bad {
+  --dial: #f87171;
+}
+.pod__dial-track {
+  fill: none;
+  stroke: var(--surface-2);
+  stroke-width: 10;
+}
+.pod__dial-value {
+  fill: none;
+  stroke: var(--dial);
+  stroke-width: 10;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.4s ease;
+}
+.pod__dial-number {
+  fill: var(--text);
+  font-size: 2rem;
+  font-weight: 700;
+  text-anchor: middle;
+}
+.pod__dial-unit {
+  fill: var(--text-muted);
+  font-size: 0.8rem;
+  text-anchor: middle;
+}
+.pod__dial-meta {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.85rem;
+}
+.pod__dial-meta span {
+  color: var(--text-muted);
+}
+
+/* Μετρικές */
+.pod__metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.9rem;
+  margin: 1.25rem 0;
+}
+.pod__metric {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-left-width: 4px;
+  border-radius: var(--radius);
+  padding: 0.9rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.pod__metric--good {
+  border-left-color: #4ade80;
+}
+.pod__metric--ok {
+  border-left-color: #a3e635;
+}
+.pod__metric--warn {
+  border-left-color: #fbbf24;
+}
+.pod__metric--bad {
+  border-left-color: #f87171;
+}
+.pod__metric--neutral,
+.pod__metric--unknown {
+  border-left-color: var(--border);
+}
+.pod__metric-label {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.pod__metric-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.pod__metric-value small {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-left: 0.2rem;
+}
+.pod__metric-target {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+.pod__metric-hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+/* Συμβουλές */
+.pod__tips {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.9rem;
+}
+.pod__tip {
+  background: var(--surface-2);
+  border-radius: var(--radius);
+  border-left: 4px solid var(--border);
+  padding: 1rem 1.1rem;
+}
+.pod__tip h4 {
+  margin: 0.35rem 0 0.4rem;
+  font-size: 1.02rem;
+}
+.pod__tip p {
+  margin: 0 0 0.4rem;
+  font-size: 0.92rem;
+}
+.pod__tip--high {
+  border-left-color: #f87171;
+}
+.pod__tip--medium {
+  border-left-color: #fbbf24;
+}
+.pod__tip--low {
+  border-left-color: var(--accent);
+}
+.pod__tip-badge {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+.pod__tip-drill {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+  margin: 0;
+}
+
+/* Επεισόδια */
+.pod__episodes {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+.pod__episode {
+  width: 100%;
+  text-align: left;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  cursor: pointer;
+  padding: 0.7rem 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font: inherit;
+}
+.pod__episode:hover {
+  border-color: var(--accent);
+}
+.pod__episode.is-selected {
+  border-color: var(--accent);
+  background: rgba(124, 92, 255, 0.12);
+}
+.pod__episode-title {
+  font-weight: 600;
+}
+.pod__episode-meta {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+.pod__episode-detail {
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  padding-top: 1rem;
+}
+.pod__issues {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0 0;
+  display: grid;
+  gap: 0.5rem;
+}
+.pod__issue {
+  border-left: 3px solid var(--border);
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+  background: var(--surface-2);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+.pod__issue--high {
+  border-left-color: #f87171;
+}
+.pod__issue--medium {
+  border-left-color: #fbbf24;
+}
+.pod__issue--low {
+  border-left-color: var(--accent);
+}
+
+/* Πίνακες, λίστες, chips */
+.pod__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.pod__table th,
+.pod__table td {
+  text-align: left;
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid var(--border);
+}
+.pod__table th {
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.pod__cell--good {
+  color: #4ade80;
+}
+.pod__cell--ok {
+  color: #a3e635;
+}
+.pod__cell--warn {
+  color: #fbbf24;
+}
+.pod__cell--bad {
+  color: #f87171;
+}
+.pod__delta {
+  margin-left: 0.4rem;
+  font-size: 0.75rem;
+}
+.pod__delta--good {
+  color: #4ade80;
+}
+.pod__delta--bad {
+  color: #f87171;
+}
+.pod__delta--neutral {
+  color: var(--text-muted);
+}
+.pod__list {
+  padding-left: 1.1rem;
+  font-size: 0.92rem;
+}
+.pod__list li {
+  margin-bottom: 0.35rem;
+}
+.pod__split {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+.pod__chips ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.pod__chips li {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  font-size: 0.85rem;
+}
+.pod__chips li span {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  margin-left: 0.25rem;
+}
+.pod__bars {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+.pod__bars li {
+  display: grid;
+  grid-template-columns: minmax(4rem, 8rem) 1fr auto;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+}
+.pod__bar {
+  background: var(--surface-2);
+  border-radius: 999px;
+  height: 0.6rem;
+  overflow: hidden;
+}
+.pod__bar span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+.pod__details {
+  margin-top: 1rem;
+  border-top: 1px solid var(--border);
+  padding-top: 0.75rem;
+  font-size: 0.9rem;
+}
+.pod__details summary {
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+/* Χρονογραμμή */
+.pod__timeline-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 90px;
+  background: var(--surface-2);
+  border-radius: var(--radius);
+  padding: 0.5rem;
+}
+.pod__timeline-bar {
+  flex: 1 1 0;
+  min-width: 2px;
+  background: var(--accent);
+  border-radius: 2px 2px 0 0;
+}
+.pod__timeline-bar.is-hot {
+  background: #f87171;
+}
+.pod__timeline-axis {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+@media (max-width: 640px) {
+  .pod__panel {
+    padding: 1.1rem;
+  }
+  .pod__dials {
+    justify-content: center;
+  }
+}
