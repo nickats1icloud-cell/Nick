@@ -9,7 +9,7 @@
 //
 // Ανεβάζοντας το CACHE_VERSION καθαρίζονται αυτόματα οι παλιές caches.
 
-const CACHE_VERSION = "gsr-v2";
+const CACHE_VERSION = "gsr-v3";
 const PRECACHE = [
   "./",
   "./index.html",

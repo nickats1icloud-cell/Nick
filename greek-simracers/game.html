@@ -3,21 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GSR Time Attack — Greek SimRacers</title>
-  <meta name="description" content="Το παιχνίδι της κοινότητας Greek SimRacers: time attack και αγώνες σε ελληνικές πίστες, με ghost του καλύτερου γύρου και πίνακα χρόνων — μέσα στον browser.">
+  <title>GSR Team Manager — Greek SimRacers</title>
+  <meta name="description" content="Το παιχνίδι της κοινότητας Greek SimRacers: διοίκησε τη δική σου ομάδα sim racing — οδηγοί, ανάπτυξη αυτοκινήτου, στρατηγική ελαστικών και ζωντανοί αγώνες στην πίστα.">
   <link rel="icon" href="assets/images/gsr-logo.png">
   <!-- Προεπισκόπηση όταν μοιράζεται ο σύνδεσμος (Facebook, Discord, Messenger, X) -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Greek SimRacers">
   <meta property="og:locale" content="el_GR">
-  <meta property="og:title" content="GSR Time Attack — Greek SimRacers">
-  <meta property="og:description" content="Παίξε στον browser: τρεις ελληνικές πίστες, ghost του καλύτερου γύρου και αγώνες με αντιπάλους.">
+  <meta property="og:title" content="GSR Team Manager — Greek SimRacers">
+  <meta property="og:description" content="Διοίκησε τη δική σου ομάδα: οδηγοί, ανάπτυξη, στρατηγική και ζωντανοί αγώνες μέσα στον browser.">
   <meta property="og:url" content="https://nickats1icloud-cell.github.io/Nick/greek-simracers/game.html">
   <meta property="og:image" content="https://nickats1icloud-cell.github.io/Nick/greek-simracers/assets/images/gsr-logo.png">
   <meta property="og:image:alt" content="Λογότυπο Greek SimRacers">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="GSR Time Attack — Greek SimRacers">
-  <meta name="twitter:description" content="Παίξε στον browser: τρεις ελληνικές πίστες, ghost του καλύτερου γύρου και αγώνες με αντιπάλους.">
+  <meta name="twitter:title" content="GSR Team Manager — Greek SimRacers">
+  <meta name="twitter:description" content="Διοίκησε τη δική σου ομάδα: οδηγοί, ανάπτυξη, στρατηγική και ζωντανοί αγώνες μέσα στον browser.">
   <meta name="twitter:image" content="https://nickats1icloud-cell.github.io/Nick/greek-simracers/assets/images/gsr-logo.png">
   <link rel="canonical" href="https://nickats1icloud-cell.github.io/Nick/greek-simracers/game.html">
   <script>document.documentElement.classList.add('js');</script>
@@ -87,166 +87,231 @@
 </header>
 
 <main id="main" tabindex="-1">
-  <section class="section">
+  <section class="section mgr-section">
     <div class="container">
-      <div class="section-eyebrow reveal">
-        <span class="line"></span>
-        <span>GSR Time Attack</span>
-        <span class="line reverse"></span>
+
+      <!-- ============ ΜΠΑΡΑ ΟΜΑΔΑΣ ============ -->
+      <div class="mgr-topbar card" id="mgr-topbar" hidden>
+        <div class="mgr-topbar__team">
+          <span class="mgr-topbar__chip" id="top-color"></span>
+          <div>
+            <strong id="top-team">—</strong>
+            <span id="top-season">Σεζόν 1 · Αγώνας 1/6</span>
+          </div>
+        </div>
+        <div class="mgr-topbar__stats">
+          <div><span>Ταμείο</span><strong id="top-money">—</strong></div>
+          <div><span>Αυτοκίνητο</span><strong id="top-car">—</strong></div>
+          <div><span>Βαθμοί</span><strong id="top-points">—</strong></div>
+        </div>
+        <button type="button" class="btn btn-outline btn-sm" id="btn-quit">Νέα καριέρα</button>
       </div>
-      <h1 class="section-title reveal">Το παιχνίδι <span class="text-gradient">της κοινότητας</span></h1>
-      <p class="section-subtitle reveal">
-        Τρεις ελληνικές πίστες, ghost του καλύτερου γύρου σου και αγώνες με αντιπάλους —
-        κατευθείαν στον browser, χωρίς εγκατάσταση.
-      </p>
 
-      <!-- ============ ΣΚΗΝΗ ΠΑΙΧΝΙΔΙΟΥ ============ -->
-      <div class="game-stage" id="stage">
-        <canvas class="game-canvas" id="game-canvas"></canvas>
+      <!-- ============ ΟΘΟΝΗ ΕΝΑΡΞΗΣ ============ -->
+      <div class="mgr-screen" id="screen-start">
+        <div class="section-eyebrow reveal">
+          <span class="line"></span>
+          <span>GSR Team Manager</span>
+          <span class="line reverse"></span>
+        </div>
+        <h1 class="section-title reveal">Στήσε <span class="text-gradient">τη δική σου ομάδα</span></h1>
+        <p class="section-subtitle reveal">
+          Διάλεξε οδηγούς, ανάπτυξε το αυτοκίνητο, διάβασε τη στρατηγική σωστά — και κέρδισε
+          το πρωτάθλημα από τον τοίχο των μηχανικών. Τους αγώνες τους βλέπεις ζωντανά στην πίστα.
+        </p>
 
-        <!-- HUD -->
-        <div class="game-hud" id="hud" hidden>
-          <div class="game-hud__panel game-hud__times">
-            <div class="game-hud__current" id="hud-current">0:00.000</div>
-            <div class="game-hud__row"><span>Καλύτερος</span><strong id="hud-best">--:--.---</strong></div>
-            <div class="game-hud__row"><span>Προηγούμενος</span><strong id="hud-last">--:--.---</strong></div>
-            <div class="game-hud__row"><span>Delta</span><strong id="hud-delta">—</strong></div>
-          </div>
-
-          <div class="game-hud__panel game-hud__lap">
-            <div class="game-lap__count" id="hud-lap">Γύρος 1</div>
-            <div class="game-position" id="hud-position" hidden>P1</div>
-          </div>
-
-          <canvas class="game-minimap" id="minimap" width="264" height="192"></canvas>
-
-          <div class="game-hud__panel game-hud__speed">
-            <div class="game-speed__value" id="hud-speed">0</div>
-            <div class="game-speed__unit">km/h</div>
-            <div class="game-gear" id="hud-gear">1</div>
-            <div class="game-rpm"><div class="game-rpm__fill" id="hud-rpm"></div></div>
-          </div>
-
-          <div class="game-toastline" id="hud-toast" hidden></div>
-
-          <div class="game-center" id="hud-center" hidden>
-            <div class="game-lights" id="hud-lights"></div>
-            <div class="game-flash" id="hud-flash"></div>
-          </div>
-
-          <!-- Χειριστήρια αφής (μόνο σε συσκευές αφής) -->
-          <div class="game-pad">
-            <div class="game-pad__group">
-              <button type="button" class="game-pad__btn" id="pad-left" aria-label="Αριστερά">◀</button>
-              <button type="button" class="game-pad__btn" id="pad-right" aria-label="Δεξιά">▶</button>
-            </div>
-            <div class="game-pad__group">
-              <button type="button" class="game-pad__btn" id="pad-brake" aria-label="Φρένο">✋</button>
-              <button type="button" class="game-pad__btn" id="pad-throttle" aria-label="Γκάζι">⛽</button>
-            </div>
+        <div class="card mgr-card" id="resume-card" hidden>
+          <h3>Συνέχισε την καριέρα σου</h3>
+          <p class="mgr-muted" id="resume-info">—</p>
+          <div class="mgr-actions">
+            <button type="button" class="btn btn-primary btn-sm" id="btn-resume">Συνέχεια</button>
+            <button type="button" class="btn btn-outline btn-sm" id="btn-newcareer">Νέα καριέρα από την αρχή</button>
           </div>
         </div>
 
-        <!-- ============ ΜΕΝΟΥ ΕΝΑΡΞΗΣ ============ -->
-        <div class="game-overlay" id="menu">
-          <div class="game-overlay__card">
-            <h2>Διάλεξε πίστα &amp; αμάξι</h2>
-            <p class="game-overlay__lead">
-              Time Attack για κυνήγι χρόνου με ghost, ή Αγώνας με αντιπάλους. Οι χρόνοι σου
-              αποθηκεύονται σε αυτή τη συσκευή — αν είσαι συνδεδεμένος, μπαίνουν και στον
-              πίνακα της κοινότητας.
+        <div id="new-career">
+          <div class="card mgr-card">
+            <h3>Η ομάδα σου</h3>
+            <div class="mgr-form">
+              <div>
+                <label class="mgr-label" for="team-name">Όνομα ομάδας</label>
+                <input class="mgr-input" id="team-name" maxlength="26" placeholder="π.χ. Hellenic Racing" autocomplete="off">
+              </div>
+              <div>
+                <span class="mgr-label">Χρώμα</span>
+                <div class="mgr-colors" id="team-colors"></div>
+              </div>
+              <div>
+                <span class="mgr-label">Δυσκολία</span>
+                <div class="mgr-choices" id="choice-difficulty"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mgr-card">
+            <h3>Διάλεξε δύο οδηγούς <span class="mgr-muted" id="hire-budget"></span></h3>
+            <p class="mgr-muted">
+              Η υπογραφή κοστίζει τρεις μισθούς μπροστά. Οι γρήγοροι οδηγοί τρώνε το budget
+              που θα χρειαστείς για ανάπτυξη — εκεί κρίνεται η σεζόν.
             </p>
+            <div class="mgr-driver-grid" id="market-grid"></div>
+          </div>
 
-            <div class="game-options">
-              <div>
-                <span class="game-option__label">Πίστα</span>
-                <div class="game-choices" id="choice-track"></div>
-              </div>
-              <div>
-                <span class="game-option__label">Αμάξι</span>
-                <div class="game-choices" id="choice-car"></div>
-              </div>
-              <div>
-                <span class="game-option__label">Λειτουργία</span>
-                <div class="game-choices" id="choice-mode"></div>
-              </div>
-              <div id="difficulty-block" hidden>
-                <span class="game-option__label">Δυσκολία αντιπάλων</span>
-                <div class="game-choices" id="choice-difficulty"></div>
-              </div>
-              <div>
-                <label class="game-option__label" for="driver-name">Όνομα οδηγού</label>
-                <input class="game-input" id="driver-name" maxlength="24" placeholder="π.χ. Νίκος #42" autocomplete="off">
+          <div class="mgr-actions">
+            <button type="button" class="btn btn-primary" id="btn-start-career" disabled>ΞΕΚΙΝΑ ΤΗ ΣΕΖΟΝ</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ ΒΑΣΗ (HQ) ============ -->
+      <div class="mgr-screen" id="screen-hq" hidden>
+        <div class="mgr-tabs" role="tablist">
+          <button type="button" class="mgr-tab mgr-tab--active" data-tab="base" role="tab">Βάση</button>
+          <button type="button" class="mgr-tab" data-tab="dev" role="tab">Ανάπτυξη</button>
+          <button type="button" class="mgr-tab" data-tab="drivers" role="tab">Οδηγοί</button>
+          <button type="button" class="mgr-tab" data-tab="champ" role="tab">Πρωτάθλημα</button>
+        </div>
+
+        <div class="mgr-pane" id="pane-base">
+          <div class="grid grid-2">
+            <div class="card mgr-card">
+              <h3>Επόμενος αγώνας</h3>
+              <div id="next-race">—</div>
+              <div class="mgr-actions">
+                <button type="button" class="btn btn-primary btn-sm" id="btn-goto-race">ΣΤΗΝ ΠΙΣΤΑ</button>
               </div>
             </div>
-
-            <div class="game-actions">
-              <button type="button" class="btn btn-primary" id="btn-start">ΣΤΗ ΓΡΑΜΜΗ ΕΚΚΙΝΗΣΗΣ</button>
+            <div class="card mgr-card">
+              <h3>Η ομάδα με μια ματιά</h3>
+              <div id="team-summary"></div>
             </div>
+          </div>
+          <div class="card mgr-card">
+            <h3>Ημερολόγιο</h3>
+            <div id="team-log"></div>
           </div>
         </div>
 
-        <!-- ============ ΠΑΥΣΗ ============ -->
-        <div class="game-overlay" id="pause" hidden>
-          <div class="game-overlay__card" style="max-width: 460px">
-            <h2>Παύση</h2>
-            <p class="game-overlay__lead">Ο χρόνος σταμάτησε. Πάρε ανάσα.</p>
-            <div class="game-actions">
-              <button type="button" class="btn btn-primary btn-sm" id="btn-resume">Συνέχεια</button>
-              <button type="button" class="btn btn-outline btn-sm" id="btn-restart-pause">Επανεκκίνηση</button>
-              <button type="button" class="btn btn-outline btn-sm" id="btn-finish-pause">Τέλος συνεδρίας</button>
-              <button type="button" class="btn btn-outline btn-sm" id="btn-menu-pause">Μενού</button>
-            </div>
+        <div class="mgr-pane" id="pane-dev" hidden>
+          <div class="card mgr-card">
+            <h3>Ανάπτυξη αυτοκινήτου</h3>
+            <p class="mgr-muted">
+              Κάθε αναβάθμιση ανεβάζει το rating· όσο ψηλότερα πας, τόσο ακριβότερο το επόμενο βήμα.
+            </p>
+            <div id="dev-list"></div>
           </div>
         </div>
 
-        <!-- ============ ΑΠΟΤΕΛΕΣΜΑΤΑ ============ -->
-        <div class="game-overlay" id="results" hidden>
-          <div class="game-overlay__card">
-            <h2 id="results-title">Τερματισμός</h2>
-            <p class="game-overlay__lead" id="results-lead"></p>
-            <div id="results-body"></div>
-            <div class="game-actions">
-              <button type="button" class="btn btn-primary btn-sm" id="btn-again">Ξανά</button>
-              <button type="button" class="btn btn-outline btn-sm" id="btn-menu-results">Αλλαγή πίστας</button>
+        <div class="mgr-pane" id="pane-drivers" hidden>
+          <div class="card mgr-card">
+            <h3>Οι οδηγοί σου</h3>
+            <div class="mgr-driver-grid" id="my-drivers"></div>
+          </div>
+          <div class="card mgr-card">
+            <h3>Αγορά οδηγών</h3>
+            <p class="mgr-muted" id="market-hint">Διάλεξε ποια θέση θέλεις να αλλάξεις και μετά οδηγό.</p>
+            <div class="mgr-driver-grid" id="hq-market"></div>
+          </div>
+        </div>
+
+        <div class="mgr-pane" id="pane-champ" hidden>
+          <div class="grid grid-2">
+            <div class="card mgr-card">
+              <h3>Βαθμολογία οδηγών</h3>
+              <div id="standings-drivers"></div>
+            </div>
+            <div class="card mgr-card">
+              <h3>Βαθμολογία ομάδων</h3>
+              <div id="standings-teams"></div>
+            </div>
+          </div>
+          <div class="card mgr-card">
+            <h3>Καλεντάρι</h3>
+            <div id="calendar-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ ΚΑΤΑΤΑΚΤΗΡΙΕΣ ============ -->
+      <div class="mgr-screen" id="screen-quali" hidden>
+        <div class="card mgr-card">
+          <h3 id="quali-title">Κατατακτήριες</h3>
+          <p class="mgr-muted" id="quali-sub"></p>
+          <div id="quali-grid"></div>
+          <div class="mgr-actions">
+            <button type="button" class="btn btn-primary btn-sm" id="btn-start-race">ΕΚΚΙΝΗΣΗ ΑΓΩΝΑ</button>
+            <button type="button" class="btn btn-outline btn-sm" id="btn-back-hq">Πίσω στη βάση</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ ΑΓΩΝΑΣ ============ -->
+      <div class="mgr-screen" id="screen-race" hidden>
+        <div class="mgr-race">
+          <div>
+            <div class="game-stage" id="stage">
+              <canvas class="game-canvas" id="game-canvas"></canvas>
+
+              <div class="game-hud" id="hud">
+                <div class="game-hud__panel game-hud__lap">
+                  <div class="game-lap__count" id="hud-lap">Γύρος 1/8</div>
+                  <div class="game-hud__sub" id="hud-race">—</div>
+                </div>
+
+                <canvas class="game-minimap" id="minimap" width="264" height="192"></canvas>
+
+                <div class="game-hud__panel game-hud__focus">
+                  <div class="game-hud__sub" id="hud-focus-name">—</div>
+                  <div class="game-speed__value" id="hud-speed">0</div>
+                  <div class="game-speed__unit">km/h</div>
+                </div>
+
+                <div class="game-toastline" id="hud-toast" hidden></div>
+
+                <div class="game-center" id="hud-center" hidden>
+                  <div class="game-lights" id="hud-lights"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Χειριστήρια αγώνα -->
+            <div class="card mgr-card mgr-controls">
+              <div class="mgr-speedbar">
+                <span class="mgr-label">Ταχύτητα</span>
+                <div class="mgr-speedbtns" id="speed-buttons"></div>
+                <button type="button" class="btn btn-outline btn-sm" id="btn-pause-race">Παύση</button>
+                <button type="button" class="btn btn-outline btn-sm" id="btn-skip">Παράλειψη στο τέλος</button>
+              </div>
+              <div class="mgr-pitwall" id="pitwall"></div>
+            </div>
+          </div>
+
+          <div class="mgr-side">
+            <div class="card mgr-card mgr-tower">
+              <h3>Κατάταξη</h3>
+              <div id="timing-tower"></div>
+            </div>
+            <div class="card mgr-card">
+              <h3>Ραδιόφωνο ομάδας</h3>
+              <div id="race-events"></div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- ============ ΚΑΤΩ ΑΠΟ ΤΗ ΣΚΗΝΗ ============ -->
-      <div class="grid grid-3" style="margin-top: 2rem">
-        <div class="card game-info">
-          <h3>Χειριστήρια</h3>
-          <div class="game-keys">
-            <span><span class="game-key">↑ / W</span>Γκάζι</span>
-            <span><span class="game-key">↓ / S</span>Φρένο</span>
-            <span><span class="game-key">← →</span>Τιμόνι</span>
-            <span><span class="game-key">Space</span>Χειρόφρενο</span>
-            <span><span class="game-key">R</span>Επαναφορά</span>
-            <span><span class="game-key">E</span>Γραμμή οδήγησης</span>
-            <span><span class="game-key">Esc</span>Παύση</span>
-          </div>
-          <p class="game-empty" style="margin-top: 0.9rem">
-            Συνδεδεμένο gamepad ή τιμονιέρα αναγνωρίζεται αυτόματα. Σε κινητό εμφανίζονται
-            κουμπιά αφής πάνω στην πίστα.
-          </p>
-        </div>
-
-        <div class="card game-info">
-          <h3>Οι χρόνοι σου — <span id="board-track-local">—</span></h3>
-          <div id="board-local">
-            <p class="game-empty">Δεν έχεις κάνει ακόμα έγκυρο γύρο εδώ.</p>
-          </div>
-        </div>
-
-        <div class="card game-info">
-          <h3>Κοινότητα — <span id="board-track-remote">—</span></h3>
-          <div id="board-remote">
-            <p class="game-empty">Φόρτωση…</p>
+      <!-- ============ ΑΠΟΤΕΛΕΣΜΑΤΑ ============ -->
+      <div class="mgr-screen" id="screen-results" hidden>
+        <div class="card mgr-card">
+          <h3 id="results-title">Αποτελέσματα</h3>
+          <p class="mgr-muted" id="results-sub"></p>
+          <div id="results-table"></div>
+          <div id="results-income"></div>
+          <div class="mgr-actions">
+            <button type="button" class="btn btn-primary btn-sm" id="btn-continue">Συνέχεια</button>
           </div>
         </div>
       </div>
+
     </div>
   </section>
 </main>
@@ -312,7 +377,7 @@
 <script src="assets/js/auth.js"></script>
 <script src="assets/js/motion.js"></script>
 <script src="assets/js/share.js"></script>
-<script type="module" src="assets/js/game/page.js"></script>
+<script type="module" src="assets/js/game/manager/page.js"></script>
 <svg class="icon-defs" aria-hidden="true" focusable="false"><symbol id="gsr-icon-discord" viewBox="0 0 24 24"><path fill="currentColor" d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.331c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.955 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></symbol><symbol id="gsr-icon-youtube" viewBox="0 0 24 24"><path fill="currentColor" d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></symbol><symbol id="gsr-icon-facebook" viewBox="0 0 24 24"><path fill="currentColor" d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></symbol><symbol id="gsr-icon-spotify" viewBox="0 0 24 24"><path fill="currentColor" d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></symbol><symbol id="gsr-ui-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/></symbol><symbol id="gsr-ui-trophy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22M18 2H6v7a6 6 0 0 0 12 0V2z"/></symbol><symbol id="gsr-ui-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></symbol><symbol id="gsr-ui-users" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M13 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0zM22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></symbol><symbol id="gsr-ui-car" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17H3v-4l2-5h11l3 5h2v4h-2M5 17a2 2 0 1 0 4 0 2 2 0 0 0-4 0zM15 17a2 2 0 1 0 4 0 2 2 0 0 0-4 0zM9 17h6M5 12h14"/></symbol><symbol id="gsr-ui-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7"/></symbol><symbol id="gsr-ui-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/></symbol><symbol id="gsr-ui-link" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></symbol><symbol id="gsr-ui-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8M16 6l-4-4-4 4M12 2v13"/></symbol><symbol id="gsr-ui-ruler" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h18M7 8l-4 4 4 4M17 8l4 4-4 4"/></symbol><symbol id="gsr-ui-corner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l5 5-5 5M4 4v7a4 4 0 0 0 4 4h12"/></symbol><symbol id="gsr-ui-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20zM12 6v6l4 2"/></symbol></svg>
 </body>
 </html>
