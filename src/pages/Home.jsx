@@ -31,6 +31,9 @@ export default function Home() {
           <Link to="/dashboard" className="btn btn--primary">
             Άνοιξε το καντράν
           </Link>
+          <Link to="/podcast" className="btn btn--ghost">
+            Ανάλυση podcast
+          </Link>
           <Link to="/about" className="btn btn--ghost">
             Μάθε περισσότερα
           </Link>
