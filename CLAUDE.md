@@ -45,6 +45,10 @@ There is no test suite configured (no test runner/script in `package.json`).
 There is no `typecheck` script either — this is a plain JS/JSX project, not
 TypeScript.
 
+Optional backend config for `/championship` goes in `.env.local` (see
+`.env.example`): `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, and optionally
+`VITE_LMU_CHAMPIONSHIP_ID`. Without them the app runs fully local.
+
 ## Deployment
 
 `.github/workflows/deploy.yml` builds and deploys to GitHub Pages on push to any
@@ -125,9 +129,12 @@ reload) resolve correctly on Pages, which has no server-side rewrite support.
   constants at the top of each module rather than scattering magic numbers.
   Presentational components live in `src/components/podcast/` and use a
   `pod__*` BEM-like class convention.
-- **Championship management (`/championship`)**: the third feature, also fully
-  client-side (localStorage only, no backend, no npm additions). Data layer
-  lives in `src/lib/lmu/` as pure modules:
+- **Championship management (`/championship`)**: the third feature. It runs in
+  **two modes with identical UI** — local (`localStorage`, no accounts) and
+  backed by Supabase (Postgres + Auth + RLS + realtime). The mode is decided by
+  `src/lib/lmu/config.js`: if `VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY` are
+  set, it goes remote; otherwise everything behaves as before. Data layer lives
+  in `src/lib/lmu/` as pure modules:
   - `constants.js` — classes, cars per class, the 11 LMU tracks (length, pit
     loss, per-class reference lap times), per-class car defaults, driver
     categories, roles, points presets, default rulebook. **All physical numbers
@@ -148,16 +155,40 @@ reload) resolve correctly on Pages, which has no server-side rewrite support.
   - `standings.js` — per-class classification, points (incl. double points, pole,
     fastest lap, minimum-laps rule, drop rounds) and tie-breaks.
   - `permissions.js` — `can(state, action, scope)` for ADMIN / PRINCIPAL /
-    DRIVER. UI-level only: there is no server, so this organises work, it does
-    not secure anything.
+    DRIVER. This is the **UI half** of the rules: it hides controls. In remote
+    mode the same rules are enforced for real by RLS policies in
+    `supabase/migrations/001_championship.sql` — keep the two in sync when you
+    change either.
   - `seed.js` — the demo championship; `exports.js` — Markdown/CSV/JSON export
     and backup parsing.
+  - **Backend modules** (only active in remote mode): `config.js` (env/mode),
+    `supabase.js` (lazy `getClient()` via dynamic import, so supabase-js is a
+    separate chunk that never loads locally), `api.js` (row↔model mappers,
+    `fetchState()` which returns the *same* state shape the UI already used,
+    `pushAction()` which maps each reducer action to writes, `uploadState()`
+    which copies a local championship into the cloud remapping non-UUID ids),
+    `auth.js` (email+password, `lmu_claim_driver` RPC).
+  - Ids are real UUIDs (`utils.uid()` → `crypto.randomUUID()`) so browser-made
+    ids can be primary keys directly — that is why the same state works in both
+    modes without translation.
   State reaches the UI through `ChampionshipProvider`
   (`src/components/champ/`) + the `useChampionship` / `usePlan` hooks in
   `src/hooks/useChampionship.js`; the context object itself lives in
   `src/lib/lmu/context.js` so provider and hooks stay in separate files (React
-  fast refresh). Presentational components are in `src/components/champ/` with a
-  `champ__*` class convention, pages in `src/pages/champ/`.
+  fast refresh). In remote mode the provider computes the next state with the
+  pure reducer, applies it optimistically, then pushes it; on rejection it shows
+  the database's message and re-fetches. Pages read `ctx.backend` for
+  mode/session/sync status. Presentational components are in
+  `src/components/champ/` with a `champ__*` class convention, pages in
+  `src/pages/champ/`.
+- **Database** (`supabase/migrations/001_championship.sql`): tables, RLS
+  policies, guard triggers (`lmu_guard_plan` locks approved plans and reserves
+  approval for admins, `lmu_guard_driver` restricts which columns each role may
+  change, `lmu_guard_stint` keeps a stint's driver inside the plan's team) and
+  RPCs (`lmu_create_championship`, `lmu_claim_driver`). Helper predicates are
+  `SECURITY DEFINER` to avoid RLS recursion. Stint plans are readable only by
+  their own team and the organiser; a `v_public_drivers` view exposes safe
+  driver columns to anonymous visitors without leaking emails.
 - **Styling**: no CSS framework — plain CSS in `src/index.css` with design
   tokens (colors, radius, max-width) defined as CSS custom properties in
   `:root`. Dashboard-specific styles use a `dash__*` BEM-like naming

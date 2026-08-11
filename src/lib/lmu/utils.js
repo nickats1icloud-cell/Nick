@@ -1,10 +1,26 @@
 // Μικρά βοηθητικά: ids, αριθμοί, μορφοποίηση χρόνου και ημερομηνιών.
 
-/** Σύντομο, αρκετά μοναδικό id (δεν χρειαζόμαστε κρυπτογραφική ποιότητα). */
-export function uid(prefix = 'id') {
-  return `${prefix}_${Math.random().toString(36).slice(2, 9)}${Date.now()
-    .toString(36)
-    .slice(-4)}`
+/**
+ * Νέο id. Είναι κανονικό UUID ώστε τα ids που φτιάχνει ο browser να μπαίνουν
+ * αυτούσια ως primary keys στη βάση (Postgres uuid) — έτσι το ίδιο state
+ * δουλεύει και τοπικά και με backend, χωρίς μετάφραση.
+ * Το `prefix` κρατιέται για συμβατότητα με παλιές κλήσεις και αγνοείται.
+ */
+export function uid() {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID()
+  }
+  // Fallback για παλιά περιβάλλοντα / μη-secure context.
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0
+    const v = c === 'x' ? r : (r & 0x3) | 0x8
+    return v.toString(16)
+  })
+}
+
+/** Είναι έγκυρο UUID; (τα σταθερά ids του demo seed δεν είναι) */
+export function isUuid(value) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(value || ''))
 }
 
 export function clamp(value, min, max) {
@@ -74,6 +90,28 @@ export function formatMinutes(minutes) {
 /** Ώρα αγώνα από την εκκίνηση: +1:20:00 */
 export function formatClock(seconds) {
   return `+${formatDuration(seconds)}`
+}
+
+/**
+ * ISO timestamp (από τη βάση) → τιμή για `<input type="datetime-local">`, στην
+ * τοπική ώρα του χρήστη. Η βάση κρατά απόλυτο χρόνο (timestamptz), τα inputs
+ * θέλουν τοπικό «YYYY-MM-DDTHH:mm».
+ */
+export function toLocalInput(iso) {
+  if (!iso) return ''
+  const d = new Date(iso)
+  if (Number.isNaN(d.getTime())) return ''
+  const pad = (v) => String(v).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(
+    d.getHours(),
+  )}:${pad(d.getMinutes())}`
+}
+
+/** Το αντίστροφο: τοπική τιμή input → απόλυτο ISO για τη βάση (ή null). */
+export function fromLocalInput(local) {
+  if (!local) return null
+  const d = new Date(local)
+  return Number.isNaN(d.getTime()) ? null : d.toISOString()
 }
 
 export function formatDate(iso) {

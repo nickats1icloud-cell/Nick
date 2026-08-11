@@ -2,12 +2,15 @@ import { useRef, useState } from 'react'
 import { useChampionship } from '../../hooks/useChampionship.js'
 import { CLASSES, POINTS_PRESETS, ROLES } from '../../lib/lmu/constants.js'
 import { downloadBackup, parseBackup } from '../../lib/lmu/exports.js'
+import { uploadState } from '../../lib/lmu/api.js'
 import Badge from '../../components/champ/Badge.jsx'
+import CloudPanel from '../../components/champ/CloudPanel.jsx'
 import Field from '../../components/champ/Field.jsx'
 
-/** Διαχείριση: στοιχεία πρωταθλήματος, κανόνες, βαθμολογία, ρόλοι, δεδομένα. */
+/** Διαχείριση: backend, στοιχεία πρωταθλήματος, κανόνες, βαθμολογία, ρόλοι, δεδομένα. */
 export default function Admin() {
-  const { state, championship, events, drivers, teams, viewer, can, actions } = useChampionship()
+  const { state, championship, events, drivers, teams, viewer, can, actions, backend } =
+    useChampionship()
   const canEdit = can('championship.edit')
   const fileInput = useRef(null)
   const [message, setMessage] = useState(null)
@@ -20,8 +23,21 @@ export default function Admin() {
     try {
       const text = await file.text()
       const data = parseBackup(text)
-      actions.importState(data)
-      setMessage({ tone: 'ok', text: `Φορτώθηκε: ${data.championship?.name || 'πρωτάθλημα'}.` })
+      if (backend.isRemote) {
+        // Με backend, η «εισαγωγή» σημαίνει ανέβασμα σε νέο πρωτάθλημα στη βάση
+        // — δεν πατάμε πάνω στα δεδομένα των άλλων.
+        const id = await uploadState(data, {
+          displayName: backend.session?.user?.email?.split('@')[0] || '',
+        })
+        backend.setChampionshipId(id)
+        setMessage({
+          tone: 'ok',
+          text: `Ανέβηκε στο cloud ως νέο πρωτάθλημα: ${data.championship?.name || '—'}.`,
+        })
+      } else {
+        actions.importState(data)
+        setMessage({ tone: 'ok', text: `Φορτώθηκε: ${data.championship?.name || 'πρωτάθλημα'}.` })
+      }
     } catch (error) {
       setMessage({ tone: 'bad', text: error.message })
     }
@@ -40,6 +56,8 @@ export default function Admin() {
       {message ? (
         <p className={`champ__notice champ__notice--${message.tone}`}>{message.text}</p>
       ) : null}
+
+      <CloudPanel />
 
       <section className="champ__panel">
         <h2>Στοιχεία πρωταθλήματος</h2>
@@ -312,15 +330,16 @@ export default function Admin() {
       <section className="champ__panel">
         <h2>Δεδομένα</h2>
         <p className="champ__muted">
-          Όλα ζουν στον browser σου (localStorage) — δεν φεύγει τίποτα σε server. Για να δουλέψει
-          ομάδα με ομάδα, κατέβασε backup και στείλ’ το· ο άλλος κάνει εισαγωγή.
+          {backend.isRemote
+            ? 'Τα δεδομένα ζουν στη βάση και τα βλέπει όλη η διοργάνωση. Το backup είναι για δικό σου αρχείο ή για να ξεκινήσεις νέα σεζόν.'
+            : 'Όλα ζουν στον browser σου (localStorage) — δεν φεύγει τίποτα σε server. Για να δουλέψει ομάδα με ομάδα, κατέβασε backup και στείλ’ το· ο άλλος κάνει εισαγωγή.'}
         </p>
         <div className="champ__btn-row">
           <button type="button" className="btn btn--primary" onClick={() => downloadBackup(state)}>
             Κατέβασε backup (.json)
           </button>
           <button type="button" className="btn btn--ghost" onClick={() => fileInput.current?.click()}>
-            Εισαγωγή από αρχείο
+            {backend.isRemote ? 'Ανέβασε backup στο cloud' : 'Εισαγωγή από αρχείο'}
           </button>
           <input
             ref={fileInput}
@@ -329,7 +348,7 @@ export default function Admin() {
             className="champ__sr"
             onChange={(e) => handleImport(e.target.files?.[0])}
           />
-          {canEdit ? (
+          {canEdit && !backend.isRemote ? (
             <>
               <button
                 type="button"

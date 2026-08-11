@@ -51,8 +51,13 @@ export function clearStoredState() {
   }
 }
 
-/** Αρχικό state: ό,τι είχε αποθηκευτεί, αλλιώς το πρωτάθλημα επίδειξης. */
-export function initialState() {
+/**
+ * Αρχικό state.
+ *  • τοπική λειτουργία: ό,τι είχε αποθηκευτεί, αλλιώς το πρωτάθλημα επίδειξης
+ *  • με backend: κενό — το αληθινό state έρχεται από τη βάση
+ */
+export function initialState(mode = 'local') {
+  if (mode === 'remote') return emptyState()
   return loadState() || buildSeedState()
 }
 
@@ -503,6 +508,14 @@ export function reducer(state, action) {
       return { ...state, session: { userId: null } }
 
     /* --- δεδομένα --- */
+    /**
+     * Αντικατάσταση όλου του state — το χρησιμοποιεί το backend όταν φέρνει
+     * φρέσκα δεδομένα από τη βάση. Έρχεται ήδη κανονικοποιημένο από το api.js,
+     * γι' αυτό μπαίνει ως έχει (κρατά και πεδία που ξέρει μόνο το backend).
+     */
+    case 'state/replace':
+      return action.state
+
     case 'state/import': {
       const next = normalizeState(action.state)
       return { ...next, log: log(next, 'Έγινε εισαγωγή δεδομένων από αρχείο.') }

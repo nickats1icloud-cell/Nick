@@ -1,14 +1,19 @@
 import { ROLES } from '../../lib/lmu/constants.js'
 import { initials } from '../../lib/lmu/utils.js'
 import { useChampionship } from '../../hooks/useChampionship.js'
+import AuthBar from './AuthBar.jsx'
 import Badge from './Badge.jsx'
 
 /**
- * «Σύνδεση» με επιλογή ταυτότητας. Δεν υπάρχει server ούτε κωδικοί: διαλέγεις
- * ποιος είσαι και το UI ξεκλειδώνει ό,τι επιτρέπει ο ρόλος σου.
+ * Ταυτότητα χρήστη.
+ *  • με backend: πραγματική σύνδεση (AuthBar) — τον ρόλο τον κρίνει η βάση
+ *  • τοπικά: επιλέγεις ποιος είσαι από τη λίστα, για δοκιμές χωρίς λογαριασμούς
  */
 export default function IdentityBar() {
-  const { state, drivers, teams, viewer, actions } = useChampionship()
+  const ctx = useChampionship()
+  const { state, drivers, teams, viewer, actions, backend } = ctx
+
+  if (backend.isRemote) return <AuthBar />
 
   const groups = [
     { label: 'Διοργάνωση', list: drivers.filter((d) => d.role === ROLES.ADMIN.id) },
