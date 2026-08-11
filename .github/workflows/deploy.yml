@@ -8,6 +8,7 @@ on:
         claude/custom-car-dashboard-5v69i8,
         claude/greek-sim-racers-rebuild-fjomf8,
         claude/greek-sim-racing-podcast-analysis-tlgguf,
+        claude/le-mans-championship-app-v6e3c6,
       ]
   workflow_dispatch:
 

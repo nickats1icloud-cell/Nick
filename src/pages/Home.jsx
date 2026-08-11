@@ -1,52 +1,43 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 const features = [
   {
-    title: 'Ψηφιακό καντράν',
-    body: 'Στροφόμετρο, ταχύμετρο, θερμοκρασία, καύσιμο, boost, λάδι & τάση — στιλ Civic EK.',
+    title: 'Ομάδες & roster',
+    body: 'Κάθε ομάδα με αυτοκίνητο, κατηγορία, νούμερο και οδηγούς σε Platinum/Gold/Silver/Bronze. Ο αρχηγός διαχειρίζεται το δικό του roster.',
   },
   {
-    title: 'Πλήρως λειτουργικό',
-    body: 'Μηχανή προσομοίωσης: οδήγησε με γκάζι/φρένο/ταχύτητες και δες τα όργανα να αντιδρούν.',
+    title: 'Stint planner',
+    body: 'Χρονογραμμή αγώνα, καύσιμα, ελαστικά, στάσεις και αλλαγές οδηγών — με αυτόματη παραγωγή πλάνου για 4, 6, 12 ή 24 ώρες.',
   },
   {
-    title: 'Warning lights',
-    body: 'Φλας, μεγάλη σκάλα, λάδι, μπαταρία, θερμοκρασία, check engine, ABS και άλλα.',
+    title: 'Μηχανή κανόνων',
+    body: 'Μέγιστη συνεχόμενη οδήγηση, ελάχιστη ξεκούραση, πλαφόν χρόνου ανά οδηγό, σετ ελαστικών, διαθεσιμότητα. Το πλάνο δεν υποβάλλεται με σφάλματα.',
+  },
+  {
+    title: 'Βαθμολογίες',
+    body: 'Αποτελέσματα ανά κατηγορία, βαθμοί ομάδων και οδηγών, διπλοί βαθμοί, drop rounds και εξαγωγή σε Markdown.',
   },
 ]
 
 export default function Home() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
       <section className="hero">
-        <h1>Καλώς ήρθες στο starter σου</h1>
+        <h1>Race Control — πρωτάθλημα Le Mans Ultimate</h1>
         <p>
-          Ένα μοντέρνο React + Vite web app, έτοιμο για ανάπτυξη. Στήσε εδώ
-          ό,τι θέλεις να φτιάξεις.
+          Ένα ολοκληρωμένο management system για πρωταθλήματα αντοχής: ομάδες, αρχηγοί, οδηγοί,
+          καλεντάρι, πλάνα stint με έλεγχο κανονισμού και βαθμολογίες. Όλα τρέχουν στον browser σου.
         </p>
         <div className="btn-row">
-          <Link to="/dashboard" className="btn btn--primary">
-            Άνοιξε το καντράν
+          <Link to="/championship" className="btn btn--primary">
+            Άνοιξε το πρωτάθλημα
+          </Link>
+          <Link to="/dashboard" className="btn btn--ghost">
+            Ψηφιακό καντράν
           </Link>
           <Link to="/podcast" className="btn btn--ghost">
             Ανάλυση podcast
           </Link>
-          <Link to="/about" className="btn btn--ghost">
-            Μάθε περισσότερα
-          </Link>
-        </div>
-
-        <div className="counter">
-          <button onClick={() => setCount((c) => c - 1)} aria-label="Μείωση">
-            −
-          </button>
-          <strong>{count}</strong>
-          <button onClick={() => setCount((c) => c + 1)} aria-label="Αύξηση">
-            +
-          </button>
         </div>
       </section>
 

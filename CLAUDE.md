@@ -4,8 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-"Nick" is a React + Vite single-page app with two features:
+"Nick" is a React + Vite single-page app with three features:
 
+- `/championship` — **Race Control**: a championship management system for a
+  Le Mans Ultimate endurance series (teams, team principals, drivers, calendar,
+  stint plans validated against a configurable rulebook, results, standings).
 - `/dashboard` — a fully functional digital car instrument cluster (analog
   tacho/speedo, secondary gauges, warning lights, and a client-side vehicle
   physics simulation) styled after the Honda Civic EK's LCD cluster.
@@ -44,9 +47,9 @@ TypeScript.
 
 ## Deployment
 
-`.github/workflows/deploy.yml` builds and deploys to GitHub Pages on push to
-`claude/website-setup-0k2c7k` or `claude/custom-car-dashboard-5v69i8` (or via
-manual `workflow_dispatch`). The app is served from `/Nick/` (see `base` in
+`.github/workflows/deploy.yml` builds and deploys to GitHub Pages on push to any
+of the branches listed in its `on.push.branches` array (or via manual
+`workflow_dispatch`) — add a new feature branch there if it should deploy. The app is served from `/Nick/` (see `base` in
 `vite.config.js`), and `router basename` in `src/main.jsx` is set from
 `import.meta.env.BASE_URL` to match. The build step copies `dist/index.html`
 to `dist/404.html` so client-side routes (e.g. `/Nick/about` on a hard
@@ -56,9 +59,11 @@ reload) resolve correctly on Pages, which has no server-side rewrite support.
 
 - **Routing**: `src/main.jsx` mounts `<App>` inside a `BrowserRouter`;
   `src/App.jsx` defines all routes under a shared `Layout` (`/`, `/dashboard`,
-  `/about`, catch-all `NotFound`). To add a page: create a component in
-  `src/pages/` and add a `<Route>` in `App.jsx`; to add a nav link, edit
-  `src/components/Navbar.jsx`.
+  `/podcast`, `/championship/*`, `/about`, catch-all `NotFound`). To add a page:
+  create a component in `src/pages/` and add a `<Route>` in `App.jsx`; to add a
+  nav link, edit `src/components/Navbar.jsx`. The `/championship` branch is a
+  nested route tree whose element wraps `ChampLayout` in
+  `ChampionshipProvider`, so every sub-page shares one state tree.
 - **Layout shell**: `src/components/Layout.jsx` wraps every route with
   `Navbar` + `Footer` and renders the matched page via `<Outlet />`.
 - **Vehicle simulation (`src/hooks/useVehicleSim.js`)**: the core of the
@@ -120,11 +125,44 @@ reload) resolve correctly on Pages, which has no server-side rewrite support.
   constants at the top of each module rather than scattering magic numbers.
   Presentational components live in `src/components/podcast/` and use a
   `pod__*` BEM-like class convention.
+- **Championship management (`/championship`)**: the third feature, also fully
+  client-side (localStorage only, no backend, no npm additions). Data layer
+  lives in `src/lib/lmu/` as pure modules:
+  - `constants.js` — classes, cars per class, the 11 LMU tracks (length, pit
+    loss, per-class reference lap times), per-class car defaults, driver
+    categories, roles, points presets, default rulebook. **All physical numbers
+    are deliberately approximate** — tune the named constants here rather than
+    scattering magic numbers.
+  - `model.js` — factories (`createTeam`, `createEvent`, `createPlan`, …),
+    `emptyState()` and `normalizeState()`, which repairs anything loaded from
+    localStorage or an imported JSON backup (it never throws).
+  - `store.js` — `reducer(state, action)` plus `loadState`/`saveState`. Every
+    mutation is an action so the layer could sit behind a real API later.
+  - `stints.js` — `computePlan()` derives the whole timeline (per-stint start/end,
+    pit time, fuel, tyre sets, per-driver totals, continuous-driving blocks);
+    `generateStints()` auto-builds a plan and then tops it up against
+    `computePlan` so coverage is exact rather than estimated.
+  - `rules.js` — `validatePlan()` turns the computed plan into `error`/`warn`/`ok`
+    checks (max continuous driving, rest, drive-time share, Am minimum, fuel,
+    tyres, roster, availability, deadline). Errors block submission.
+  - `standings.js` — per-class classification, points (incl. double points, pole,
+    fastest lap, minimum-laps rule, drop rounds) and tie-breaks.
+  - `permissions.js` — `can(state, action, scope)` for ADMIN / PRINCIPAL /
+    DRIVER. UI-level only: there is no server, so this organises work, it does
+    not secure anything.
+  - `seed.js` — the demo championship; `exports.js` — Markdown/CSV/JSON export
+    and backup parsing.
+  State reaches the UI through `ChampionshipProvider`
+  (`src/components/champ/`) + the `useChampionship` / `usePlan` hooks in
+  `src/hooks/useChampionship.js`; the context object itself lives in
+  `src/lib/lmu/context.js` so provider and hooks stay in separate files (React
+  fast refresh). Presentational components are in `src/components/champ/` with a
+  `champ__*` class convention, pages in `src/pages/champ/`.
 - **Styling**: no CSS framework — plain CSS in `src/index.css` with design
   tokens (colors, radius, max-width) defined as CSS custom properties in
   `:root`. Dashboard-specific styles use a `dash__*` BEM-like naming
   convention (e.g. `dash__cluster`, `dash__pod`, `dash__gear`); the podcast
-  page uses `pod__*` the same way.
+  page uses `pod__*` and the championship pages `champ__*` the same way.
 
 ## Conventions
 
