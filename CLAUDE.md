@@ -4,11 +4,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-"Nick" is a React + Vite single-page app with two features:
+"Nick" is a React + Vite single-page app with three features:
 
 - `/dashboard` — a fully functional digital car instrument cluster (analog
   tacho/speedo, secondary gauges, warning lights, and a client-side vehicle
   physics simulation) styled after the Honda Civic EK's LCD cluster.
+- `/lab` — a virtual workbench for Arduino sim racing hardware: a parts
+  library, a wiring canvas, a design rule check, a behavioural simulation
+  (contact bounce, ADC noise, loop timing, current budget, brownout) and an
+  Arduino sketch generator.
 - `/podcast` — a coaching tool for a Greek-language sim racing podcast: it
   parses the show's RSS feed and an episode transcript, scores both, and
   produces concrete Greek-language presentation advice.
@@ -120,6 +124,34 @@ reload) resolve correctly on Pages, which has no server-side rewrite support.
   constants at the top of each module rather than scattering magic numbers.
   Presentational components live in `src/components/podcast/` and use a
   `pod__*` BEM-like class convention.
+- **Sim racing lab (`src/pages/SimLab.jsx` + `src/lib/simlab/` +
+  `src/components/simlab/`)**: the third feature, entirely client-side. The page
+  is a controller over pure-function modules in `src/lib/simlab/`:
+  - `boards.js` / `parts.js` — the hardware catalogue. Boards declare pins with
+    capability tags (`digital`, `analog`, `pwm`, `interrupt`, `sda`, …); parts
+    declare pins with types (`din`, `aout`, `pwm`, `sda`, `pwr`, `gnd`, `v12`,
+    …), a `role`, tunable `params`, a `loopUs(values, board)` cost and current
+    draw. Adding a part means adding one entry here — nothing else is
+    hard-coded against specific part ids except a few display specialisations.
+  - `circuit.js` — the build model (`nodes`, `wires`, `settings`), net
+    resolution by union-find, and the fixed card geometry that lets wire
+    endpoints be computed without measuring the DOM.
+  - `libraries.js` — a registry of real Arduino libraries mapped to part roles
+    and board architectures, with flash/RAM cost and install commands.
+  - `firmware.js` — derives the program from the netlist: which parts became
+    HID buttons/axes, the loop-time budget and the memory estimate. Everything
+    downstream (simulation, DRC, codegen, BOM) consumes this one object, so the
+    thing you test is the thing you flash.
+  - `drc.js` — the design rule check; each finding carries severity, cause and
+    a concrete fix.
+  - `engine.js` — the simulation: it runs the firmware loop at the frequency
+    `firmware.js` computed (not at frame rate), which is what makes a slow
+    display visibly break the inputs.
+  - `telemetry.js` — the virtual car and tracks that feed the outputs.
+  - `codegen.js`, `bom.js`, `presets.js`, `storage.js`.
+  Tuning constants live at the top of each module. Component styles use a
+  `lab__*` BEM-like convention, and the page breaks out of the 960px
+  `.container` via `.lab`.
 - **Styling**: no CSS framework — plain CSS in `src/index.css` with design
   tokens (colors, radius, max-width) defined as CSS custom properties in
   `:root`. Dashboard-specific styles use a `dash__*` BEM-like naming
