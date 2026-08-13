@@ -6,7 +6,7 @@ import Footer from './Footer.jsx'
  * Σελίδες που θέλουν όλο το πλάτος και δεν μπαίνουν στο `.container` των 960px.
  * Ορίζουν μόνες τους το μέγιστο πλάτος και τα περιθώριά τους.
  */
-const WIDE_ROUTES = ['/lab']
+const WIDE_ROUTES = ['/lab', '/lab/wiring']
 
 export default function Layout() {
   const { pathname } = useLocation()
