@@ -157,6 +157,11 @@ reload) resolve correctly on Pages, which has no server-side rewrite support.
   Tuning constants live at the top of each module. Component styles use a
   `lab__*` BEM-like convention, and the page breaks out of the 960px
   `.container` via `.lab`.
+  `BoardArt.jsx` draws each board as SVG at its real millimetre proportions
+  (the viewBox is the board's mm, padded so overhanging connectors aren't
+  clipped); it renders between the two pin columns on the workbench card and
+  larger in the inspector when the board is selected. Coordinates must be
+  passed as numbers, not strings — the sub-components do arithmetic on them.
   The canvas has two views, switched in `SimLab.jsx`: `Workbench.jsx` (the
   schematic — cards, pins and wires) and `PanelView.jsx` (the rig — SVG
   controls you actually press, turn and drag). Both drive the same `controls`

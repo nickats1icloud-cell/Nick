@@ -1,4 +1,5 @@
 import { getPart } from '../../lib/simlab/parts.js'
+import BoardArt from './BoardArt.jsx'
 import { DEFAULT_SETTINGS } from '../../lib/simlab/circuit.js'
 
 function Field({ param, value, onChange }) {
@@ -78,6 +79,8 @@ function roleSummary(entry) {
 export default function Inspector({
   build,
   node,
+  board,
+  boardSelected,
   firmware,
   onChangeValues,
   onChangeLabel,
@@ -87,6 +90,79 @@ export default function Inspector({
   onChangeSettings,
 }) {
   const settings = { ...DEFAULT_SETTINGS, ...build.settings }
+
+  if (boardSelected && board) {
+    const caps = (c) => board.pins.filter((p) => p.caps.includes(c)).length
+    return (
+      <div className="lab__panel">
+        <h3>{board.name}</h3>
+        <BoardArt boardId={board.id} className="lab__boardart--panel" />
+        <p className="lab__note">{board.blurb}</p>
+        <dl className="lab__specs">
+          <div>
+            <dt>Επεξεργαστής</dt>
+            <dd>{board.mcu}</dd>
+          </div>
+          <div>
+            <dt>Λογική</dt>
+            <dd>{board.logic}V</dd>
+          </div>
+          <div>
+            <dt>Ταχύτητα</dt>
+            <dd>{board.clockMhz} MHz</dd>
+          </div>
+          <div>
+            <dt>Flash</dt>
+            <dd>{board.flashKb} KB</dd>
+          </div>
+          <div>
+            <dt>RAM</dt>
+            <dd>{board.ramKb} KB</dd>
+          </div>
+          <div>
+            <dt>ADC</dt>
+            <dd>{board.adcBits} bit</dd>
+          </div>
+          <div>
+            <dt>USB HID</dt>
+            <dd className={board.usbHid ? 'is-good' : 'is-bad'}>{board.usbHid ? 'ναι' : 'όχι'}</dd>
+          </div>
+          <div>
+            <dt>Ρεύμα</dt>
+            <dd>{board.maxCurrentMa} mA</dd>
+          </div>
+          <div>
+            <dt>Ανά pin</dt>
+            <dd>{board.pinMaxMa} mA</dd>
+          </div>
+          <div>
+            <dt>Τιμή</dt>
+            <dd>{board.price.toFixed(2)} €</dd>
+          </div>
+        </dl>
+        <h4>Διαθέσιμα pins</h4>
+        <ul className="lab__mini-list">
+          {[
+            ['Ψηφιακά', 'digital'],
+            ['Αναλογικά (ADC)', 'analog'],
+            ['PWM', 'pwm'],
+            ['Interrupt', 'interrupt'],
+            ['GND', 'gnd'],
+          ].map(([label, cap]) => (
+            <li key={cap}>
+              <span>{label}</span>
+              <strong>{caps(cap)}</strong>
+            </li>
+          ))}
+        </ul>
+        <h4>Στο Arduino IDE</h4>
+        <p className="lab__muted">
+          Tools ▸ Board ▸ <strong>{board.ideBoard}</strong>
+        </p>
+        <code className="lab__inline-code">arduino-cli compile --fqbn {board.fqbn}</code>
+      </div>
+    )
+  }
 
   if (!node) {
     return (
