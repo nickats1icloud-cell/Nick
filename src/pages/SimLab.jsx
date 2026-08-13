@@ -64,6 +64,7 @@ export default function SimLab() {
   const [showPresets, setShowPresets] = useState(false)
   const [saved, setSaved] = useState(() => listSavedBuilds())
   const [status, setStatus] = useState('')
+  const [showGuide, setShowGuide] = useState(true)
 
   const [telemetryMode, setTelemetryMode] = useState('lap')
   const [trackId, setTrackId] = useState('club')
@@ -81,6 +82,14 @@ export default function SimLab() {
   const firmware = useMemo(() => deriveFirmware(build), [build])
   const drc = useMemo(() => runDrc(build, firmware), [build, firmware])
   const settings = useMemo(() => ({ ...DEFAULT_SETTINGS, ...build.settings }), [build.settings])
+  const connectedNodes = useMemo(() => {
+    const ids = new Set()
+    build.wires.forEach((wire) => {
+      if (wire.from.node !== BOARD_NODE) ids.add(wire.from.node)
+      if (wire.to.node !== BOARD_NODE) ids.add(wire.to.node)
+    })
+    return ids.size
+  }, [build.wires])
 
   /* Οι ζωντανές τιμές που διαβάζει ο βρόχος — refs για να μην τον ξαναστήνουμε. */
   const liveRef = useRef({ firmware, settings, controls, telemetryMode, manual })
@@ -215,8 +224,45 @@ export default function SimLab() {
 
   return (
     <div className="lab">
+      <section className="lab__welcome" aria-labelledby="lab-title">
+        <div className="lab__welcome-copy">
+          <span className="lab__eyebrow">SIM RACING · ARDUINO</span>
+          <h1 id="lab-title">Από την ιδέα σε κατασκευή που δουλεύει.</h1>
+          <p>
+            Σχεδίασε την καλωδίωση, εντόπισε λάθη και δοκίμασε το project σου
+            εικονικά πριν αγοράσεις τα εξαρτήματα.
+          </p>
+        </div>
+        <div className="lab__snapshot" aria-label="Σύνοψη κατασκευής">
+          <div><strong>{build.nodes.length}</strong><span>εξαρτήματα</span></div>
+          <div><strong>{connectedNodes}</strong><span>συνδεδεμένα</span></div>
+          <div className={drc.errors ? 'is-bad' : drc.warnings ? 'is-warn' : 'is-good'}>
+            <strong>{drc.errors + drc.warnings}</strong><span>ευρήματα</span>
+          </div>
+        </div>
+      </section>
+
+      <section className={`lab__guide ${showGuide ? '' : 'is-collapsed'}`} aria-label="Γρήγορη εκκίνηση">
+        <button
+          type="button"
+          className="lab__guide-toggle"
+          onClick={() => setShowGuide((value) => !value)}
+          aria-expanded={showGuide}
+        >
+          <span><strong>Γρήγορη εκκίνηση</strong> · 3 απλά βήματα</span>
+          <span aria-hidden="true">{showGuide ? 'Απόκρυψη ↑' : 'Εμφάνιση ↓'}</span>
+        </button>
+        {showGuide && (
+          <ol className="lab__steps">
+            <li><span>1</span><div><strong>Διάλεξε εξάρτημα</strong><small>Πρόσθεσέ το από τη βιβλιοθήκη αριστερά.</small></div></li>
+            <li><span>2</span><div><strong>Σύνδεσε δύο pins</strong><small>Κάνε κλικ στο πρώτο και μετά στο δεύτερο pin.</small></div></li>
+            <li><span>3</span><div><strong>Έλεγξε και δοκίμασε</strong><small>Διόρθωσε τα ευρήματα και πάτησε «Τροφοδοσία».</small></div></li>
+          </ol>
+        )}
+      </section>
+
       {/* ---------------------- Μπάρα ---------------------- */}
-      <header className="lab__bar">
+      <header className="lab__bar" aria-label="Εργαλεία κατασκευής">
         <div className="lab__bar-left">
           <input
             className="lab__name"
@@ -347,6 +393,7 @@ export default function SimLab() {
                 type="button"
                 className={view === 'wiring' ? 'is-on' : ''}
                 onClick={() => setView('wiring')}
+                aria-pressed={view === 'wiring'}
               >
                 Καλωδίωση
               </button>
@@ -354,6 +401,7 @@ export default function SimLab() {
                 type="button"
                 className={view === 'panel' ? 'is-on' : ''}
                 onClick={() => setView('panel')}
+                aria-pressed={view === 'panel'}
               >
                 Πάνελ
               </button>
@@ -417,6 +465,7 @@ export default function SimLab() {
                 type="button"
                 className={tab === t.id ? 'is-on' : ''}
                 onClick={() => setTab(t.id)}
+                aria-pressed={tab === t.id}
               >
                 {t.label}
               </button>

@@ -2611,6 +2611,122 @@ h3 {
   font-size: 0.92rem;
 }
 
+/* ---------------- Εισαγωγή & γρήγορη εκκίνηση ---------------- */
+.lab__welcome {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--sp-6);
+  margin-bottom: var(--sp-4);
+  padding: var(--sp-5) var(--sp-5) var(--sp-4);
+  overflow: hidden;
+  position: relative;
+  background:
+    radial-gradient(circle at 88% 10%, rgba(8, 145, 178, 0.22), transparent 32%),
+    radial-gradient(circle at 68% 120%, rgba(124, 58, 237, 0.2), transparent 42%),
+    linear-gradient(135deg, #121b31, var(--bg-deep));
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) + 4px);
+  box-shadow: var(--shadow-2);
+}
+.lab__welcome-copy {
+  max-width: 720px;
+}
+.lab__eyebrow {
+  display: block;
+  margin-bottom: var(--sp-2);
+  color: #67e8f9;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+.lab__welcome h1 {
+  margin: 0;
+  font-size: clamp(1.55rem, 3vw, 2.45rem);
+  letter-spacing: -0.04em;
+}
+.lab__welcome p {
+  max-width: 62ch;
+  margin: var(--sp-2) 0 0;
+  color: var(--text-muted);
+  line-height: 1.55;
+}
+.lab__snapshot {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(82px, 1fr));
+  flex: 0 0 auto;
+  overflow: hidden;
+  background: rgba(10, 16, 32, 0.72);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius);
+  backdrop-filter: blur(8px);
+}
+.lab__snapshot div {
+  display: flex;
+  flex-direction: column;
+  padding: var(--sp-3) var(--sp-4);
+  border-left: 1px solid var(--border-soft);
+}
+.lab__snapshot div:first-child { border-left: 0; }
+.lab__snapshot strong { font-size: 1.35rem; line-height: 1.1; }
+.lab__snapshot span { color: var(--text-faint); font-size: 0.66rem; }
+
+.lab__guide {
+  margin-bottom: var(--sp-3);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.lab__guide-toggle {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  background: none;
+  border: 0;
+  color: var(--text-muted);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.lab__guide-toggle strong { color: var(--text); }
+.lab__guide-toggle > span:last-child { color: var(--text-faint); font-size: 0.72rem; }
+.lab__steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0 var(--sp-3) var(--sp-3);
+  list-style: none;
+}
+.lab__steps li {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  min-width: 0;
+  padding: var(--sp-3);
+  background: var(--bg-deep);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+}
+.lab__steps li > span {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  place-items: center;
+  color: #fff;
+  background: var(--accent);
+  border-radius: 50%;
+  font-weight: 800;
+  font-size: 0.75rem;
+}
+.lab__steps div { display: flex; min-width: 0; flex-direction: column; }
+.lab__steps strong { font-size: 0.78rem; }
+.lab__steps small { color: var(--text-muted); font-size: 0.69rem; line-height: 1.35; }
+
 /* ---------------- Μπάρα εργαλείων ---------------- */
 .lab__bar {
   gap: var(--sp-3);
@@ -3025,6 +3141,10 @@ h3 {
 }
 
 @media (max-width: 700px) {
+  .lab__welcome { align-items: stretch; flex-direction: column; gap: var(--sp-4); }
+  .lab__snapshot { width: 100%; }
+  .lab__snapshot div { padding-inline: var(--sp-3); }
+  .lab__steps { grid-template-columns: 1fr; }
   .lab__bar {
     flex-direction: column;
     align-items: stretch;
