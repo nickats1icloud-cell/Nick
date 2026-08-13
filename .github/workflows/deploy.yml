@@ -8,7 +8,6 @@ on:
         claude/custom-car-dashboard-5v69i8,
         claude/greek-sim-racers-rebuild-fjomf8,
         claude/greek-sim-racing-podcast-analysis-tlgguf,
-        claude/sim-racing-arduino-ideas-64foji,
       ]
   workflow_dispatch:
 
