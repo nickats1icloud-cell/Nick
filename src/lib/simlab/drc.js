@@ -172,10 +172,10 @@ export function runDrc(build, firmware) {
         null, 'hid:manybuttons')
     )
   }
-  if (firmware.hid.axes.length > 8) {
+  if (firmware.hid.axes.length > 6) {
     out.push(
       finding('error', `${firmware.hid.axes.length} άξονες`,
-        'Το πρότυπο HID gamepad δίνει το πολύ 8 άξονες.',
+        'Το πρότυπο HID gamepad δίνει το πολύ 6 άξονες (X, Y, Z, Rx, Ry, Rz).',
         'Μείωσε τους αναλογικούς αισθητήρες ή χώρισέ τους σε δεύτερη πλακέτα.',
         null, 'hid:manyaxes')
     )

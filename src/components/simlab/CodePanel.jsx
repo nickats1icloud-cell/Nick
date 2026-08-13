@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { generateSketch, librariesScript, simhubTemplate } from '../../lib/simlab/codegen.js'
+import { generateSketch, librariesScript, sketchName, simhubTemplate } from '../../lib/simlab/codegen.js'
 import { downloadFile } from '../../lib/simlab/storage.js'
 import { DEFAULT_SETTINGS } from '../../lib/simlab/circuit.js'
 
@@ -40,9 +40,11 @@ export default function CodePanel({ build, firmware }) {
   const simhub = useMemo(() => simhubTemplate(), [])
 
   const content = tab === 'ino' ? sketch : tab === 'libs' ? libs : simhub
+  // Το Arduino IDE θέλει ASCII όνομα και φάκελο ίδιου ονόματος.
+  const folder = sketchName(build.name)
   const filename =
     tab === 'ino'
-      ? `${build.name.replace(/\s+/g, '_')}.ino`
+      ? `${folder}.ino`
       : tab === 'libs'
         ? 'install_libraries.sh'
         : 'simhub_template.txt'
@@ -70,7 +72,9 @@ export default function CodePanel({ build, firmware }) {
       {tab === 'ino' && (
         <p className="lab__note">
           Παράγεται από την καλωδίωση: ίδια pins, ίδιες βιβλιοθήκες, ίδιες ρυθμίσεις φίλτρων με την
-          προσομοίωση. Άλλαξε κάτι στον πάγκο και ο κώδικας ενημερώνεται.
+          προσομοίωση. Άλλαξε κάτι στον πάγκο και ο κώδικας ενημερώνεται. Αποθήκευσέ το ως{' '}
+          <code>{folder}/{folder}.ino</code> — το Arduino IDE απαιτεί ο φάκελος να λέγεται ίδια με
+          το αρχείο και να μην έχει ελληνικά.
         </p>
       )}
       {tab === 'libs' && (

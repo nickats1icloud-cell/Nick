@@ -2267,3 +2267,233 @@ h3 {
 .lab__bom-group {
   margin-bottom: 0.9rem;
 }
+
+/* ---------------- Πάνελ (πραγματικά χειριστήρια) ---------------- */
+.lab__viewswitch {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.lab__viewswitch .lab__seg {
+  margin: 0;
+}
+
+.pnl {
+  background: linear-gradient(165deg, #1a1e26, #0d1016);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem;
+  min-height: 62vh;
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.5);
+}
+.pnl--empty {
+  display: grid;
+  place-items: center;
+  min-height: 40vh;
+  text-align: center;
+}
+.pnl__off {
+  margin: 0 0 0.8rem;
+  padding: 0.45rem 0.8rem;
+  border-radius: 8px;
+  background: #2a1a04;
+  border: 1px solid #78350f;
+  color: #fcd34d;
+  font-size: 0.78rem;
+}
+.pnl__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+  gap: 0.9rem;
+  align-items: start;
+}
+.pnl__station {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.6rem 0.4rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.pnl__station--wide {
+  grid-column: span 2;
+}
+.pnl__viz {
+  display: grid;
+  place-items: center;
+  min-height: 76px;
+  width: 100%;
+}
+.pnl__name {
+  font-size: 0.74rem;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.25;
+}
+.pnl__sub {
+  font-size: 0.64rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+.pnl__readout {
+  display: block;
+  text-align: center;
+  font-size: 0.66rem;
+  color: #93c5fd;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Στοιχεία με τα οποία αλληλεπιδράς */
+.pnl__hit {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  line-height: 0;
+  border-radius: 50%;
+}
+.pnl__hit:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.pnl__hit--pedal {
+  border-radius: 8px;
+  cursor: ns-resize;
+}
+.pnl__svg {
+  width: 76px;
+  height: 76px;
+  display: block;
+}
+.pnl__svg--tall {
+  height: 92px;
+}
+.pnl__tick {
+  fill: #6b7280;
+  font-size: 9px;
+  font-family: inherit;
+}
+
+.pnl__matrix {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+}
+.pnl__key {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  border: 1px solid #343b48;
+  background: linear-gradient(180deg, #2b323f, #1b1f28);
+  color: var(--text-muted);
+  font-size: 0.66rem;
+  cursor: pointer;
+  box-shadow: 0 2px 0 #0b0e13;
+}
+.pnl__key.is-down {
+  background: linear-gradient(180deg, #7c5cff, #5b3fd6);
+  border-color: #7c5cff;
+  color: #fff;
+  box-shadow: none;
+  transform: translateY(2px);
+}
+
+.pnl__strip {
+  display: flex;
+  gap: 2px;
+  width: 100%;
+  height: 22px;
+}
+.pnl__strip span {
+  flex: 1;
+  border-radius: 3px;
+  background: #111;
+}
+
+.pnl__seg7 {
+  font-family: "Courier New", monospace;
+  font-size: 1.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #ff4d4d;
+  background: #180404;
+  border-radius: 6px;
+  padding: 0.2rem 0.45rem;
+  text-shadow: 0 0 8px rgba(255, 60, 60, 0.6);
+}
+
+.pnl__screen {
+  display: flex;
+  gap: 0.7rem;
+  align-items: center;
+  width: 100%;
+  background: #04121a;
+  border: 1px solid #0e3a4d;
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  min-height: 66px;
+  color: #7dd3fc;
+  font-variant-numeric: tabular-nums;
+}
+.pnl__screen-big {
+  font-size: 1.9rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.pnl__screen-big.is-bad {
+  color: #fca5a5;
+}
+.pnl__screen-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  font-size: 0.6rem;
+  flex: 1;
+}
+.pnl__screen-rows div {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.pnl__screen-rows span {
+  opacity: 0.6;
+}
+
+.pnl__fan {
+  font-size: 2.2rem;
+  color: #7dd3fc;
+  animation: lab-spin 1s linear infinite;
+}
+.pnl__haptic {
+  display: block;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: #f472b6;
+}
+.pnl__haptic.is-buzzing {
+  animation: lab-shake 0.09s linear infinite;
+}
+.pnl__buzzer {
+  font-size: 1.4rem;
+  color: var(--text-muted);
+}
+.pnl__buzzer.is-on {
+  color: #fbbf24;
+}
+
+.pnl__telemetry {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-top: 1rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.74rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}

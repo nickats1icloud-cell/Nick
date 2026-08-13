@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { bomToCsv, computeBom } from '../../lib/simlab/bom.js'
 import { downloadFile } from '../../lib/simlab/storage.js'
+import { sketchName } from '../../lib/simlab/codegen.js'
 
 export default function BomPanel({ build, firmware }) {
   const bom = useMemo(() => computeBom(build, firmware), [build, firmware])
@@ -13,7 +14,7 @@ export default function BomPanel({ build, firmware }) {
         <button
           type="button"
           className="btn btn--ghost"
-          onClick={() => downloadFile(`${build.name.replace(/\s+/g, '_')}_bom.csv`, bomToCsv(bom), 'text/csv;charset=utf-8')}
+          onClick={() => downloadFile(`${sketchName(build.name)}_bom.csv`, bomToCsv(bom), 'text/csv;charset=utf-8')}
         >
           Λήψη CSV
         </button>
