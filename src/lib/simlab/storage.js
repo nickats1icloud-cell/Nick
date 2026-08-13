@@ -1,7 +1,8 @@
 /** Αποθήκευση κατασκευών στον browser (localStorage) και εξαγωγή/εισαγωγή JSON. */
 
 const KEY_BUILDS = 'simlab.builds'
-const KEY_CURRENT = 'simlab.current'
+/** Εξάγεται ώστε οι καρτέλες να ακούν το ίδιο κλειδί για συγχρονισμό. */
+export const KEY_CURRENT = 'simlab.current'
 
 function read(key, fallback) {
   try {

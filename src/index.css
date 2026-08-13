@@ -3060,3 +3060,199 @@ h3 {
     font-size: 0.92rem;
   }
 }
+
+/* ==================================================================
+   Καλωδίωση σε δική της σελίδα (/lab/wiring)
+   ================================================================== */
+
+.lab__canvas-scale {
+  position: relative;
+  transform-origin: 0 0;
+}
+.lab__canvas {
+  cursor: grab;
+}
+.lab__canvas:active {
+  cursor: grabbing;
+}
+/* Οι κάρτες και τα pins κρατάνε τον δικό τους δείκτη. */
+.lab__node,
+.lab__wire-hit {
+  cursor: default;
+}
+.lab__node-head {
+  cursor: grab;
+}
+
+.lab__zoombar {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  background: rgba(10, 16, 32, 0.92);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: var(--shadow-2);
+  backdrop-filter: blur(6px);
+  z-index: 5;
+}
+.lab__zoombar button {
+  min-width: 30px;
+  height: 28px;
+  padding: 0 0.4rem;
+  background: none;
+  border: none;
+  border-radius: var(--radius-xs);
+  color: var(--text-muted);
+  font: inherit;
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s var(--ease), color 0.15s var(--ease);
+}
+.lab__zoombar button:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+.lab__zoombar-val {
+  font-size: 0.74rem !important;
+  font-variant-numeric: tabular-nums;
+  min-width: 46px !important;
+}
+
+.lab__popout {
+  padding: 0.3rem 0.6rem !important;
+  font-size: 0.78rem !important;
+  white-space: nowrap;
+}
+
+/* ---------------- Η σελίδα ---------------- */
+.wire {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  height: calc(100vh - 60px - 2.5rem);
+  min-height: 520px;
+  padding: 0 1rem;
+}
+.wire__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  background: linear-gradient(180deg, var(--surface-2), var(--surface));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-2);
+  flex: none;
+}
+.wire__bar-left,
+.wire__bar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+.wire__bar .btn {
+  padding: 0.38rem 0.75rem;
+  font-size: 0.8rem;
+  border-radius: var(--radius-sm);
+  border-color: var(--border);
+  background: var(--surface);
+}
+.wire__bar .btn:hover {
+  background: var(--surface-3);
+  border-color: var(--accent);
+}
+.wire__bar .btn.is-on {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+.wire__bar select {
+  background: var(--bg-deep);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  padding: 0.4rem 0.5rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+.wire__back {
+  font-weight: 600;
+}
+.wire__count {
+  font-size: 0.76rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.wire__body {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr) 360px;
+  gap: var(--sp-2);
+}
+.wire__body[data-palette='off'] {
+  grid-template-columns: minmax(0, 1fr) 360px;
+}
+.wire__body[data-inspector='off'] {
+  grid-template-columns: 250px minmax(0, 1fr);
+}
+.wire__body[data-palette='off'][data-inspector='off'] {
+  grid-template-columns: minmax(0, 1fr);
+}
+.wire__body > * {
+  min-width: 0;
+  min-height: 0;
+}
+/* Ο καμβάς παίρνει όλο το διαθέσιμο ύψος αντί για σταθερό 62vh. */
+.wire__body .lab__canvas {
+  height: 100%;
+  min-height: 0;
+}
+.wire__body .lab__palette,
+.wire__side {
+  max-height: 100%;
+  overflow-y: auto;
+}
+.wire__side .lab__panel {
+  max-height: none;
+  overflow: visible;
+}
+.wire__help {
+  flex: none;
+  margin: 0;
+  padding-bottom: var(--sp-2);
+  font-size: 0.74rem;
+  color: var(--text-faint);
+  text-align: center;
+}
+.wire__help kbd {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.05rem 0.3rem;
+  font-family: inherit;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+@media (max-width: 1100px) {
+  .wire__body,
+  .wire__body[data-palette='off'],
+  .wire__body[data-inspector='off'] {
+    grid-template-columns: minmax(0, 1fr);
+    grid-auto-rows: minmax(0, auto);
+  }
+  .wire {
+    height: auto;
+  }
+  .wire__body .lab__canvas {
+    height: 60vh;
+  }
+}

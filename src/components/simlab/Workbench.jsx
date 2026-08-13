@@ -12,6 +12,9 @@ import {
   sameRef,
 } from '../../lib/simlab/circuit.js'
 import { getPart, PIN_TYPES } from '../../lib/simlab/parts.js'
+
+const MIN_ZOOM = 0.25
+const MAX_ZOOM = 2.5
 import BoardArt from './BoardArt.jsx'
 import PartIcon from './PartIcon.jsx'
 
@@ -95,33 +98,93 @@ export default function Workbench({
   onBackground,
 }) {
   const dragRef = useRef(null)
+  const panRef = useRef(null)
   const canvasRef = useRef(null)
   const [hoverWire, setHoverWire] = useState(null)
+  const [zoom, setZoom] = useState(1)
+
+  /** Θέση του δείκτη σε συντεταγμένες περιεχομένου (αναιρεί κύλιση και zoom). */
+  const toContent = useCallback(
+    (e) => {
+      const el = canvasRef.current
+      const rect = el.getBoundingClientRect()
+      return {
+        x: (e.clientX - rect.left + el.scrollLeft) / zoom,
+        y: (e.clientY - rect.top + el.scrollTop) / zoom,
+      }
+    },
+    [zoom]
+  )
+
+  /** Μεγέθυνση κρατώντας σταθερό το σημείο κάτω από τον δείκτη. */
+  const zoomAt = useCallback(
+    (factor, clientX, clientY) => {
+      const el = canvasRef.current
+      if (!el) return
+      setZoom((z) => {
+        const next = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, z * factor))
+        if (next === z) return z
+        const rect = el.getBoundingClientRect()
+        const px = clientX == null ? rect.width / 2 : clientX - rect.left
+        const py = clientY == null ? rect.height / 2 : clientY - rect.top
+        const cx = (px + el.scrollLeft) / z
+        const cy = (py + el.scrollTop) / z
+        requestAnimationFrame(() => {
+          el.scrollLeft = cx * next - px
+          el.scrollTop = cy * next - py
+        })
+        return next
+      })
+    },
+    []
+  )
+
+  /** Προσαρμογή ώστε να χωρέσει ολόκληρη η κατασκευή. */
+  const zoomToFit = useCallback(() => {
+    const el = canvasRef.current
+    if (!el) return
+    const s = canvasSize(build, board)
+    const next = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, Math.min(el.clientWidth / s.width, el.clientHeight / s.height) * 0.96))
+    setZoom(next)
+    requestAnimationFrame(() => {
+      el.scrollLeft = 0
+      el.scrollTop = 0
+    })
+  }, [build, board])
 
   const startDrag = useCallback(
     (e, id, x, y) => {
       if (e.button !== 0) return
-      const rect = canvasRef.current.getBoundingClientRect()
-      dragRef.current = {
-        id,
-        dx: e.clientX - rect.left - x + canvasRef.current.scrollLeft,
-        dy: e.clientY - rect.top - y + canvasRef.current.scrollTop,
-      }
+      const p = toContent(e)
+      dragRef.current = { id, dx: p.x - x, dy: p.y - y }
       onSelect(id)
     },
-    [onSelect]
+    [onSelect, toContent]
   )
 
   useEffect(() => {
     const move = (e) => {
+      const el = canvasRef.current
+      if (!el) return
+      // Μετακίνηση καμβά (σύρσιμο στο φόντο)
+      const pan = panRef.current
+      if (pan) {
+        pan.moved = true
+        el.scrollLeft = pan.left - (e.clientX - pan.x)
+        el.scrollTop = pan.top - (e.clientY - pan.y)
+        return
+      }
       const drag = dragRef.current
-      if (!drag || !canvasRef.current) return
-      const rect = canvasRef.current.getBoundingClientRect()
-      const x = e.clientX - rect.left + canvasRef.current.scrollLeft - drag.dx
-      const y = e.clientY - rect.top + canvasRef.current.scrollTop - drag.dy
+      if (!drag) return
+      const rect = el.getBoundingClientRect()
+      const x = (e.clientX - rect.left + el.scrollLeft) / zoom - drag.dx
+      const y = (e.clientY - rect.top + el.scrollTop) / zoom - drag.dy
       onMove(drag.id, Math.max(0, Math.round(x / 4) * 4), Math.max(0, Math.round(y / 4) * 4))
     }
     const up = () => {
+      // Κλικ χωρίς μετακίνηση στο φόντο = αποεπιλογή.
+      if (panRef.current && !panRef.current.moved) onBackground()
+      panRef.current = null
       dragRef.current = null
     }
     window.addEventListener('pointermove', move)
@@ -130,7 +193,36 @@ export default function Workbench({
       window.removeEventListener('pointermove', move)
       window.removeEventListener('pointerup', up)
     }
-  }, [onMove])
+  }, [onMove, onBackground, zoom])
+
+  /* Ctrl/⌘ + ροδέλα = zoom· σκέτη ροδέλα = κύλιση, όπως σε κάθε καμβά. */
+  useEffect(() => {
+    const el = canvasRef.current
+    if (!el) return undefined
+    const onWheel = (e) => {
+      if (!e.ctrlKey && !e.metaKey) return
+      e.preventDefault()
+      zoomAt(e.deltaY < 0 ? 1.12 : 1 / 1.12, e.clientX, e.clientY)
+    }
+    el.addEventListener('wheel', onWheel, { passive: false })
+    return () => el.removeEventListener('wheel', onWheel)
+  }, [zoomAt])
+
+  /* Συντομεύσεις: + − 0 (και ⌘/Ctrl εκδοχές τους). */
+  useEffect(() => {
+    const onKey = (e) => {
+      const tag = document.activeElement?.tagName
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return
+      if (e.key === '+' || e.key === '=') zoomAt(1.15)
+      else if (e.key === '-' || e.key === '_') zoomAt(1 / 1.15)
+      else if (e.key === '0') zoomToFit()
+      else if (e.key === '1') setZoom(1)
+      else return
+      e.preventDefault()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [zoomAt, zoomToFit])
 
   const size = canvasSize(build, board)
   const boardGeo = boardGeometry(board)
@@ -161,15 +253,52 @@ export default function Workbench({
       .filter(Boolean)
   }, [build, board])
 
+  /**
+   * «Φόντο» είναι ο καμβάς και τα δοχεία του — όχι οι κάρτες, τα καλώδια ή η
+   * μπάρα zoom. Ο έλεγχος γίνεται με closest() γιατί ανάμεσα στον καμβά και
+   * στο σημείο που πατάς παρεμβάλλονται τα δοχεία της κλίμακας.
+   */
+  const isBackground = (target) => {
+    if (!(target instanceof Element)) return false
+    if (target.closest('.lab__node') || target.closest('.lab__zoombar')) return false
+    if (target.classList.contains('lab__wire-hit')) return false
+    return true
+  }
+
+  const startPan = (e) => {
+    if (e.button !== 0 && e.button !== 1) return
+    const el = canvasRef.current
+    panRef.current = {
+      x: e.clientX,
+      y: e.clientY,
+      left: el.scrollLeft,
+      top: el.scrollTop,
+      moved: false,
+    }
+  }
+
   return (
     <div
       className="lab__canvas"
       ref={canvasRef}
       onPointerDown={(e) => {
-        if (e.target === e.currentTarget || e.target.tagName === 'svg') onBackground()
+        // Σύρσιμο στο φόντο = μετακίνηση· απλό κλικ = αποεπιλογή.
+        if (isBackground(e.target)) startPan(e)
       }}
     >
-      <div className="lab__canvas-inner" style={{ width: size.width, height: size.height }}>
+      <div
+        className="lab__canvas-inner"
+        style={{ width: size.width * zoom, height: size.height * zoom }}
+      >
+        <div
+          className="lab__canvas-scale"
+          style={{
+            width: size.width,
+            height: size.height,
+            transform: `scale(${zoom})`,
+            transformOrigin: '0 0',
+          }}
+        >
         <svg className="lab__wires" width={size.width} height={size.height}>
           {routes.map(({ wire, a, b, d, color }) => {
             const touches =
@@ -280,6 +409,27 @@ export default function Workbench({
             </div>
           )
         })}
+        </div>
+      </div>
+
+      <div className="lab__zoombar">
+        <button type="button" onClick={() => zoomAt(1 / 1.2)} aria-label="Σμίκρυνση" title="Σμίκρυνση (−)">
+          −
+        </button>
+        <button
+          type="button"
+          className="lab__zoombar-val"
+          onClick={() => setZoom(1)}
+          title="Επαναφορά στο 100% (1)"
+        >
+          {Math.round(zoom * 100)}%
+        </button>
+        <button type="button" onClick={() => zoomAt(1.2)} aria-label="Μεγέθυνση" title="Μεγέθυνση (+)">
+          +
+        </button>
+        <button type="button" onClick={zoomToFit} title="Να χωρέσουν όλα (0)" aria-label="Προσαρμογή">
+          ⤢
+        </button>
       </div>
 
       {pending && (

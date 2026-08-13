@@ -10,6 +10,7 @@ import ScopeView from '../components/simlab/ScopeView.jsx'
 import CodePanel from '../components/simlab/CodePanel.jsx'
 import LibraryPanel from '../components/simlab/LibraryPanel.jsx'
 import BomPanel from '../components/simlab/BomPanel.jsx'
+import useBuildStore from '../hooks/useBuildStore.js'
 
 import { BOARDS, getBoard } from '../lib/simlab/boards.js'
 import {
@@ -38,10 +39,8 @@ import {
   deleteBuild,
   downloadFile,
   listSavedBuilds,
-  loadCurrent,
   parseBuildJson,
   saveBuild,
-  storeCurrent,
 } from '../lib/simlab/storage.js'
 
 const TABS = [
@@ -56,7 +55,7 @@ const TABS = [
 const RENDER_INTERVAL_MS = 33
 
 export default function SimLab() {
-  const [build, setBuild] = useState(() => loadCurrent() || loadPreset('button-box'))
+  const [build, setBuild] = useBuildStore(() => loadPreset('button-box'))
   const [selectedId, setSelectedId] = useState(null)
   const [pending, setPending] = useState(null)
   const [tab, setTab] = useState('check')
@@ -115,11 +114,6 @@ export default function SimLab() {
     return () => cancelAnimationFrame(rafRef.current)
   }, [running, trackId])
 
-  /* Αυτόματη αποθήκευση της τρέχουσας κατασκευής. */
-  useEffect(() => {
-    storeCurrent(build)
-  }, [build])
-
   /* Delete: σβήσιμο επιλεγμένου εξαρτήματος. */
   useEffect(() => {
     const onKey = (e) => {
@@ -133,7 +127,7 @@ export default function SimLab() {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [selectedId])
+  }, [selectedId, setBuild])
 
   const flash = useCallback((message) => {
     setStatus(message)
@@ -151,14 +145,14 @@ export default function SimLab() {
       })
       setTab('inspect')
     },
-    []
+    [setBuild]
   )
 
   const handleMove = useCallback((id, x, y) => {
     setBuild((b) =>
       id === BOARD_NODE ? { ...b, boardPos: { x, y } } : updateNode(b, id, { x, y })
     )
-  }, [])
+  }, [setBuild])
 
   const handlePinClick = useCallback(
     (ref) => {
@@ -169,7 +163,7 @@ export default function SimLab() {
         return null
       })
     },
-    []
+    [setBuild]
   )
 
   const handleControl = useCallback((nodeId, patch) => {
@@ -366,9 +360,20 @@ export default function SimLab() {
             </div>
             <span className="lab__muted">
               {view === 'wiring'
-                ? 'Κλικ σε δύο pins για καλώδιο · κλικ σε καλώδιο για διαγραφή'
+                ? 'Κλικ σε δύο pins για καλώδιο · Ctrl+ροδέλα για zoom'
                 : 'Πάτα, γύρισε και τράβα τα χειριστήρια όπως στον πραγματικό πάγκο'}
             </span>
+            {view === 'wiring' && (
+              <a
+                className="btn btn--ghost lab__popout"
+                href={`${import.meta.env.BASE_URL}lab/wiring`}
+                target="_blank"
+                rel="noreferrer"
+                title="Η καλωδίωση σε δική της καρτέλα, με όλο το πλάτος"
+              >
+                Σε νέα καρτέλα ↗
+              </a>
+            )}
           </div>
 
           {view === 'panel' ? (

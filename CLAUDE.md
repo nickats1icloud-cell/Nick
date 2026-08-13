@@ -60,7 +60,8 @@ reload) resolve correctly on Pages, which has no server-side rewrite support.
 
 - **Routing**: `src/main.jsx` mounts `<App>` inside a `BrowserRouter`;
   `src/App.jsx` defines all routes under a shared `Layout` (`/`, `/dashboard`,
-  `/about`, catch-all `NotFound`). To add a page: create a component in
+  `/lab`, `/lab/wiring`, `/podcast`, `/about`, catch-all `NotFound`). Routes
+  listed in `WIDE_ROUTES` (`Layout.jsx`) skip the 960px `.container`. To add a page: create a component in
   `src/pages/` and add a `<Route>` in `App.jsx`; to add a nav link, edit
   `src/components/Navbar.jsx`.
 - **Layout shell**: `src/components/Layout.jsx` wraps every route with
@@ -168,6 +169,16 @@ reload) resolve correctly on Pages, which has no server-side rewrite support.
   clipped); it renders between the two pin columns on the workbench card and
   larger in the inspector when the board is selected. Coordinates must be
   passed as numbers, not strings — the sub-components do arithmetic on them.
+  `Workbench.jsx` owns zoom and pan: the content sits in a scaled wrapper, so
+  pointer coordinates must be divided by `zoom` before they become node
+  positions. Panning starts on a pointerdown that `isBackground()` accepts —
+  the scale wrapper means the event target is rarely the canvas itself, so
+  test with `closest()` rather than `e.target === e.currentTarget`.
+  `/lab/wiring` (`WiringLab.jsx`) renders the same `Workbench` full-screen.
+  Both it and `SimLab.jsx` hold the build through `useBuildStore`, which
+  persists to `localStorage` and syncs across tabs via the `storage` event;
+  it skips writes when the serialised build is unchanged so two open tabs
+  don't ping state back and forth.
   The canvas has two views, switched in `SimLab.jsx`: `Workbench.jsx` (the
   schematic — cards, pins and wires) and `PanelView.jsx` (the rig — SVG
   controls you actually press, turn and drag). Both drive the same `controls`
