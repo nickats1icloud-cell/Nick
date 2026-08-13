@@ -411,6 +411,8 @@ export default function SimLab() {
             <Inspector
               build={build}
               node={selectedNode}
+              board={board}
+              boardSelected={selectedId === BOARD_NODE}
               firmware={firmware}
               onChangeValues={(id, patch) => setBuild((b) => updateNodeValues(b, id, patch))}
               onChangeLabel={(id, label) => setBuild((b) => updateNode(b, id, { label }))}

@@ -10,6 +10,7 @@ import {
   wirePath,
 } from '../../lib/simlab/circuit.js'
 import { getPart, PIN_TYPES } from '../../lib/simlab/parts.js'
+import BoardArt from './BoardArt.jsx'
 
 /** Χρώμα καλωδίου: παίρνει τον τύπο του άκρου που είναι εξάρτημα. */
 function wireColor(build, wire) {
@@ -180,6 +181,7 @@ export default function Workbench({
             <span className="lab__node-title">{board.name}</span>
             {running && <span className={`lab__led${engine?.hid?.connected ? ' is-on' : ''}`} title="USB HID" />}
           </div>
+          <BoardArt boardId={board.id} className="lab__boardart" />
           {boardGeo.pins.map((pin) => (
             <PinRow
               key={pin.id}

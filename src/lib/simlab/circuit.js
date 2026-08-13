@@ -14,7 +14,7 @@ export const BUILD_VERSION = 1
    χωρίς μέτρηση DOM. */
 export const GEO = {
   partW: 196,
-  boardW: 240,
+  boardW: 330,
   headerH: 34,
   rowH: 22,
   padBottom: 12,

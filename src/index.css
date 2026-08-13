@@ -1395,7 +1395,7 @@ h3 {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 8.5rem;
+  max-width: 6.4rem;
 }
 
 .lab__badge {
@@ -2496,4 +2496,34 @@ h3 {
   font-size: 0.74rem;
   font-variant-numeric: tabular-nums;
   color: var(--text-muted);
+}
+
+/* ---------------- Σχέδια πλακετών ---------------- */
+.brd {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.brd__svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 3px 8px rgba(0, 0, 0, 0.55));
+}
+
+/* Μέσα στην κάρτα του πάγκου: ανάμεσα στις δύο στήλες pins. */
+.lab__boardart {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: calc(34px + 8px);
+  bottom: 10px;
+  width: 104px;
+  pointer-events: none;
+}
+
+/* Στον επιθεωρητή: μεγαλύτερο, με χώρο γύρω του. */
+.lab__boardart--panel {
+  height: 200px;
+  margin: 0.4rem 0 0.9rem;
 }
