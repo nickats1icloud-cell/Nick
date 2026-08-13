@@ -5,6 +5,7 @@ import Inspector from '../components/simlab/Inspector.jsx'
 import AnalysisPanel from '../components/simlab/AnalysisPanel.jsx'
 import TestBench from '../components/simlab/TestBench.jsx'
 import OutputsView from '../components/simlab/OutputsView.jsx'
+import PanelView from '../components/simlab/PanelView.jsx'
 import ScopeView from '../components/simlab/ScopeView.jsx'
 import CodePanel from '../components/simlab/CodePanel.jsx'
 import LibraryPanel from '../components/simlab/LibraryPanel.jsx'
@@ -31,6 +32,7 @@ import { runDrc } from '../lib/simlab/drc.js'
 import { createEngine, resetEngine, stepEngine } from '../lib/simlab/engine.js'
 import { createTelemetry, stepTelemetry, telemetrySnapshot } from '../lib/simlab/telemetry.js'
 import { PRESETS, loadPreset } from '../lib/simlab/presets.js'
+import { sketchName } from '../lib/simlab/codegen.js'
 import {
   deleteBuild,
   downloadFile,
@@ -57,6 +59,7 @@ export default function SimLab() {
   const [selectedId, setSelectedId] = useState(null)
   const [pending, setPending] = useState(null)
   const [tab, setTab] = useState('check')
+  const [view, setView] = useState('wiring')
   const [running, setRunning] = useState(false)
   const [showPresets, setShowPresets] = useState(false)
   const [saved, setSaved] = useState(() => listSavedBuilds())
@@ -260,7 +263,7 @@ export default function SimLab() {
             type="button"
             className="btn btn--ghost"
             onClick={() =>
-              downloadFile(`${build.name.replace(/\s+/g, '_')}.json`, JSON.stringify(build, null, 2), 'application/json')
+              downloadFile(`${sketchName(build.name)}.json`, JSON.stringify(build, null, 2), 'application/json')
             }
           >
             Εξαγωγή
@@ -333,6 +336,41 @@ export default function SimLab() {
         <PartsPalette onAdd={handleAdd} />
 
         <div className="lab__center">
+          <div className="lab__viewswitch">
+            <div className="lab__seg">
+              <button
+                type="button"
+                className={view === 'wiring' ? 'is-on' : ''}
+                onClick={() => setView('wiring')}
+              >
+                Καλωδίωση
+              </button>
+              <button
+                type="button"
+                className={view === 'panel' ? 'is-on' : ''}
+                onClick={() => setView('panel')}
+              >
+                Πάνελ
+              </button>
+            </div>
+            <span className="lab__muted">
+              {view === 'wiring'
+                ? 'Κλικ σε δύο pins για καλώδιο · κλικ σε καλώδιο για διαγραφή'
+                : 'Πάτα, γύρισε και τράβα τα χειριστήρια όπως στον πραγματικό πάγκο'}
+            </span>
+          </div>
+
+          {view === 'panel' ? (
+            <PanelView
+              firmware={firmware}
+              engine={engine}
+              running={running}
+              telemetry={telemetry}
+              controls={controls}
+              onControl={handleControl}
+            />
+          ) : (
+            <>
           <Workbench
             build={build}
             board={board}
@@ -350,6 +388,8 @@ export default function SimLab() {
             }}
           />
           <OutputsView firmware={firmware} engine={engine} running={running} />
+            </>
+          )}
           <ScopeView scope={engine.scope} />
         </div>
 

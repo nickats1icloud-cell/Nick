@@ -155,9 +155,19 @@ export function otherEnd(wire, ref) {
   return sameRef(wire.from, ref) ? wire.to : wire.from
 }
 
+/** Τύποι pin που μεταφέρουν σήμα — μόνο από αυτά περνάει μια διαδρομή. */
+const SIGNAL_TYPES = new Set([
+  'din', 'dout', 'pwm', 'aout', 'sda', 'scl', 'sck', 'mosi', 'miso', 'cs',
+])
+
 /**
  * Ποιο pin της πλακέτας «βλέπει» ένα pin εξαρτήματος (άμεσα ή μέσω ενός
  * ενδιάμεσου εξαρτήματος όπως MOSFET / level shifter).
+ *
+ * Η διαδρομή μέσω ενδιάμεσου ακολουθεί ΜΟΝΟ pins σήματος: αλλιώς ένας level
+ * shifter με το LV του στο 3V3 θα «απαντούσε» ότι το σήμα πάει στο 3V3.
+ * Δοκιμάζεται πρώτα το ίδιο pin (απευθείας πέρασμα, π.χ. πύλη MOSFET) και
+ * μετά τα υπόλοιπα pins σήματος.
  */
 export function boardPinFor(build, nodeId, pinId) {
   const direct = wiresAt(build, { node: nodeId, pin: pinId })
@@ -172,7 +182,9 @@ export function boardPinFor(build, nodeId, pinId) {
     const midPart = midNode && getPart(midNode.partId)
     if (!midPart) continue
     if (!['mosfet', 'levelshifter'].includes(midPart.role)) continue
-    for (const other of midPart.pins) {
+    const candidates = midPart.pins.filter((x) => SIGNAL_TYPES.has(x.type))
+    candidates.sort((a, b) => (a.id === mid.pin ? -1 : b.id === mid.pin ? 1 : 0))
+    for (const other of candidates) {
       const ref = { node: mid.node, pin: other.id }
       const hop = wiresAt(build, ref)
         .filter((w) => w.id !== wire.id)

@@ -67,19 +67,19 @@ function buttonBox() {
   cols.forEach(([pin, label], i) => {
     const id = m.add('button', 400 + (i % 2) * 250, 60 + Math.floor(i / 2) * 120, {}, label)
     m.toBoard(id, 'sig', pin)
-    m.toBoard(id, 'gnd', i % 2 === 0 ? 'GND' : 'GND2')
+    m.toBoard(id, 'gnd', i % 2 === 0 ? 'GND1' : 'GND2')
   })
   const e1 = m.add('encoder', 400, 460, { useInterrupt: true }, 'Encoder TC')
   m.toBoard(e1, 'a', 'D2')
   m.toBoard(e1, 'b', 'D3')
-  m.toBoard(e1, 'gnd', 'GND')
+  m.toBoard(e1, 'gnd', 'GND1')
   const e2 = m.add('encoder', 650, 460, { useInterrupt: true }, 'Encoder ABS')
   m.toBoard(e2, 'a', 'D0')
   m.toBoard(e2, 'b', 'D1')
   m.toBoard(e2, 'gnd', 'GND2')
   const t = m.add('toggle', 400, 620, {}, 'Ignition')
   m.toBoard(t, 'sig', 'D10')
-  m.toBoard(t, 'gnd', 'GND')
+  m.toBoard(t, 'gnd', 'GND3')
   return finish(m)
 }
 
@@ -89,8 +89,8 @@ function brakePedal() {
   const amp = m.add('hx711', 700, 80, { rateHz: 80, filter: 'ema', emaAlpha: 0.35, curve: 1.3 }, 'HX711')
   m.link(cell, 'ex', amp, 'bridge')
   m.link(cell, 'sig', amp, 'bridge')
-  m.toBoard(amp, 'vcc', '5V')
-  m.toBoard(amp, 'gnd', 'GND')
+  m.toBoard(amp, 'vcc', 'VCC')
+  m.toBoard(amp, 'gnd', 'GND1')
   m.toBoard(amp, 'dt', 'D4')
   m.toBoard(amp, 'sck', 'D5')
 
@@ -114,7 +114,7 @@ function revLights() {
   const psu = m.add('psu12', 1000, 80, { amps: 5 }, 'Τροφοδοτικό 12V')
   const cap = m.add('capacitor', 740, 280, { uf: 1000 }, 'Πυκνωτής')
   m.toBoard(strip, 'din', 'D6')
-  m.toBoard(strip, 'gnd', 'GND')
+  m.toBoard(strip, 'gnd', 'GND1')
   m.link(strip, 'vcc', buck, 'out5')
   m.link(buck, 'v12', psu, 'v12')
   m.link(buck, 'gnd', psu, 'gnd')
@@ -124,7 +124,7 @@ function revLights() {
 
   const buzz = m.add('buzzer', 420, 400, { trigger: 'shift' }, 'Βομβητής shift')
   m.toBoard(buzz, 'sig', 'D5')
-  m.toBoard(buzz, 'gnd', 'GND')
+  m.toBoard(buzz, 'gnd', 'GND3')
   return finish(m)
 }
 
@@ -132,15 +132,15 @@ function shifter() {
   const m = maker('pro-micro', 'Sequential shifter (Hall)', '')
   const up = m.add('hall-digital', 420, 80, {}, 'Ανέβασμα')
   const down = m.add('hall-digital', 420, 280, {}, 'Κατέβασμα')
-  m.toBoard(up, 'vcc', '5V')
-  m.toBoard(up, 'gnd', 'GND')
+  m.toBoard(up, 'vcc', 'VCC')
+  m.toBoard(up, 'gnd', 'GND1')
   m.toBoard(up, 'sig', 'D2')
-  m.toBoard(down, 'vcc', '5V')
+  m.toBoard(down, 'vcc', 'VCC')
   m.toBoard(down, 'gnd', 'GND2')
   m.toBoard(down, 'sig', 'D3')
   const led = m.add('led', 420, 480, { source: 'shift', color: 'red' }, 'Λυχνία shift')
   m.toBoard(led, 'a', 'D5')
-  m.toBoard(led, 'k', 'GND')
+  m.toBoard(led, 'k', 'GND3')
   return finish(m)
 }
 
@@ -158,7 +158,7 @@ function windSim() {
     m.link(psu, 'v12', fan, 'v12')
     m.link(psu, 'gnd', fan, 'gnd')
   })
-  m.toBoard(psu, 'gnd', 'GND')
+  m.toBoard(psu, 'gnd', 'GND1')
   return finish(m)
 }
 
@@ -166,12 +166,12 @@ function fullDash() {
   const m = maker('pico', 'Πλήρες καντράν (Pico)', '')
   const oled = m.add('oled', 420, 70, { iface: 'i2c', layout: 'delta', updateHz: 15, partial: true }, 'OLED delta')
   m.toBoard(oled, 'vcc', '3V3')
-  m.toBoard(oled, 'gnd', 'GND')
+  m.toBoard(oled, 'gnd', 'GND1')
   m.toBoard(oled, 'sda', 'GP4')
   m.toBoard(oled, 'scl', 'GP5')
 
   const seg = m.add('tm1637', 420, 300, { show: 'gear', updateHz: 10 }, 'Γρανάζι')
-  m.toBoard(seg, 'vcc', '5V')
+  m.toBoard(seg, 'vcc', 'VBUS')
   m.toBoard(seg, 'gnd', 'GND2')
   m.toBoard(seg, 'clk', 'GP6')
   m.toBoard(seg, 'dio', 'GP7')
@@ -181,9 +181,9 @@ function fullDash() {
   m.link(strip, 'din', shifter5, 'b')
   m.toBoard(shifter5, 'a', 'GP8')
   m.toBoard(shifter5, 'lv', '3V3')
-  m.toBoard(shifter5, 'gnd', 'GND')
-  m.toBoard(strip, 'gnd', 'GND2')
-  m.toBoard(strip, 'vcc', '5V')
+  m.toBoard(shifter5, 'gnd', 'GND3')
+  m.toBoard(strip, 'gnd', 'GND4')
+  m.toBoard(strip, 'vcc', 'VBUS')
   return finish(m)
 }
 
@@ -193,8 +193,8 @@ function handbrake() {
   const amp = m.add('hx711', 720, 80, { rateHz: 80, filter: 'avg4', curve: 0.9 }, 'HX711')
   m.link(cell, 'ex', amp, 'bridge')
   m.link(cell, 'sig', amp, 'bridge')
-  m.toBoard(amp, 'vcc', '5V')
-  m.toBoard(amp, 'gnd', 'GND')
+  m.toBoard(amp, 'vcc', 'VCC')
+  m.toBoard(amp, 'gnd', 'GND1')
   m.toBoard(amp, 'dt', 'D2')
   m.toBoard(amp, 'sck', 'D3')
   const btn = m.add('button', 420, 340, {}, 'Κουμπί μηδενισμού')
@@ -213,7 +213,7 @@ function bigPanel() {
 
   const pot = m.add('pot', 760, 70, { taper: 'lin', noiseMv: 10 }, 'Brake bias')
   m.toBoard(pot, 'vcc', '5V')
-  m.toBoard(pot, 'gnd', 'GND')
+  m.toBoard(pot, 'gnd', 'GND1')
   m.toBoard(pot, 'sig', 'A0')
 
   const seg = m.add('tm1637', 760, 330, { show: 'gear' }, 'Ένδειξη')

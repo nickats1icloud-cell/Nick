@@ -9,15 +9,19 @@
  * ώστε οι έξοδοι να τροφοδοτούνται από πραγματικό παιχνίδι.
  */
 
+import { inoPin } from './boards.js'
 import { installScript } from './libraries.js'
 
-/** Μετατροπή id pin πλακέτας σε όνομα που δέχεται το Arduino IDE. */
+/**
+ * Το όνομα του pin όπως το γράφεις στο Arduino IDE.
+ *
+ * Δεν μαντεύεται από το id — κάθε πλακέτα το δηλώνει η ίδια στο boards.js,
+ * ώστε το D6 του Pro Micro να βγαίνει `6` και το GP26 του Pico `26`.
+ * Επιστρέφει null όταν το pin δεν είναι συνδεδεμένο, ώστε ο καλών να μπορεί
+ * να βγάλει προειδοποίηση αντί για ένα σιωπηλό -1.
+ */
 export function arduinoPin(board, pinId) {
-  if (!pinId) return '-1'
-  if (board.arch === 'rp2040') return pinId.replace('GP', '')
-  if (board.arch === 'esp32') return pinId.replace('GPIO', '')
-  if (/^D\d+$/.test(pinId)) return pinId.slice(1)
-  return pinId
+  return inoPin(board, pinId)
 }
 
 /** Ελληνικά ονόματα → λατινικό αναγνωριστικό για #define. */
@@ -75,12 +79,17 @@ ${axisNames.map((a) => `  Joystick.set${a}AxisRange(0, 1023);`).join('\n')}`,
     }
   }
   if (board.arch === 'teensy') {
+    // Το Teensyduino δεν ονομάζει τους άξονες Rx/Ry/Rz — έχει sliders και Zrotate.
+    const TEENSY_AXIS = {
+      X: 'X', Y: 'Y', Z: 'Z',
+      Rx: 'sliderLeft', Ry: 'sliderRight', Rz: 'Zrotate',
+    }
     return {
       include: '// Tools ▸ USB Type ▸ "Serial + Keyboard + Mouse + Joystick"',
       declare: '',
       begin: '  Joystick.useManualSend(true);',
       setButton: (i, expr) => `  Joystick.button(${i + 1}, ${expr});`,
-      setAxis: (a, expr) => `  Joystick.${a.toLowerCase()}(${expr});`,
+      setAxis: (a, expr) => `  Joystick.${TEENSY_AXIS[a] || a}(${expr});`,
       send: '  Joystick.send_now();',
     }
   }
@@ -98,17 +107,37 @@ hid_gamepad_report_t gp;`,
       send: '  usb_hid.sendReport(0, &gp, sizeof(gp));',
     }
   }
+  // ESP32: Bluetooth gamepad. Το setAxes() παίρνει όλους τους άξονες μαζί,
+  // οπότε τους μαζεύουμε σε μεταβλητές και στέλνουμε μία φορά στο τέλος.
   return {
     include: '#include <BleGamepad.h>',
-    declare: `BleGamepad bleGamepad("Sim Rig", "DIY", 100);`,
+    declare: `BleGamepad bleGamepad("Sim Rig", "DIY", 100);
+int16_t axX = 0, axY = 0, axZ = 0, axRX = 0, axRY = 0, axRZ = 0;`,
     begin: `  BleGamepadConfiguration cfg;
   cfg.setButtonCount(${buttonCount});
   cfg.setAutoReport(false);
   bleGamepad.begin(&cfg);`,
     setButton: (i, expr) => `  if (${expr}) bleGamepad.press(${i + 1}); else bleGamepad.release(${i + 1});`,
-    setAxis: (a, expr) => `  bleGamepad.setAxes(${expr});`,
-    send: '  bleGamepad.sendReport();',
+    setAxis: (a, expr) => `  ax${a.toUpperCase()} = map(${expr}, 0, 1023, -32767, 32767);`,
+    send: `  bleGamepad.setAxes(axX, axY, axZ, axRZ, axRX, axRY);
+  bleGamepad.sendReport();`,
   }
+}
+
+/**
+ * Όνομα φακέλου/αρχείου σκίτσου.
+ *
+ * Το Arduino IDE δέχεται μόνο ASCII γράμματα, ψηφία, `_` και `-`, και ο
+ * φάκελος πρέπει να έχει το ίδιο όνομα με το .ino — αλλιώς αρνείται να το
+ * ανοίξει. Γι' αυτό τα ελληνικά ονόματα μεταγράφονται.
+ */
+export function sketchName(name) {
+  const base = safeName(name, 'SimRigSketch', 0)
+    .split('_')
+    .filter(Boolean)
+    .map((w) => w.charAt(0) + w.slice(1).toLowerCase())
+    .join('')
+  return base || 'SimRigSketch'
 }
 
 /* ------------------------------------------------------------------ */
@@ -117,7 +146,17 @@ hid_gamepad_report_t gp;`,
 
 export function generateSketch(build, firmware, settings) {
   const board = firmware.board
-  const P = (id) => arduinoPin(board, id)
+  const missing = []
+  let currentPart = ''
+  /** Όνομα pin για τον κώδικα· καταγράφει τα ασύνδετα ώστε να φανούν στο σκίτσο. */
+  const P = (id) => {
+    const name = arduinoPin(board, id)
+    if (name === null) {
+      missing.push(currentPart || 'άγνωστο εξάρτημα')
+      return '-1 /* ΑΣΥΝΔΕΤΟ — συμπλήρωσε το pin */'
+    }
+    return name
+  }
   const hid = firmware.hid.needed ? hidBlock(board, firmware) : null
 
   const usedNames = new Set()
@@ -140,6 +179,7 @@ export function generateSketch(build, firmware, settings) {
   firmware.inputs.forEach((entry, i) => {
     if (!entry.wired) return
     const name = safeName(entry.label, 'IN', i, usedNames)
+    currentPart = entry.label
     const v = entry.values
 
     if (entry.kind === 'button') {
@@ -275,6 +315,7 @@ long ${name.toLowerCase()}_out = 0;`)
   firmware.outputs.forEach((entry, i) => {
     if (!entry.wired) return
     const name = safeName(entry.label, 'OUT', i, usedNames)
+    currentPart = entry.label
     const v = entry.values
 
     if (entry.kind === 'ledstrip') {
@@ -452,14 +493,39 @@ void readTelemetry() {
     : ''
 
   /* --------------------------- Σύνθεση --------------------------- */
+  const folder = sketchName(build.name)
+  const libLines = firmware.memory.libs
+    .filter((l) => l.source === 'manager' || l.source === 'zip')
+    .map((l) => ` *   - ${l.name} ${l.version}${l.source === 'zip' ? '  (ZIP: ' + l.url + ')' : ''}`)
+
   const header = `/*
  * ${build.name}
- * ------------------------------------------------------------
- * Πλακέτα      : ${board.name} (${board.mcu}, ${board.logic}V, ${board.clockMhz}MHz)
- * Είσοδοι      : ${firmware.hid.buttonCount} κουμπιά HID, ${firmware.hid.axes.length} άξονες
- * Βρόχος       : ~${firmware.timing.loopHz} Hz  (καθυστέρηση ~${firmware.timing.latencyMs} ms)
- * Μνήμη        : ~${firmware.memory.flashKb} KB flash, ~${firmware.memory.ramB} B RAM
+ * ==========================================================================
+ * ΠΩΣ ΤΟ ΑΝΟΙΓΕΙΣ
+ *   1. Αποθήκευσε αυτό το αρχείο ως  ${folder}/${folder}.ino
+ *      (ο φάκελος ΠΡΕΠΕΙ να λέγεται ίδια με το αρχείο, αλλιώς το IDE
+ *       αρνείται να το ανοίξει).
+ *   2. Tools ▸ Board ▸ ${board.ideBoard}
+ *   3. Εγκατέστησε τις βιβλιοθήκες:
+${libLines.length ? libLines.join('\n') : ' *   - (καμία)'}
+ *   4. Sketch ▸ Upload.
  *
+ *   Με arduino-cli:  arduino-cli compile --fqbn ${board.fqbn} ${folder}
+ *
+ * ΤΙ ΕΙΝΑΙ
+ *   Πλακέτα   : ${board.name} — ${board.mcu}, ${board.logic}V, ${board.clockMhz}MHz
+ *   Είσοδοι   : ${firmware.hid.buttonCount} κουμπιά HID, ${firmware.hid.axes.length} άξονες
+ *   Βρόχος    : ~${firmware.timing.loopHz} Hz  (καθυστέρηση ~${firmware.timing.latencyMs} ms)
+ *   Μνήμη     : ~${firmware.memory.flashKb} KB flash, ~${firmware.memory.ramB} B RAM
+${
+  missing.length
+    ? ` *
+ * ΠΡΟΣΟΧΗ: ασύνδετα pins σε ${[...new Set(missing)].join(', ')}.
+ *   Ψάξε το «ΑΣΥΝΔΕΤΟ» παρακάτω και συμπλήρωσε τον αριθμό pin, αλλιώς
+ *   δεν θα δουλέψει το αντίστοιχο εξάρτημα.
+`
+    : ''
+} *
  * Παράχθηκε από το Εργαστήριο Κατασκευών — η καλωδίωση εδώ είναι ίδια
  * με αυτή που δοκίμασες στην προσομοίωση.
  */

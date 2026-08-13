@@ -11,8 +11,13 @@ import { getBoard } from './boards.js'
 import { boardPinFor, placedParts } from './circuit.js'
 import { analyzeLibraries } from './libraries.js'
 
-/** Σειρά ανάθεσης αξόνων HID. */
-export const AXIS_ORDER = ['X', 'Y', 'Z', 'Rx', 'Ry', 'Rz', 'S0', 'S1']
+/**
+ * Σειρά ανάθεσης αξόνων HID.
+ *
+ * Έξι άξονες — όσους έχει το πρότυπο gamepad και όσους μπορούν να
+ * αντιστοιχιστούν και στις τέσσερις πλατφόρμες που παράγουμε κώδικα.
+ */
+export const AXIS_ORDER = ['X', 'Y', 'Z', 'Rx', 'Ry', 'Rz']
 
 /** Εξαρτήματα των οποίων ο χρόνος βρόχου εξαρτάται από τον επεξεργαστή. */
 const CPU_BOUND_ROLES = new Set([

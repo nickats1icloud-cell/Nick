@@ -127,8 +127,13 @@ reload) resolve correctly on Pages, which has no server-side rewrite support.
 - **Sim racing lab (`src/pages/SimLab.jsx` + `src/lib/simlab/` +
   `src/components/simlab/`)**: the third feature, entirely client-side. The page
   is a controller over pure-function modules in `src/lib/simlab/`:
-  - `boards.js` / `parts.js` — the hardware catalogue. Boards declare pins with
-    capability tags (`digital`, `analog`, `pwm`, `interrupt`, `sda`, …); parts
+  - `boards.js` / `parts.js` — the hardware catalogue. Boards carry the *real*
+    pinout of each board, in header order, with the printed label, the
+    capability tags (`digital`, `analog`, `pwm`, `interrupt`, `sda`, …) and an
+    `ino` field holding the name the Arduino compiler expects (`D6` → `6`,
+    `GP26` → `26`, `A2` → `A2`). Codegen reads `ino` via `inoPin()` rather than
+    guessing from the id, so a pin with no `ino` (a power rail) surfaces as an
+    explicit "unwired" warning in the sketch instead of a silent `-1`. Parts
     declare pins with types (`din`, `aout`, `pwm`, `sda`, `pwr`, `gnd`, `v12`,
     …), a `role`, tunable `params`, a `loopUs(values, board)` cost and current
     draw. Adding a part means adding one entry here — nothing else is
@@ -152,6 +157,14 @@ reload) resolve correctly on Pages, which has no server-side rewrite support.
   Tuning constants live at the top of each module. Component styles use a
   `lab__*` BEM-like convention, and the page breaks out of the 960px
   `.container` via `.lab`.
+  The canvas has two views, switched in `SimLab.jsx`: `Workbench.jsx` (the
+  schematic — cards, pins and wires) and `PanelView.jsx` (the rig — SVG
+  controls you actually press, turn and drag). Both drive the same `controls`
+  object and read the same `engine.nodes` state, so the simulated debounce and
+  ADC noise show up identically in either. Panel styles use a `pnl__*` prefix.
+  Generated sketch/BOM/JSON filenames go through `sketchName()` — the Arduino
+  IDE rejects non-ASCII sketch names and requires the folder to match the
+  `.ino`, so Greek build names are transliterated.
 - **Styling**: no CSS framework — plain CSS in `src/index.css` with design
   tokens (colors, radius, max-width) defined as CSS custom properties in
   `:root`. Dashboard-specific styles use a `dash__*` BEM-like naming
