@@ -14,6 +14,12 @@ const features = [
     title: 'Warning lights',
     body: 'Φλας, μεγάλη σκάλα, λάδι, μπαταρία, θερμοκρασία, check engine, ABS και άλλα.',
   },
+  {
+    title: 'Εργαστήριο κατασκευών',
+    body:
+      'Χτίσε button box, πεντάλ ή rev lights με πραγματικά εξαρτήματα, δοκίμασέ τα εικονικά και ' +
+      'κατέβασε έτοιμο σκίτσο Arduino.',
+  },
 ]
 
 export default function Home() {
@@ -30,6 +36,9 @@ export default function Home() {
         <div className="btn-row">
           <Link to="/dashboard" className="btn btn--primary">
             Άνοιξε το καντράν
+          </Link>
+          <Link to="/lab" className="btn btn--ghost">
+            Εργαστήριο κατασκευών
           </Link>
           <Link to="/podcast" className="btn btn--ghost">
             Ανάλυση podcast

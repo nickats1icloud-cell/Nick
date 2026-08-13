@@ -131,6 +131,8 @@ h3 {
 /* Buttons */
 .btn {
   display: inline-block;
+  font: inherit;
+  background: transparent;
   padding: 0.7rem 1.4rem;
   border-radius: var(--radius);
   font-weight: 600;
@@ -970,4 +972,1298 @@ h3 {
   .pod__dials {
     justify-content: center;
   }
+}
+
+/* ==================================================================
+   Εργαστήριο κατασκευών (/lab)
+   ================================================================== */
+
+.btn--danger {
+  border-color: #7f1d1d;
+  background: #3b0f0f;
+  color: #fca5a5;
+}
+.btn--danger:hover {
+  background: #501414;
+  color: #fecaca;
+}
+
+.lab {
+  width: min(1680px, calc(100vw - 2rem));
+  margin-left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.94rem;
+}
+
+/* ---------------- Μπάρα ---------------- */
+.lab__bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.lab__bar-left,
+.lab__bar-right {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.lab__bar .btn {
+  padding: 0.45rem 0.85rem;
+  font-size: 0.85rem;
+}
+.lab__name {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 0.45rem 0.7rem;
+  font-weight: 600;
+  min-width: 15rem;
+}
+.lab__import {
+  cursor: pointer;
+}
+
+.lab__pill {
+  font-size: 0.72rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  text-transform: lowercase;
+}
+.lab__pill.is-good {
+  color: #6ee7b7;
+  border-color: #14532d;
+  background: #052e1a;
+}
+.lab__pill.is-warn {
+  color: #fcd34d;
+  border-color: #78350f;
+  background: #2a1a04;
+}
+.lab__pill.is-bad {
+  color: #fca5a5;
+  border-color: #7f1d1d;
+  background: #2b0b0b;
+}
+.lab__pill.is-info {
+  color: #93c5fd;
+  border-color: #1e3a8a;
+  background: #0b1733;
+}
+
+.lab__status {
+  margin: 0.6rem 0 0;
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+  background: #10251c;
+  border: 1px solid #14532d;
+  color: #a7f3d0;
+  font-size: 0.85rem;
+}
+
+/* ---------------- Έτοιμες κατασκευές ---------------- */
+.lab__presets {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 0.7rem;
+  margin-top: 0.75rem;
+}
+.lab__preset {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  text-align: left;
+  padding: 0.8rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  cursor: pointer;
+}
+.lab__preset:hover {
+  border-color: var(--accent);
+}
+.lab__preset-meta {
+  font-size: 0.75rem;
+  color: var(--accent);
+}
+.lab__preset small {
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+.lab__preset--saved {
+  cursor: default;
+}
+.lab__preset--saved ul {
+  list-style: none;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.lab__preset--saved li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.lab__preset--saved button {
+  background: none;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.85rem;
+}
+.lab__x {
+  color: var(--text-muted) !important;
+}
+
+/* ---------------- Διάταξη ---------------- */
+.lab__main {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr) 380px;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+  align-items: start;
+}
+@media (max-width: 1280px) {
+  .lab__main {
+    grid-template-columns: 230px minmax(0, 1fr);
+  }
+  .lab__side {
+    grid-column: 1 / -1;
+  }
+}
+@media (max-width: 820px) {
+  .lab__main {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------------- Παλέτα ---------------- */
+.lab__palette {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  max-height: 78vh;
+}
+.lab__palette-head {
+  padding: 0.8rem;
+  border-bottom: 1px solid var(--border);
+}
+.lab__palette-head h2 {
+  font-size: 0.95rem;
+  margin: 0 0 0.5rem;
+}
+.lab__search {
+  width: 100%;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 0.4rem 0.6rem;
+}
+.lab__palette-body {
+  overflow-y: auto;
+  padding: 0.4rem;
+}
+.lab__cat-head {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 0.5rem 0.4rem;
+  cursor: pointer;
+}
+.lab__cat-count {
+  color: var(--text-muted);
+  font-weight: 400;
+  font-size: 0.75rem;
+}
+.lab__part-list {
+  list-style: none;
+  margin: 0 0 0.5rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.lab__part {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1.4rem 1fr auto;
+  gap: 0.5rem;
+  align-items: start;
+  text-align: left;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0.45rem 0.4rem;
+  color: var(--text);
+  cursor: pointer;
+}
+.lab__part:hover {
+  background: var(--surface-2);
+  border-color: var(--border);
+}
+.lab__part-icon {
+  font-size: 1rem;
+  line-height: 1.2;
+}
+.lab__part-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.lab__part-text strong {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.lab__part-text small {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.lab__part-price {
+  font-size: 0.72rem;
+  color: var(--accent);
+  white-space: nowrap;
+}
+.lab__empty {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  padding: 0.6rem;
+}
+
+/* ---------------- Πάγκος ---------------- */
+.lab__center {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 0;
+}
+.lab__canvas {
+  position: relative;
+  background: var(--surface);
+  background-image: radial-gradient(circle, #262b36 1px, transparent 1px);
+  background-size: 24px 24px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: auto;
+  height: 62vh;
+  min-height: 420px;
+}
+.lab__canvas-inner {
+  position: relative;
+}
+.lab__wires {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.lab__wire {
+  fill: none;
+  stroke-width: 2;
+  opacity: 0.85;
+  pointer-events: none;
+}
+.lab__wire-hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 14;
+  pointer-events: stroke;
+  cursor: pointer;
+}
+.lab__wire-hit:hover + .lab__wire {
+  stroke-width: 4;
+  opacity: 1;
+}
+
+.lab__node {
+  position: absolute;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+.lab__node.is-selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(124, 92, 255, 0.35);
+}
+.lab__node--board {
+  background: #14243a;
+  border-color: #2b4a72;
+}
+.lab__node-head {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 34px;
+  padding: 0 0.55rem;
+  border-bottom: 1px solid var(--border);
+  cursor: grab;
+  user-select: none;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.lab__node-head:active {
+  cursor: grabbing;
+}
+.lab__node-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lab__node-icon {
+  opacity: 0.8;
+}
+.lab__led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #374151;
+  margin-left: auto;
+  flex: none;
+}
+.lab__led.is-on {
+  background: #34d399;
+  box-shadow: 0 0 6px #34d399;
+}
+
+.lab__pin {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.66rem;
+  color: var(--text-muted);
+}
+.lab__pin--left {
+  left: 0;
+  padding-left: 0.6rem;
+}
+.lab__pin--right {
+  right: 0;
+  flex-direction: row-reverse;
+  padding-right: 0.6rem;
+}
+.lab__pin-dot {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: #0f1115;
+  cursor: crosshair;
+  padding: 0;
+}
+.lab__pin--left .lab__pin-dot {
+  left: -6px;
+}
+.lab__pin--right .lab__pin-dot {
+  right: -6px;
+}
+.lab__pin-dot:hover {
+  border-color: var(--accent);
+  transform: scale(1.25);
+}
+.lab__pin-dot.is-pending {
+  border-color: #fbbf24;
+  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.3);
+}
+.lab__pin-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 8.5rem;
+}
+
+.lab__badge {
+  position: absolute;
+  bottom: -9px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.62rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  white-space: nowrap;
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+.lab__badge--on {
+  color: #6ee7b7;
+  border-color: #14532d;
+}
+.lab__badge--off {
+  color: var(--text-muted);
+}
+.lab__badge--info {
+  color: #93c5fd;
+  border-color: #1e3a8a;
+}
+.lab__badge--warn {
+  color: #fcd34d;
+  border-color: #78350f;
+}
+
+.lab__strip {
+  position: absolute;
+  bottom: 6px;
+  left: 8px;
+  right: 8px;
+  display: flex;
+  gap: 1px;
+  height: 8px;
+}
+.lab__strip-led {
+  flex: 1;
+  border-radius: 1px;
+  background: #111;
+}
+.lab__strip--big {
+  position: static;
+  height: 18px;
+  gap: 2px;
+  min-width: 180px;
+}
+.lab__strip--big .lab__strip-led {
+  border-radius: 3px;
+}
+
+.lab__hint {
+  position: sticky;
+  bottom: 0;
+  margin: 0;
+  padding: 0.5rem 0.9rem;
+  background: rgba(20, 25, 35, 0.94);
+  border-top: 1px solid var(--border);
+  font-size: 0.78rem;
+  color: #fcd34d;
+}
+
+/* ---------------- Πλευρικό ---------------- */
+.lab__side {
+  min-width: 0;
+}
+.lab__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin-bottom: 0.5rem;
+}
+.lab__tabs button,
+.lab__seg button {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-muted);
+  padding: 0.35rem 0.6rem;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+.lab__tabs button.is-on,
+.lab__seg button.is-on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+.lab__seg {
+  display: flex;
+  gap: 2px;
+  margin: 0.4rem 0 0.8rem;
+}
+
+.lab__panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.9rem;
+  max-height: 78vh;
+  overflow-y: auto;
+}
+.lab__panel h3 {
+  font-size: 0.95rem;
+  margin: 0 0 0.6rem;
+}
+.lab__panel h4 {
+  font-size: 0.82rem;
+  margin: 1.1rem 0 0.5rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.lab__panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.lab__panel-actions {
+  display: flex;
+  gap: 0.35rem;
+}
+.lab__panel-actions .btn {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.75rem;
+}
+
+.lab__muted {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+.lab__note {
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  line-height: 1.5;
+  margin: 0.3rem 0 0.8rem;
+  border-left: 2px solid var(--border);
+  padding-left: 0.6rem;
+}
+.lab__role {
+  font-size: 0.78rem;
+  color: #93c5fd;
+  background: #0b1733;
+  border: 1px solid #1e3a8a;
+  border-radius: 8px;
+  padding: 0.45rem 0.6rem;
+  margin: 0.5rem 0;
+}
+.lab__ok {
+  color: #6ee7b7;
+  font-size: 0.85rem;
+}
+.lab__alert {
+  color: #fca5a5;
+  background: #2b0b0b;
+  border: 1px solid #7f1d1d;
+  border-radius: 8px;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.8rem;
+}
+.is-good {
+  color: #6ee7b7;
+}
+.is-bad {
+  color: #fca5a5;
+}
+
+/* Πεδία */
+.lab__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.7rem;
+  font-size: 0.78rem;
+}
+.lab__field > span {
+  color: var(--text-muted);
+}
+.lab__field input[type='text'],
+.lab__field select,
+.lab__panel select {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 0.4rem 0.5rem;
+  font-size: 0.82rem;
+}
+.lab__field--check {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+.lab__field-row {
+  display: grid;
+  grid-template-columns: 1fr 3rem;
+  gap: 0.5rem;
+  align-items: center;
+}
+.lab__field-row output {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+.lab__field input[type='range'] {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.lab__specs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 0.5rem;
+  margin: 0.8rem 0;
+}
+.lab__specs div {
+  background: var(--surface-2);
+  border-radius: 8px;
+  padding: 0.4rem 0.5rem;
+}
+.lab__specs dt {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+.lab__specs dd {
+  margin: 0.1rem 0 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Στατιστικά */
+.lab__summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(72px, 1fr));
+  gap: 0.4rem;
+  margin-bottom: 0.8rem;
+}
+.lab__stat {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.4rem 0.3rem;
+  text-align: center;
+}
+.lab__stat strong {
+  display: block;
+  font-size: 1.05rem;
+  font-variant-numeric: tabular-nums;
+}
+.lab__stat span {
+  font-size: 0.62rem;
+  color: var(--text-muted);
+}
+.lab__stat.is-good strong {
+  color: #6ee7b7;
+}
+.lab__stat.is-warn strong {
+  color: #fcd34d;
+}
+.lab__stat.is-bad strong {
+  color: #fca5a5;
+}
+
+/* Ευρήματα */
+.lab__findings {
+  list-style: none;
+  margin: 0 0 0.5rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.lab__finding-btn {
+  width: 100%;
+  text-align: left;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-left-width: 3px;
+  border-radius: 8px;
+  padding: 0.55rem 0.65rem;
+  color: var(--text);
+  cursor: pointer;
+}
+.lab__finding-btn:disabled {
+  cursor: default;
+}
+.lab__finding.is-error .lab__finding-btn {
+  border-left-color: #ef4444;
+}
+.lab__finding.is-warn .lab__finding-btn {
+  border-left-color: #f59e0b;
+}
+.lab__finding.is-info .lab__finding-btn {
+  border-left-color: #3b82f6;
+}
+.lab__finding-tag {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  display: block;
+}
+.lab__finding-btn strong {
+  font-size: 0.82rem;
+}
+.lab__finding-btn p {
+  margin: 0.25rem 0 0;
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+.lab__fix {
+  color: #93c5fd !important;
+}
+
+/* Ανάλυση βρόχου */
+.lab__breakdown {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.lab__breakdown button {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 8rem 1fr 3.5rem;
+  gap: 0.5rem;
+  align-items: center;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 0.72rem;
+  padding: 0.2rem 0;
+  cursor: pointer;
+  text-align: left;
+}
+.lab__breakdown button:disabled {
+  cursor: default;
+}
+.lab__breakdown button > span:first-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lab__breakdown-bar {
+  height: 6px;
+  background: var(--surface-2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.lab__breakdown-bar span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+.lab__breakdown strong {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.lab__meter {
+  margin-bottom: 0.6rem;
+}
+.lab__meter-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-bottom: 0.2rem;
+}
+.lab__meter-track {
+  height: 8px;
+  background: var(--surface-2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.lab__meter-fill {
+  height: 100%;
+  border-radius: 4px;
+}
+.lab__meter-fill.is-good {
+  background: #34d399;
+}
+.lab__meter-fill.is-warn {
+  background: #f59e0b;
+}
+.lab__meter-fill.is-bad {
+  background: #ef4444;
+}
+
+.lab__mini-list {
+  list-style: none;
+  margin: 0.4rem 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 0.74rem;
+}
+.lab__mini-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.15rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+/* ---------------- Δοκιμή ---------------- */
+.lab__ctrls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.lab__ctrl {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  background: var(--surface-2);
+  border-radius: 8px;
+  padding: 0.55rem;
+}
+.lab__ctrl-name {
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+.lab__ctrl-row {
+  display: flex;
+  gap: 0.4rem;
+}
+.lab__ctrl-meta {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+.lab__ctrl input[type='range'] {
+  width: 100%;
+  accent-color: var(--accent);
+}
+.lab__hold {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 0.4rem 0.6rem;
+  font-size: 0.76rem;
+  cursor: pointer;
+  user-select: none;
+  touch-action: none;
+}
+.lab__hold.is-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.lab__matrix {
+  display: grid;
+  gap: 3px;
+}
+.lab__matrix-key {
+  aspect-ratio: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  cursor: pointer;
+}
+.lab__matrix-key.is-on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.lab__tel-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  font-size: 0.74rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+  background: var(--surface-2);
+  border-radius: 8px;
+  padding: 0.45rem 0.6rem;
+  margin: 0.6rem 0;
+}
+
+.lab__hid-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-bottom: 0.7rem;
+}
+.lab__hid-btn {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 4px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  font-size: 0.6rem;
+  color: var(--text-muted);
+}
+.lab__hid-btn.is-on {
+  background: #34d399;
+  border-color: #34d399;
+  color: #04160f;
+  font-weight: 700;
+}
+.lab__hid-axes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.lab__axis {
+  display: grid;
+  grid-template-columns: 2rem 1fr 5.5rem;
+  gap: 0.4rem;
+  align-items: center;
+  font-size: 0.7rem;
+}
+.lab__axis-track {
+  height: 8px;
+  background: var(--surface-2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.lab__axis-fill {
+  height: 100%;
+  background: var(--accent);
+}
+.lab__axis-value {
+  text-align: right;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.lab__serial,
+.lab__code {
+  background: #0b0d12;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  overflow-x: auto;
+  white-space: pre;
+  color: #cbd5e1;
+}
+.lab__code {
+  max-height: 55vh;
+  overflow-y: auto;
+}
+.lab__inline-code {
+  display: block;
+  background: #0b0d12;
+  border-radius: 6px;
+  padding: 0.3rem 0.45rem;
+  font-size: 0.68rem;
+  margin: 0.25rem 0;
+  overflow-x: auto;
+  white-space: pre;
+  color: #a5b4fc;
+}
+
+/* ---------------- Έξοδοι ---------------- */
+.lab__outputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.8rem;
+  min-height: 90px;
+}
+.lab__outputs--empty {
+  align-items: center;
+}
+.lab__output {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  background: var(--surface-2);
+  border-radius: 8px;
+  padding: 0.5rem 0.6rem;
+}
+.lab__output-name {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.lab__screen {
+  display: flex;
+  gap: 0.7rem;
+  align-items: center;
+  background: #04121a;
+  border: 1px solid #0e3a4d;
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  min-width: 190px;
+  min-height: 62px;
+  color: #7dd3fc;
+  font-variant-numeric: tabular-nums;
+}
+.lab__screen-big {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+.lab__screen-big.is-bad {
+  color: #fca5a5;
+}
+.lab__screen-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  font-size: 0.62rem;
+}
+.lab__screen-rows div {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+.lab__screen-rows span {
+  opacity: 0.6;
+}
+
+.lab__seg7 {
+  font-family: "Courier New", monospace;
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #ff4d4d;
+  background: #180404;
+  border-radius: 6px;
+  padding: 0.15rem 0.5rem;
+  text-shadow: 0 0 8px rgba(255, 60, 60, 0.6);
+}
+
+.lab__dial {
+  width: 74px;
+  height: 74px;
+}
+.lab__dial-face {
+  fill: #0b0f16;
+  stroke: var(--border);
+}
+.lab__dial-tick {
+  stroke: #4b5563;
+  stroke-width: 1.5;
+}
+.lab__dial-needle {
+  stroke: #ef4444;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+.lab__dial-needle.is-lagging {
+  stroke: #f59e0b;
+}
+.lab__dial-hub {
+  fill: #9ca3af;
+}
+
+.lab__servo,
+.lab__fan,
+.lab__haptic {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+.lab__servo-arm {
+  display: block;
+  width: 4px;
+  height: 34px;
+  background: var(--accent);
+  border-radius: 2px;
+  transform-origin: 50% 100%;
+  transition: transform 0.05s linear;
+}
+.lab__fan-blade {
+  font-size: 1.9rem;
+  color: #7dd3fc;
+  animation: lab-spin 1s linear infinite;
+}
+@keyframes lab-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.lab__haptic-box {
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  background: #f472b6;
+}
+.lab__haptic-box.is-buzzing {
+  animation: lab-shake 0.09s linear infinite;
+}
+@keyframes lab-shake {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-2px, 1px); }
+  50% { transform: translate(2px, -1px); }
+  75% { transform: translate(-1px, -2px); }
+  100% { transform: translate(0, 0); }
+}
+.lab__buzzer {
+  font-size: 1.2rem;
+  color: var(--text-muted);
+}
+.lab__buzzer.is-on {
+  color: #fbbf24;
+}
+.lab__bulb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #1f2937;
+  border: 1px solid var(--border);
+}
+.lab__bulb.is-on.lab__bulb--red {
+  background: #ef4444;
+  box-shadow: 0 0 12px #ef4444;
+}
+.lab__bulb.is-on.lab__bulb--green {
+  background: #22c55e;
+  box-shadow: 0 0 12px #22c55e;
+}
+.lab__bulb.is-on.lab__bulb--blue {
+  background: #3b82f6;
+  box-shadow: 0 0 12px #3b82f6;
+}
+.lab__bulb.is-on.lab__bulb--amber {
+  background: #f59e0b;
+  box-shadow: 0 0 12px #f59e0b;
+}
+
+/* ---------------- Παλμογράφος ---------------- */
+.lab__scope {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.7rem 0.8rem;
+}
+.lab__scope-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.lab__scope-head h4 {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.lab__scope-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+.lab__legend {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-muted);
+  font-size: 0.66rem;
+  padding: 0.12rem 0.5rem;
+  cursor: pointer;
+}
+.lab__legend span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.lab__legend.is-off {
+  opacity: 0.4;
+}
+.lab__scope-svg {
+  width: 100%;
+  height: 150px;
+  margin-top: 0.4rem;
+  background: #0b0d12;
+  border-radius: 8px;
+}
+.lab__scope-grid {
+  stroke: #1f2530;
+  stroke-width: 1;
+}
+
+/* ---------------- Βιβλιοθήκες & BOM ---------------- */
+.lab__libs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.lab__lib {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem;
+}
+.lab__lib.is-bad {
+  border-color: #7f1d1d;
+}
+.lab__lib-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.2rem;
+}
+.lab__lib p {
+  margin: 0.2rem 0;
+}
+.lab__lib a {
+  font-size: 0.74rem;
+}
+
+.lab__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.74rem;
+}
+.lab__table th {
+  text-align: left;
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.68rem;
+  border-bottom: 1px solid var(--border);
+  padding: 0.3rem 0.2rem;
+}
+.lab__table td {
+  padding: 0.35rem 0.2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  vertical-align: top;
+}
+.lab__table td:not(:first-child) {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.lab__table small {
+  display: block;
+  color: var(--text-muted);
+  font-size: 0.66rem;
+}
+.lab__bom-group {
+  margin-bottom: 0.9rem;
 }
