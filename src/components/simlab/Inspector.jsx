@@ -1,5 +1,6 @@
 import { getPart } from '../../lib/simlab/parts.js'
 import BoardArt from './BoardArt.jsx'
+import PartIcon from './PartIcon.jsx'
 import { DEFAULT_SETTINGS } from '../../lib/simlab/circuit.js'
 
 function Field({ param, value, onChange }) {
@@ -241,7 +242,10 @@ export default function Inspector({
   return (
     <div className="lab__panel">
       <div className="lab__panel-head">
-        <h3>{part.name}</h3>
+        <h3 className="lab__panel-title">
+          <PartIcon name={part.icon} size={18} />
+          {part.name}
+        </h3>
         <div className="lab__panel-actions">
           <button type="button" className="btn btn--ghost" onClick={() => onDuplicate(node.id)}>
             Αντιγραφή

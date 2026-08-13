@@ -6,7 +6,7 @@
  * πιο κοντινή στο πρότζεκτ σου και άλλαξέ τη.
  */
 
-import { BOARD_NODE, DEFAULT_SETTINGS } from './circuit.js'
+import { BOARD_NODE, DEFAULT_SETTINGS, autoLayout } from './circuit.js'
 import { defaultParams } from './parts.js'
 
 /* ---------------------- Μικρός builder ---------------------- */
@@ -53,7 +53,9 @@ function maker(boardId, name, description) {
 function finish(m) {
   // Τα labels που έμειναν κενά παίρνουν το όνομα του εξαρτήματος στην UI.
   for (const node of m.build.nodes) if (!node.label) delete node.label
-  return m.build
+  // Οι θέσεις στα presets είναι πρόχειρες· η τακτοποίηση βάζει κάθε εξάρτημα
+  // στη μεριά της πλακέτας που του αντιστοιχεί, ώστε τα καλώδια να μη γυρίζουν.
+  return autoLayout(m.build)
 }
 
 /* ------------------------- Οι κατασκευές ------------------------- */
