@@ -140,7 +140,13 @@ reload) resolve correctly on Pages, which has no server-side rewrite support.
     hard-coded against specific part ids except a few display specialisations.
   - `circuit.js` — the build model (`nodes`, `wires`, `settings`), net
     resolution by union-find, and the fixed card geometry that lets wire
-    endpoints be computed without measuring the DOM.
+    endpoints be computed without measuring the DOM. It also holds the wire
+    router: `routeWire()` produces an orthogonal path that exits each pin
+    along its facing side and picks the first vertical corridor that clears
+    every card rectangle (falling back to a detour above/below), and
+    `autoLayout()` places the board so each part sits on the side matching the
+    pin column it wires to. Routes are memoised in `Workbench.jsx` — they are
+    expensive and only change when something moves.
   - `libraries.js` — a registry of real Arduino libraries mapped to part roles
     and board architectures, with flash/RAM cost and install commands.
   - `firmware.js` — derives the program from the netlist: which parts became
@@ -171,8 +177,14 @@ reload) resolve correctly on Pages, which has no server-side rewrite support.
   IDE rejects non-ASCII sketch names and requires the folder to match the
   `.ino`, so Greek build names are transliterated.
 - **Styling**: no CSS framework — plain CSS in `src/index.css` with design
-  tokens (colors, radius, max-width) defined as CSS custom properties in
-  `:root`. Dashboard-specific styles use a `dash__*` BEM-like naming
+  tokens defined as CSS custom properties in `:root`: a slate-based dark
+  palette, a violet accent with a cyan secondary, a dense spacing scale
+  (`--sp-1`…`--sp-6`), elevation (`--shadow-1`…`--shadow-3`) and `--ease`.
+  A global `:focus-visible` ring and a `prefers-reduced-motion` block live
+  next to the tokens. Part icons are inline SVG (`PartIcon.jsx`) — no emoji.
+  Routes listed in `WIDE_ROUTES` (`Layout.jsx`) render outside the 960px
+  `.container` and set their own width, rather than breaking out with
+  negative-margin tricks. Dashboard-specific styles use a `dash__*` BEM-like naming
   convention (e.g. `dash__cluster`, `dash__pod`, `dash__gear`); the podcast
   page uses `pod__*` the same way.
 

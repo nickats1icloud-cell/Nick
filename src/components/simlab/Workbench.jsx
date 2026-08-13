@@ -1,16 +1,19 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   BOARD_NODE,
   boardGeometry,
   canvasSize,
+  cardRects,
   GEO,
   partGeometry,
   pinPosition,
+  polylineToPath,
+  routeWire,
   sameRef,
-  wirePath,
 } from '../../lib/simlab/circuit.js'
 import { getPart, PIN_TYPES } from '../../lib/simlab/parts.js'
 import BoardArt from './BoardArt.jsx'
+import PartIcon from './PartIcon.jsx'
 
 /** Χρώμα καλωδίου: παίρνει τον τύπο του άκρου που είναι εξάρτημα. */
 function wireColor(build, wire) {
@@ -93,6 +96,7 @@ export default function Workbench({
 }) {
   const dragRef = useRef(null)
   const canvasRef = useRef(null)
+  const [hoverWire, setHoverWire] = useState(null)
 
   const startDrag = useCallback(
     (e, id, x, y) => {
@@ -136,6 +140,27 @@ export default function Workbench({
     connectedKeys.add(`${w.to.node}:${w.to.pin}`)
   }
 
+  /* Οι διαδρομές είναι ακριβές (αποφυγή εμποδίων) και δεν αλλάζουν όσο τρέχει
+     η προσομοίωση — υπολογίζονται μόνο όταν μετακινηθεί ή αλλάξει κάτι. */
+  const routes = useMemo(() => {
+    const rects = cardRects(build, board)
+    return build.wires
+      .map((wire, i) => {
+        const a = pinPosition(build, board, wire.from)
+        const b = pinPosition(build, board, wire.to)
+        if (!a || !b) return null
+        const lane = ((i % 7) - 3) * 7
+        return {
+          wire,
+          a,
+          b,
+          d: polylineToPath(routeWire(a, b, rects, lane)),
+          color: wireColor(build, wire),
+        }
+      })
+      .filter(Boolean)
+  }, [build, board])
+
   return (
     <div
       className="lab__canvas"
@@ -146,18 +171,30 @@ export default function Workbench({
     >
       <div className="lab__canvas-inner" style={{ width: size.width, height: size.height }}>
         <svg className="lab__wires" width={size.width} height={size.height}>
-          {build.wires.map((wire) => {
-            const a = pinPosition(build, board, wire.from)
-            const b = pinPosition(build, board, wire.to)
-            if (!a || !b) return null
-            const d = wirePath(a, b)
+          {routes.map(({ wire, a, b, d, color }) => {
+            const touches =
+              selectedId && (wire.from.node === selectedId || wire.to.node === selectedId)
+            const dim = selectedId && !touches
             return (
-              <g key={wire.id}>
+              <g
+                key={wire.id}
+                className={`lab__wiregroup${touches ? ' is-lit' : ''}${dim ? ' is-dim' : ''}${
+                  hoverWire === wire.id ? ' is-hover' : ''
+                }`}
+              >
                 {/* Φαρδιά αόρατη ζώνη ώστε να πιάνεται εύκολα το κλικ. */}
-                <path d={d} className="lab__wire-hit" onClick={() => onWireClick(wire.id)}>
+                <path
+                  d={d}
+                  className="lab__wire-hit"
+                  onClick={() => onWireClick(wire.id)}
+                  onPointerEnter={() => setHoverWire(wire.id)}
+                  onPointerLeave={() => setHoverWire(null)}
+                >
                   <title>Κλικ για διαγραφή καλωδίου</title>
                 </path>
-                <path d={d} className="lab__wire" stroke={wireColor(build, wire)} />
+                <path d={d} className="lab__wire" stroke={color} />
+                <circle cx={a.x} cy={a.y} r="3" fill={color} className="lab__wire-end" />
+                <circle cx={b.x} cy={b.y} r="3" fill={color} className="lab__wire-end" />
               </g>
             )
           })}
@@ -177,7 +214,7 @@ export default function Workbench({
             className="lab__node-head"
             onPointerDown={(e) => startDrag(e, BOARD_NODE, build.boardPos.x, build.boardPos.y)}
           >
-            <span className="lab__node-icon">▣</span>
+            <span className="lab__node-icon"><PartIcon name="board" size={16} /></span>
             <span className="lab__node-title">{board.name}</span>
             {running && <span className={`lab__led${engine?.hid?.connected ? ' is-on' : ''}`} title="USB HID" />}
           </div>
@@ -212,7 +249,9 @@ export default function Workbench({
                 className="lab__node-head"
                 onPointerDown={(e) => startDrag(e, node.id, node.x, node.y)}
               >
-                <span className="lab__node-icon">{part.icon}</span>
+                <span className="lab__node-icon">
+                  <PartIcon name={part.icon} size={16} />
+                </span>
                 <span className="lab__node-title">{node.label || part.name}</span>
               </div>
               {geo.pins.map((pin) => (

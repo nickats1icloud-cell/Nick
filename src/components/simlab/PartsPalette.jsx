@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { CATEGORIES, searchParts } from '../../lib/simlab/parts.js'
+import PartIcon from './PartIcon.jsx'
 
 /** Η βιβλιοθήκη εξαρτημάτων: αναζήτηση, κατηγορίες, κλικ για προσθήκη. */
 export default function PartsPalette({ onAdd }) {
@@ -52,8 +53,8 @@ export default function PartsPalette({ onAdd }) {
                   {items.map((part) => (
                     <li key={part.id}>
                       <button type="button" className="lab__part" onClick={() => onAdd(part.id)}>
-                        <span className="lab__part-icon" aria-hidden="true">
-                          {part.icon}
+                        <span className="lab__part-icon">
+                          <PartIcon name={part.icon} size={17} />
                         </span>
                         <span className="lab__part-text">
                           <strong>{part.name}</strong>

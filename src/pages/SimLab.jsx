@@ -17,6 +17,7 @@ import {
   DEFAULT_SETTINGS,
   addNode,
   addWire,
+  autoLayout,
   createBuild,
   duplicateNode,
   removeNode,
@@ -258,6 +259,16 @@ export default function SimLab() {
             }}
           >
             Αποθήκευση
+          </button>
+          <button
+            type="button"
+            className="btn btn--ghost"
+            onClick={() => {
+              setBuild((b) => autoLayout(b))
+              flash('Τα εξαρτήματα τακτοποιήθηκαν γύρω από την πλακέτα.')
+            }}
+          >
+            Τακτοποίηση
           </button>
           <button
             type="button"
