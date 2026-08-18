@@ -178,7 +178,13 @@ reload) resolve correctly on Pages, which has no server-side rewrite support.
   Both it and `SimLab.jsx` hold the build through `useBuildStore`, which
   persists to `localStorage` and syncs across tabs via the `storage` event;
   it skips writes when the serialised build is unchanged so two open tabs
-  don't ping state back and forth.
+  don't ping state back and forth. The store also owns undo/redo: history
+  lives in refs as JSON snapshots, changes closer than 400ms coalesce into
+  one step (so drags don't flood it), and Ctrl/⌘+Z / Ctrl+Shift+Z work on any
+  page using the hook. While a wire is pending, `Workbench.jsx` draws a
+  dashed rubber-band to the cursor and marks every pin as compatible or not
+  (`typeMatchesCaps` for board pins, the `PART_PAIRS` set for part-to-part);
+  unknown part pairs stay neutral rather than being dimmed.
   The canvas has two views, switched in `SimLab.jsx`: `Workbench.jsx` (the
   schematic — cards, pins and wires) and `PanelView.jsx` (the rig — SVG
   controls you actually press, turn and drag). Both drive the same `controls`

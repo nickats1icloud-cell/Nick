@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import PartsPalette from '../components/simlab/PartsPalette.jsx'
 import Workbench from '../components/simlab/Workbench.jsx'
@@ -33,7 +33,7 @@ import { loadPreset } from '../lib/simlab/presets.js'
  * αντίστροφα, ακόμη και με τις δύο καρτέλες ανοιχτές.
  */
 export default function WiringLab() {
-  const [build, setBuild] = useBuildStore(() => loadPreset('button-box'))
+  const [build, setBuild, history] = useBuildStore(() => loadPreset('button-box'))
   const [selectedId, setSelectedId] = useState(null)
   const [pending, setPending] = useState(null)
   const [showPalette, setShowPalette] = useState(true)
@@ -76,6 +76,21 @@ export default function WiringLab() {
     [setBuild]
   )
 
+  /* Delete/Backspace: σβήσιμο επιλεγμένου εξαρτήματος. */
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key !== 'Delete' && e.key !== 'Backspace') return
+      const tag = document.activeElement?.tagName
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return
+      if (!selectedId || selectedId === BOARD_NODE) return
+      e.preventDefault()
+      setBuild((b) => removeNode(b, selectedId))
+      setSelectedId(null)
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [selectedId, setBuild])
+
   const selectedNode = build.nodes.find((n) => n.id === selectedId) || null
 
   return (
@@ -115,6 +130,25 @@ export default function WiringLab() {
         </div>
 
         <div className="wire__bar-right">
+          <button
+            type="button"
+            className="btn btn--ghost"
+            onClick={history.undo}
+            disabled={!history.canUndo}
+            title="Αναίρεση (Ctrl+Z)"
+          >
+            ↶ Αναίρεση
+          </button>
+          <button
+            type="button"
+            className="btn btn--ghost"
+            onClick={history.redo}
+            disabled={!history.canRedo}
+            title="Επανάληψη (Ctrl+Shift+Z)"
+            aria-label="Επανάληψη"
+          >
+            ↷
+          </button>
           <button type="button" className="btn btn--ghost" onClick={() => setBuild((b) => autoLayout(b))}>
             Τακτοποίηση
           </button>
@@ -189,8 +223,9 @@ export default function WiringLab() {
       </div>
 
       <p className="wire__help">
-        Κλικ σε δύο pins για καλώδιο · κλικ σε καλώδιο για διαγραφή · σύρε το φόντο για μετακίνηση ·
-        <kbd>Ctrl</kbd>+ροδέλα ή <kbd>+</kbd>/<kbd>−</kbd> για zoom · <kbd>0</kbd> να χωρέσουν όλα
+        Κλικ σε δύο pins για καλώδιο · τα πράσινα pins είναι τα συμβατά · <kbd>Esc</kbd> ακύρωση ·
+        σύρε το φόντο για μετακίνηση · <kbd>Ctrl</kbd>+ροδέλα ή <kbd>+</kbd>/<kbd>−</kbd> για zoom ·
+        <kbd>0</kbd> να χωρέσουν όλα · <kbd>Ctrl</kbd>+<kbd>Z</kbd> αναίρεση · <kbd>Del</kbd> διαγραφή
       </p>
     </div>
   )

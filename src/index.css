@@ -3376,3 +3376,35 @@ h3 {
     height: 60vh;
   }
 }
+
+/* ---------------- Λαστιχένιο καλώδιο & συμβατά pins ---------------- */
+.lab__wire-ghost {
+  fill: none;
+  stroke: var(--accent-hover);
+  stroke-width: 2;
+  stroke-dasharray: 7 5;
+  stroke-linecap: round;
+  pointer-events: none;
+  animation: lab-dash 0.6s linear infinite;
+}
+@keyframes lab-dash {
+  to {
+    stroke-dashoffset: -12;
+  }
+}
+.lab__ghost-end {
+  fill: var(--accent-hover);
+  pointer-events: none;
+}
+/* Όσο εκκρεμεί καλώδιο: πράσινο = συμβατό pin, αχνό = ασύμβατο. */
+.lab__pin-dot.is-ok {
+  border-color: var(--good);
+  box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.3);
+}
+.lab__pin-dot.is-ok:hover {
+  transform: scale(1.4);
+  box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.45);
+}
+.lab__pin-dot.is-no {
+  opacity: 0.28;
+}
