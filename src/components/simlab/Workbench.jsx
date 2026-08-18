@@ -15,6 +15,27 @@ import { getPart, PIN_TYPES } from '../../lib/simlab/parts.js'
 
 const MIN_ZOOM = 0.25
 const MAX_ZOOM = 2.5
+
+/** Ταιριάζει ο τύπος pin εξαρτήματος με τις ικανότητες ενός pin πλακέτας; */
+function typeMatchesCaps(type, caps) {
+  const needs = PIN_TYPES[type]?.needs
+  if (!needs || !caps?.length) return false
+  if (needs === 'gnd') return caps.includes('gnd')
+  if (needs === 'pwr') return caps.includes('pwr5') || caps.includes('pwr3v3')
+  // Η πλακέτα δεν έχει 12V ούτε είσοδο γέφυρας load cell.
+  if (needs === 'v12' || needs === 'bridge') return false
+  return caps.includes(needs)
+}
+
+/**
+ * Ζεύγη τύπων pin εξαρτημάτων που κουμπώνουν μεταξύ τους (π.χ. έξοδος buck →
+ * VCC εξαρτήματος, PWM → πύλη MOSFET, γέφυρα load cell → HX711). Ό,τι δεν
+ * είναι εδώ μένει ουδέτερο — δεν σβήνει, απλώς δεν φωτίζεται.
+ */
+const PART_PAIRS = new Set([
+  'din:dout', 'dout:din', 'aout:din', 'din:aout', 'pwm:pwm', 'exc:exc',
+  'gnd:gnd', 'pwr:pwr', 'v12:v12', 'pwr:dout', 'dout:pwr',
+])
 import BoardArt from './BoardArt.jsx'
 import PartIcon from './PartIcon.jsx'
 
@@ -65,7 +86,7 @@ function liveBadge(state) {
   }
 }
 
-function PinRow({ pin, side, selected, connected, onClick, title }) {
+function PinRow({ pin, side, selected, connected, compat, onClick, title }) {
   return (
     <div
       className={`lab__pin lab__pin--${side}`}
@@ -73,7 +94,9 @@ function PinRow({ pin, side, selected, connected, onClick, title }) {
     >
       <button
         type="button"
-        className={`lab__pin-dot${selected ? ' is-pending' : ''}${connected ? ' is-connected' : ''}`}
+        className={`lab__pin-dot${selected ? ' is-pending' : ''}${connected ? ' is-connected' : ''}${
+          compat ? ` is-${compat}` : ''
+        }`}
         style={{ background: connected ? PIN_TYPES[pin.type]?.color || '#6b7280' : undefined }}
         onClick={onClick}
         title={title}
@@ -224,8 +247,52 @@ export default function Workbench({
     return () => window.removeEventListener('keydown', onKey)
   }, [zoomAt, zoomToFit])
 
+  /* Θέση του δείκτη σε συντεταγμένες περιεχομένου, όσο εκκρεμεί καλώδιο —
+     τροφοδοτεί το «λαστιχένιο» καλώδιο που ακολουθεί τον δείκτη. */
+  const [cursor, setCursor] = useState(null)
+  useEffect(() => {
+    if (!pending) setCursor(null)
+  }, [pending])
+
+  /* Escape: ακύρωση εκκρεμούς καλωδίου / αποεπιλογή. */
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') onBackground()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onBackground])
+
   const size = canvasSize(build, board)
   const boardGeo = boardGeometry(board)
+
+  /* Τι είδους pin εκκρεμεί — καθορίζει ποια pins φωτίζονται ως συμβατά. */
+  const pendingPin = useMemo(() => {
+    if (!pending) return null
+    if (pending.node === BOARD_NODE) {
+      const bp = boardGeo.pins.find((p) => p.id === pending.pin)
+      return bp ? { kind: 'board', caps: bp.caps } : null
+    }
+    const node = build.nodes.find((n) => n.id === pending.node)
+    const part = node && getPart(node.partId)
+    const pp = part?.pins.find((x) => x.id === pending.pin)
+    return pp ? { kind: 'part', type: pp.type } : null
+  }, [pending, build, boardGeo])
+
+  const boardCompat = (pin) => {
+    if (!pendingPin) return null
+    if (pendingPin.kind === 'board') return 'no'
+    return typeMatchesCaps(pendingPin.type, pin.caps) ? 'ok' : 'no'
+  }
+  const partCompat = (nodeId, pin) => {
+    if (!pendingPin) return null
+    if (nodeId === pending.node) return 'no'
+    if (pendingPin.kind === 'board') return typeMatchesCaps(pin.type, pendingPin.caps) ? 'ok' : 'no'
+    return PART_PAIRS.has(`${pendingPin.type}:${pin.type}`) ? 'ok' : null
+  }
+
+  const pendingPos = pending ? pinPosition(build, board, pending) : null
+
   const connectedKeys = new Set()
   for (const w of build.wires) {
     connectedKeys.add(`${w.from.node}:${w.from.pin}`)
@@ -285,6 +352,7 @@ export default function Workbench({
         // Σύρσιμο στο φόντο = μετακίνηση· απλό κλικ = αποεπιλογή.
         if (isBackground(e.target)) startPan(e)
       }}
+      onPointerMove={pending ? (e) => setCursor(toContent(e)) : undefined}
     >
       <div
         className="lab__canvas-inner"
@@ -327,6 +395,18 @@ export default function Workbench({
               </g>
             )
           })}
+
+          {/* Το καλώδιο που τραβάς αυτή τη στιγμή. */}
+          {pendingPos && cursor && (
+            <g className="lab__ghost">
+              <path
+                d={`M ${pendingPos.x} ${pendingPos.y} L ${cursor.x} ${cursor.y}`}
+                className="lab__wire-ghost"
+              />
+              <circle cx={pendingPos.x} cy={pendingPos.y} r="4" className="lab__ghost-end" />
+              <circle cx={cursor.x} cy={cursor.y} r="3.2" className="lab__ghost-end" />
+            </g>
+          )}
         </svg>
 
         {/* -------- Η πλακέτα -------- */}
@@ -355,6 +435,7 @@ export default function Workbench({
               side={pin.side}
               selected={pending && sameRef(pending, { node: BOARD_NODE, pin: pin.id })}
               connected={connectedKeys.has(`${BOARD_NODE}:${pin.id}`)}
+              compat={pending && !sameRef(pending, { node: BOARD_NODE, pin: pin.id }) ? boardCompat(pin) : null}
               title={`${pin.label} — ${pin.caps.join(', ')}${pin.note ? ` · ${pin.note}` : ''}`}
               onClick={() => onPinClick({ node: BOARD_NODE, pin: pin.id })}
             />
@@ -390,6 +471,7 @@ export default function Workbench({
                   side={pin.side}
                   selected={pending && sameRef(pending, { node: node.id, pin: pin.id })}
                   connected={connectedKeys.has(`${node.id}:${pin.id}`)}
+                  compat={pending && !sameRef(pending, { node: node.id, pin: pin.id }) ? partCompat(node.id, pin) : null}
                   title={`${pin.label} — ${PIN_TYPES[pin.type]?.label || pin.type}`}
                   onClick={() => onPinClick({ node: node.id, pin: pin.id })}
                 />
