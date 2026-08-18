@@ -31,6 +31,12 @@ export default function useBuildStore(makeInitial) {
   const lastPushAt = useRef(0)
   const [, bump] = useReducer((n) => n + 1, 0)
 
+  /* Πάντα το τρέχον build, για να διαβάζεται ΕΚΤΟΣ updater — οι μεταλλάξεις
+     του ιστορικού δεν επιτρέπεται να ζουν μέσα σε updater: το StrictMode
+     καλεί τους updaters δύο φορές και το δεύτερο pop θα έβρισκε άδειο stack. */
+  const buildRef = useRef(build)
+  buildRef.current = build
+
   useEffect(() => {
     const json = JSON.stringify(build)
     if (json === lastJson.current) return
@@ -59,24 +65,20 @@ export default function useBuildStore(makeInitial) {
   }, [])
 
   const undo = useCallback(() => {
-    setBuildState((cur) => {
-      const prevJson = past.current.pop()
-      if (!prevJson) return cur
-      future.current.push(JSON.stringify(cur))
-      lastPushAt.current = 0
-      return JSON.parse(prevJson)
-    })
+    const prevJson = past.current.pop()
+    if (!prevJson) return
+    future.current.push(JSON.stringify(buildRef.current))
+    lastPushAt.current = 0
+    setBuildState(JSON.parse(prevJson))
     bump()
   }, [])
 
   const redo = useCallback(() => {
-    setBuildState((cur) => {
-      const nextJson = future.current.pop()
-      if (!nextJson) return cur
-      past.current.push(JSON.stringify(cur))
-      lastPushAt.current = 0
-      return JSON.parse(nextJson)
-    })
+    const nextJson = future.current.pop()
+    if (!nextJson) return
+    past.current.push(JSON.stringify(buildRef.current))
+    lastPushAt.current = 0
+    setBuildState(JSON.parse(nextJson))
     bump()
   }, [])
 
@@ -88,12 +90,10 @@ export default function useBuildStore(makeInitial) {
       try {
         const next = JSON.parse(e.newValue)
         lastJson.current = e.newValue
-        setBuildState((prev) => {
-          past.current.push(JSON.stringify(prev))
-          if (past.current.length > HISTORY_LIMIT) past.current.shift()
-          future.current = []
-          return next
-        })
+        past.current.push(JSON.stringify(buildRef.current))
+        if (past.current.length > HISTORY_LIMIT) past.current.shift()
+        future.current = []
+        setBuildState(next)
         bump()
       } catch {
         /* Χαλασμένο περιεχόμενο από άλλη καρτέλα — το αγνοούμε. */
