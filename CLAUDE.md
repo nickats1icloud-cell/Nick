@@ -32,6 +32,12 @@ when writing user-facing strings or comments in this codebase.
   step in `.github/workflows/deploy.yml`. Preview locally with
   `python3 -m http.server` (ES modules don't run from `file://`).
 
+- **`docs/nightshift-402/`** — documentation only, no code: the technical brief
+  for *Nightshift 402*, a persistent motorsport RP / economic simulation game
+  whose implementation lives in its own repository. Written in Greek, indexed by
+  `docs/nightshift-402/README.md`. Do not scaffold the game inside this repo —
+  changes here are edits to the specification.
+
 ## Commands
 
 ```bash

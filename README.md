@@ -162,3 +162,10 @@ npm run dev
 - Νέα σελίδα: φτιάξε ένα component στο `src/pages/` και πρόσθεσέ το ως `<Route>` στο `src/App.jsx`.
 - Νέο link στο menu: πρόσθεσε ένα `<NavLink>` στο `src/components/Navbar.jsx`.
 - Styling: τα design tokens (χρώματα, radius κ.λπ.) ορίζονται ως CSS variables στην κορυφή του `src/index.css`.
+
+## Έγγραφα
+
+- **[`docs/nightshift-402/`](docs/nightshift-402/README.md)** — τεχνικό brief για
+  το Nightshift 402, ένα persistent motorsport RP και economic simulation
+  παιχνίδι. Είναι **μόνο προδιαγραφή**: ο κώδικας του παιχνιδιού ζει σε δικό του
+  repository και δεν χτίζεται εδώ.
